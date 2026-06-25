@@ -1,0 +1,1304 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Leads Grid — War Room</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Share+Tech+Mono&family=Orbitron:wght@400;600;700;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+
+:root{
+  --bg:#f0f0f8;
+  --surface:#ffffff;
+  --card:#ffffff;
+  --border:#ddddf0;
+  --border-hi:#c8c8e8;
+  --green:#0891b2;
+  --gd:rgba(8,145,178,0.07);
+  --blue:#1a1f5e;
+  --bd:rgba(26,31,94,0.08);
+  --purple:#7c3aed;
+  --amber:#d97706;
+  --red:#dc2626;
+  --text:#1a1f5e;
+  --mid:#6b728a;
+  --dim:#a0a4c0;
+}
+
+body{background:var(--bg);color:var(--text);font-family:'Share Tech Mono',monospace;overflow:hidden;width:100vw;height:100vh;display:flex;flex-direction:column;}
+
+/* scan lines removed */
+
+/* ══ TOPBAR ══════════════════════════════ */
+.topbar{
+  height:58px;background:#f5f5fc;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 0 0 0;
+  flex-shrink:0;position:relative;z-index:100;
+}
+.topbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(8,145,178,0.35) 40%,rgba(8,145,178,0.35) 60%,transparent);}
+
+.logo{
+  display:flex;align-items:center;gap:0;padding:0 22px;height:58px;
+  border-right:1px solid var(--border);flex-shrink:0;
+}
+.logo-text{font-family:'Orbitron',monospace;font-size:18px;font-weight:900;color:var(--green);letter-spacing:0.25em;text-shadow:0 0 20px rgba(8,145,178,0.6);}
+.logo-text span{color:#1a1f5e;}
+.logo-sub{font-size:10px;color:var(--dim);letter-spacing:0.2em;margin-top:3px;}
+
+.topbar-center{display:flex;align-items:center;gap:8px;padding:0 18px;flex:1;}
+.chip{
+  display:inline-flex;align-items:center;gap:7px;height:34px;
+  border-radius:5px;padding:0 14px;font-size:12px;letter-spacing:0.07em;
+  border:1px solid var(--border);background:rgba(255,255,255,0.02);
+  white-space:nowrap;
+}
+.chip-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.chip-dot.g{background:var(--green);box-shadow:0 0 6px rgba(8,145,178,0.8);animation:pulse 2.5s ease-in-out infinite;}
+.chip-dot.y{background:var(--amber);box-shadow:0 0 6px rgba(217,119,6,0.8);animation:pulse 1.5s ease-in-out infinite;}
+.chip-dot.b{background:var(--blue);box-shadow:0 0 6px rgba(26,31,94,0.7);}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.25}}
+.chip-label{color:var(--mid);}
+.chip-val{color:var(--text);font-weight:500;}
+.chip-val.green{color:var(--green);}
+.chip-val.amber{color:var(--amber);}
+
+.topbar-right{margin-left:auto;display:flex;align-items:center;height:58px;gap:0;}
+.top-block{padding:0 18px;height:58px;display:flex;flex-direction:column;justify-content:center;border-left:1px solid var(--border);}
+.top-block-val{font-family:'Orbitron',monospace;font-size:13px;font-weight:700;color:var(--green);letter-spacing:0.1em;text-shadow:0 0 8px rgba(8,145,178,0.4);}
+.top-block-val.w{color:var(--text);text-shadow:none;}
+.top-block-label{font-size:10px;color:var(--dim);letter-spacing:0.15em;margin-top:3px;}
+.clock{font-family:'Orbitron',monospace;font-size:26px;font-weight:700;color:var(--green);letter-spacing:0.06em;padding:0 22px;border-left:1px solid var(--border);text-shadow:0 0 18px rgba(8,145,178,0.7);}
+
+/* ══ BODY LAYOUT ══════════════════════════ */
+.layout{display:flex;flex:1;overflow:hidden;}
+
+/* ══ SIDEBAR ══════════════════════════════ */
+.sidebar{
+  width:280px;flex-shrink:0;
+  background:#f5f5fc;border-right:1px solid var(--border);
+  display:flex;flex-direction:column;overflow:hidden;
+  position:relative;
+}
+.sidebar::after{content:'';position:absolute;top:0;right:0;bottom:0;width:1px;background:linear-gradient(180deg,transparent,rgba(8,145,178,0.08) 30%,rgba(8,145,178,0.08) 70%,transparent);}
+
+.sidebar-scroll{flex:1;overflow-y:auto;padding:12px 0;}
+.sidebar-scroll::-webkit-scrollbar{width:3px;}
+.sidebar-scroll::-webkit-scrollbar-thumb{background:var(--border-hi);}
+
+.sgroup{margin-bottom:6px;}
+.sgroup-label{
+  font-size:10px;color:var(--dim);letter-spacing:0.18em;text-transform:uppercase;
+  padding:12px 18px 6px;display:flex;align-items:center;gap:10px;
+  font-family:'Orbitron',monospace;
+}
+.sgroup-line{flex:1;height:1px;background:var(--border);}
+
+.sroom{
+  display:flex;align-items:center;gap:11px;
+  padding:10px 18px;cursor:pointer;
+  border-left:3px solid transparent;
+  transition:all 0.15s;position:relative;
+}
+.sroom:hover{background:rgba(255,255,255,0.03);border-left-color:var(--dim);}
+.sroom.active{background:rgba(8,145,178,0.06);border-left-color:var(--green);}
+.sroom.active .sroom-name{color:var(--green);}
+
+.sroom-icon{font-size:16px;flex-shrink:0;width:20px;text-align:center;}
+.sroom-info{flex:1;min-width:0;}
+.sroom-name{font-size:14px;color:var(--text);letter-spacing:0.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color 0.15s;}
+.sroom-meta{font-size:11px;color:var(--mid);margin-top:2px;}
+.sdot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.sdot.g{background:var(--green);box-shadow:0 0 5px rgba(8,145,178,0.7);}
+.sdot.y{background:var(--amber);box-shadow:0 0 5px rgba(217,119,6,0.7);animation:pulse 2s ease-in-out infinite;}
+.sdot.b{background:var(--blue);box-shadow:0 0 5px rgba(26,31,94,0.6);}
+.sdot.p{background:var(--purple);box-shadow:0 0 5px rgba(124,58,237,0.6);}
+
+/* sidebar bottom: global mini stats */
+.sidebar-footer{
+  border-top:1px solid var(--border);padding:14px 18px;flex-shrink:0;
+}
+.sf-title{font-size:10px;color:var(--dim);letter-spacing:0.15em;margin-bottom:10px;font-family:'Orbitron',monospace;}
+.sf-stat{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.sf-stat-label{font-size:12px;color:var(--mid);}
+.sf-stat-val{font-family:'Orbitron',monospace;font-size:14px;font-weight:700;color:var(--green);}
+.sf-stat-val.amber{color:var(--amber);}
+.sf-stat-val.blue{color:var(--blue);}
+
+/* ══ MAIN AREA ════════════════════════════ */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+
+/* ══ OVERVIEW (default when nothing selected) ══ */
+#view-overview{display:flex;flex-direction:column;height:100%;overflow:hidden;}
+
+.overview-hero{
+  padding:22px 28px 18px;border-bottom:1px solid var(--border);flex-shrink:0;
+}
+.overview-title{font-family:'Orbitron',monospace;font-size:16px;font-weight:700;color:var(--green);letter-spacing:0.2em;margin-bottom:6px;text-shadow:0 0 10px rgba(8,145,178,0.3);}
+.overview-sub{font-size:13px;color:var(--mid);letter-spacing:0.05em;}
+
+.overview-kpis{display:flex;gap:0;padding:0 28px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.kpi{padding:16px 22px;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:5px;}
+.kpi:first-child{padding-left:0;}
+.kpi-num{font-family:'Orbitron',monospace;font-size:36px;font-weight:900;line-height:1;}
+.kpi-num.green{color:var(--green);text-shadow:0 0 20px rgba(8,145,178,0.4);}
+.kpi-num.blue{color:var(--blue);text-shadow:0 0 20px rgba(26,31,94,0.3);}
+.kpi-num.amber{color:var(--amber);text-shadow:0 0 20px rgba(217,119,6,0.3);}
+.kpi-num.white{color:#1a1f5e;}
+.kpi-label{font-size:11px;color:var(--mid);letter-spacing:0.12em;text-transform:uppercase;}
+.kpi-bar{width:90px;height:3px;background:var(--border);border-radius:2px;margin-top:2px;}
+.kpi-fill{height:100%;border-radius:2px;}
+.kpi-fill.green{background:var(--green);box-shadow:0 0 5px rgba(8,145,178,0.5);}
+.kpi-fill.blue{background:var(--blue);}
+.kpi-fill.amber{background:var(--amber);}
+
+.overview-rooms{flex:1;overflow-y:auto;padding:20px 28px;}
+.overview-rooms::-webkit-scrollbar{width:4px;}
+.overview-rooms::-webkit-scrollbar-thumb{background:var(--border-hi);}
+
+.ov-section{margin-bottom:24px;}
+.ov-section-label{font-size:11px;color:var(--dim);letter-spacing:0.18em;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:12px;font-family:'Orbitron',monospace;}
+.ov-section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+.ov-grid{display:grid;gap:10px;}
+.ov-grid.col2{grid-template-columns:repeat(2,1fr);}
+.ov-grid.col4{grid-template-columns:repeat(4,1fr);}
+.ov-grid.col3{grid-template-columns:repeat(3,1fr);}
+
+.ov-card{
+  background:var(--card);border:1px solid var(--border);border-radius:8px;
+  padding:16px 18px;cursor:pointer;
+  transition:all 0.15s;display:flex;flex-direction:column;gap:8px;
+  position:relative;overflow:hidden;
+}
+.ov-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.ov-card.cat-intel::before{background:linear-gradient(90deg,transparent,var(--blue),transparent);}
+.ov-card.cat-exec::before{background:linear-gradient(90deg,transparent,var(--green),transparent);}
+.ov-card.cat-infra::before{background:linear-gradient(90deg,transparent,var(--purple),transparent);}
+.ov-card.cat-adv::before{background:linear-gradient(90deg,transparent,var(--amber),transparent);}
+.ov-card.cat-cmd::before{background:linear-gradient(90deg,transparent,#1a1f5e,transparent);}
+.ov-card:hover{border-color:var(--green);transform:translateY(-1px);box-shadow:0 6px 24px rgba(8,145,178,0.12);}
+
+.ov-card-top{display:flex;align-items:center;gap:9px;}
+.ov-card-icon{font-size:18px;}
+.ov-card-name{font-size:14px;color:var(--text);letter-spacing:0.04em;flex:1;font-weight:500;}
+.ov-card-status{display:flex;align-items:center;gap:5px;}
+.ov-card-body{font-size:13px;color:var(--mid);line-height:1.7;}
+.ov-card-body span.green{color:var(--green);}
+.ov-card-body span.amber{color:var(--amber);}
+.ov-card-body span.blue{color:#3b4cb8;}
+.ov-stat{font-family:'Orbitron',monospace;font-size:22px;font-weight:700;color:var(--green);}
+.ov-stat.blue{color:var(--blue);}
+.ov-stat.amber{color:var(--amber);}
+.ov-stat-label{font-size:11px;color:var(--dim);letter-spacing:0.1em;}
+
+/* scanline on overview cards */
+.ov-card .scanbar{position:absolute;bottom:0;left:0;right:0;height:1px;overflow:hidden;}
+.ov-card .sbi{height:100%;width:25%;animation:sb 3s linear infinite;}
+@keyframes sb{from{margin-left:-25%;}to{margin-left:110%;}}
+.sbi.g{background:linear-gradient(90deg,transparent,rgba(8,145,178,0.5),transparent);}
+.sbi.b{background:linear-gradient(90deg,transparent,rgba(26,31,94,0.5),transparent);}
+.sbi.p{background:linear-gradient(90deg,transparent,rgba(124,58,237,0.4),transparent);}
+.sbi.a{background:linear-gradient(90deg,transparent,rgba(217,119,6,0.5),transparent);}
+
+/* ══ ROOM DETAIL VIEW ══════════════════════ */
+#view-room{display:none;flex-direction:column;height:100%;overflow:hidden;}
+#view-room.active{display:flex;}
+
+/* ── INTAKE UPLOAD ZONE ─────────────────── */
+#intake-upload-zone{
+  display:none;flex:1;flex-direction:column;overflow-y:auto;
+  padding:28px 32px;gap:20px;
+}
+.upload-drop{
+  border:2px dashed var(--border-hi);border-radius:10px;
+  padding:40px 28px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:12px;
+  cursor:pointer;transition:all .2s;background:rgba(8,145,178,.02);
+  text-align:center;
+}
+.upload-drop:hover,.upload-drop.drag-over{
+  border-color:var(--green);background:rgba(8,145,178,.06);
+}
+.upload-drop-icon{font-size:36px;margin-bottom:4px;}
+.upload-drop-title{font-family:'Orbitron',monospace;font-size:13px;font-weight:700;color:var(--text);letter-spacing:.06em;}
+.upload-drop-sub{font-size:12px;color:var(--mid);line-height:1.7;}
+.upload-drop-types{font-size:10px;color:var(--dim);margin-top:4px;letter-spacing:.06em;}
+.upload-btn{
+  display:inline-block;margin-top:10px;padding:9px 22px;
+  background:var(--green);color:#fff;border:none;border-radius:6px;
+  font-family:'Orbitron',monospace;font-size:10px;letter-spacing:.1em;
+  cursor:pointer;transition:opacity .15s;
+}
+.upload-btn:hover{opacity:.85;}
+#intake-file-input{display:none;}
+
+.upload-info-row{display:flex;gap:12px;}
+.upload-info-card{
+  flex:1;background:var(--surface);border:1px solid var(--border);
+  border-radius:8px;padding:16px 18px;
+}
+.uic-title{font-family:'Orbitron',monospace;font-size:9px;color:var(--green);letter-spacing:.14em;margin-bottom:10px;}
+.uic-item{font-size:11px;color:var(--mid);padding:4px 0;border-bottom:1px solid var(--border);line-height:1.6;}
+.uic-item:last-child{border-bottom:none;}
+.uic-item b{color:var(--text);}
+
+.upload-result{
+  display:none;background:var(--surface);border:1px solid rgba(8,145,178,.3);
+  border-radius:8px;padding:20px 22px;border-left:3px solid var(--green);
+}
+.upload-result-hdr{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.upload-result-icon{font-size:20px;}
+.upload-result-name{font-family:'Orbitron',monospace;font-size:11px;color:var(--text);font-weight:700;}
+.upload-result-size{font-size:10px;color:var(--dim);}
+.upload-result-lines{font-size:12px;color:var(--mid);line-height:2;margin-bottom:12px;}
+.upload-result-lines span{color:var(--green);}
+.upload-result-actions{display:flex;gap:10px;margin-top:4px;}
+.ura-btn{
+  padding:8px 18px;border-radius:5px;font-family:'Orbitron',monospace;
+  font-size:10px;letter-spacing:.08em;cursor:pointer;border:1px solid;transition:all .15s;
+}
+.ura-btn.primary{background:var(--green);color:#fff;border-color:var(--green);}
+.ura-btn.primary:hover{opacity:.85;}
+.ura-btn.secondary{background:transparent;color:var(--mid);border-color:var(--border);}
+.ura-btn.secondary:hover{color:var(--text);border-color:var(--border-hi);}
+
+.upload-processing{
+  display:none;align-items:center;justify-content:center;gap:14px;
+  padding:24px;background:rgba(8,145,178,.04);border:1px solid var(--border);
+  border-radius:8px;
+}
+.proc-spinner{
+  width:20px;height:20px;border:2px solid var(--border);
+  border-top-color:var(--green);border-radius:50%;
+  animation:spin .8s linear infinite;flex-shrink:0;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.proc-text{font-size:12px;color:var(--mid);}
+.proc-text b{color:var(--text);}
+
+.room-detail-header{
+  padding:20px 28px 18px;border-bottom:1px solid var(--border);flex-shrink:0;
+  display:flex;align-items:flex-start;gap:16px;
+  background:linear-gradient(90deg,rgba(8,145,178,0.03),transparent 60%);
+}
+.rdh-icon{font-size:28px;flex-shrink:0;margin-top:2px;}
+.rdh-name{font-family:'Orbitron',monospace;font-size:22px;font-weight:700;color:var(--green);letter-spacing:0.12em;text-shadow:0 0 14px rgba(8,145,178,0.4);}
+.rdh-sub{font-size:13px;color:var(--mid);letter-spacing:0.04em;margin-top:6px;line-height:1.6;}
+.rdh-id{margin-left:auto;font-size:11px;color:var(--dim);letter-spacing:0.1em;background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:6px 14px;flex-shrink:0;}
+.rdh-back{
+  display:flex;align-items:center;gap:6px;font-size:13px;color:var(--mid);
+  cursor:pointer;padding:7px 14px;border:1px solid var(--border);border-radius:5px;
+  transition:all 0.15s;flex-shrink:0;letter-spacing:0.08em;
+  font-family:'Share Tech Mono',monospace;
+}
+.rdh-back:hover{color:var(--green);border-color:rgba(8,145,178,0.3);}
+
+.room-detail-body{flex:1;display:flex;overflow:hidden;}
+
+.rd-terminal{
+  flex:1;overflow-y:auto;padding:24px 28px;
+  font-size:13px;line-height:2.1;
+  background:var(--bg);
+}
+.rd-terminal::-webkit-scrollbar{width:4px;}
+.rd-terminal::-webkit-scrollbar-thumb{background:var(--border-hi);}
+.tl{display:block;}
+.tc{color:var(--green);text-shadow:0 0 6px rgba(8,145,178,0.3);}
+.ti{color:var(--mid);}
+.td{color:#3b4cb8;}
+.tw{color:var(--amber);}
+.ts{color:var(--green);}
+.tdim{color:var(--dim);}
+.twh{color:var(--text);}
+.tb{height:10px;display:block;}
+.tcur{display:inline-block;width:10px;height:15px;background:var(--green);animation:blink 1s step-end infinite;vertical-align:middle;margin-left:3px;box-shadow:0 0 8px rgba(8,145,178,0.6);}
+@keyframes blink{50%{opacity:0;}}
+
+.rd-sidebar{
+  width:280px;flex-shrink:0;border-left:1px solid var(--border);
+  display:flex;flex-direction:column;background:var(--surface);
+}
+.rd-sidebar-title{font-size:9px;color:var(--dim);letter-spacing:0.15em;padding:18px 20px 12px;border-bottom:1px solid var(--border);font-family:'Orbitron',monospace;}
+.rd-stats{padding:18px 20px;display:flex;flex-direction:column;gap:14px;border-bottom:1px solid var(--border);}
+.rd-stat{display:flex;justify-content:space-between;align-items:center;}
+.rd-stat-label{font-size:11px;color:var(--mid);}
+.rd-stat-val{font-family:'Orbitron',monospace;font-size:17px;font-weight:700;color:var(--green);text-shadow:0 0 6px rgba(8,145,178,0.3);}
+.rd-cmd-box{
+  margin:18px 20px 0;padding:16px;
+  background:#f5f5fc;border:1px solid var(--border);border-radius:6px;
+}
+.rd-cmd-title{font-size:9px;color:var(--dim);letter-spacing:0.12em;margin-bottom:10px;font-family:'Orbitron',monospace;}
+.rd-cmd-line{font-size:11px;color:var(--mid);line-height:1.9;}
+.rd-cmd-line.g{color:var(--green);}
+.rd-about{margin:14px 20px 18px;padding:16px;background:rgba(8,145,178,0.04);border:1px solid rgba(8,145,178,0.15);border-radius:6px;overflow-y:auto;flex:1;}
+.rd-about-title{font-size:9px;color:var(--green);letter-spacing:0.14em;margin-bottom:10px;font-family:'Orbitron',monospace;}
+.rd-about-desc{font-size:11.5px;color:var(--mid);line-height:1.75;margin-bottom:14px;}
+.rd-about-step{display:flex;gap:9px;margin-bottom:8px;align-items:flex-start;}
+.rd-about-num{font-family:'Orbitron',monospace;font-size:9px;color:var(--green);flex-shrink:0;padding-top:2px;opacity:0.8;}
+.rd-about-text{font-size:11.5px;color:var(--text);line-height:1.65;}
+
+/* ══ BOTTOMBAR ════════════════════════════ */
+.bottombar{
+  height:54px;background:#f5f5fc;border-top:1px solid var(--border);
+  display:flex;align-items:center;padding:0 24px;gap:0;
+  flex-shrink:0;position:relative;z-index:100;
+}
+.bottombar::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(8,145,178,0.1) 50%,transparent);}
+
+.bm{display:flex;align-items:center;gap:12px;padding:0 20px;border-right:1px solid var(--border);}
+.bm:last-of-type{border-right:none;}
+.bm-num{font-family:'Orbitron',monospace;font-size:16px;font-weight:700;}
+.bm-num.green{color:var(--green);text-shadow:0 0 10px rgba(8,145,178,0.5);}
+.bm-num.blue{color:var(--blue);}
+.bm-num.amber{color:var(--amber);}
+.bm-info{display:flex;flex-direction:column;gap:4px;}
+.bm-bar{width:52px;height:3px;background:var(--border);border-radius:2px;}
+.bm-fill{height:100%;border-radius:2px;}
+.bm-fill.green{background:var(--green);box-shadow:0 0 5px rgba(8,145,178,0.4);}
+.bm-fill.blue{background:var(--blue);}
+.bm-fill.amber{background:var(--amber);}
+.bm-label{font-size:8px;color:var(--dim);letter-spacing:0.1em;text-transform:uppercase;}
+
+.sys-lights{display:flex;gap:7px;align-items:center;padding-left:20px;}
+.sl{width:8px;height:8px;border-radius:50%;}
+.sl.g{background:var(--green);box-shadow:0 0 6px rgba(8,145,178,0.7);}
+.sl.y{background:var(--amber);box-shadow:0 0 6px rgba(217,119,6,0.6);animation:pulse 2s ease-in-out infinite;}
+.sl.d{background:var(--border-hi);}
+
+#radar{margin-left:auto;opacity:0.35;}
+
+/* ══ SETTINGS OVERLAY ════════════════════ */
+#view-settings{display:none;flex-direction:column;height:100%;overflow:hidden;}
+#view-settings.active{display:flex;}
+.settings-header{
+  padding:22px 32px 18px;border-bottom:1px solid var(--border);flex-shrink:0;
+  display:flex;align-items:center;gap:16px;
+  background:linear-gradient(90deg,rgba(8,145,178,0.03),transparent 60%);
+}
+.settings-title{font-family:'Orbitron',monospace;font-size:18px;font-weight:700;color:var(--green);letter-spacing:0.14em;}
+.settings-sub{font-size:13px;color:var(--mid);margin-top:5px;}
+.settings-back{
+  margin-left:auto;display:flex;align-items:center;gap:6px;font-size:12px;color:var(--mid);
+  cursor:pointer;padding:8px 16px;border:1px solid var(--border);border-radius:5px;
+  transition:all 0.15s;font-family:'Share Tech Mono',monospace;
+}
+.settings-back:hover{color:var(--green);border-color:rgba(8,145,178,0.3);}
+.settings-body{flex:1;overflow-y:auto;padding:28px 32px;}
+.settings-body::-webkit-scrollbar{width:4px;}
+.settings-body::-webkit-scrollbar-thumb{background:var(--border-hi);}
+.settings-section{margin-bottom:32px;}
+.settings-section-label{
+  font-family:'Orbitron',monospace;font-size:10px;color:var(--dim);
+  letter-spacing:0.18em;text-transform:uppercase;margin-bottom:14px;
+  display:flex;align-items:center;gap:12px;
+}
+.settings-section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+.api-row{
+  display:grid;grid-template-columns:220px 1fr 100px 36px;
+  align-items:center;gap:12px;margin-bottom:10px;
+}
+.api-label{font-size:13px;color:var(--text);}
+.api-hint{font-size:10px;color:var(--dim);margin-top:2px;}
+.api-input{
+  height:36px;background:var(--surface);border:1px solid var(--border);border-radius:5px;
+  padding:0 12px;font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--text);
+  transition:border-color 0.15s;outline:none;width:100%;
+}
+.api-input:focus{border-color:rgba(8,145,178,0.4);box-shadow:0 0 0 3px rgba(8,145,178,0.07);}
+.api-input.saved{border-color:rgba(8,145,178,0.35);}
+.api-where{
+  font-size:10px;color:var(--green);text-decoration:none;letter-spacing:0.04em;
+  padding:6px 10px;border:1px solid rgba(8,145,178,0.2);border-radius:4px;
+  white-space:nowrap;text-align:center;cursor:pointer;transition:all 0.15s;
+  font-family:'Share Tech Mono',monospace;
+}
+.api-where:hover{background:rgba(8,145,178,0.08);}
+.api-status{width:10px;height:10px;border-radius:50%;flex-shrink:0;justify-self:center;}
+.api-status.ok{background:var(--green);box-shadow:0 0 6px rgba(8,145,178,0.7);}
+.api-status.missing{background:var(--border-hi);}
+.api-status.set{background:var(--amber);box-shadow:0 0 6px rgba(217,119,6,0.5);}
+.settings-save-row{
+  display:flex;align-items:center;gap:14px;margin-top:8px;
+  padding-top:20px;border-top:1px solid var(--border);
+}
+.btn-save{
+  height:40px;padding:0 28px;background:var(--green);color:#fff;
+  border:none;border-radius:6px;font-family:'Orbitron',monospace;font-size:11px;
+  letter-spacing:0.1em;cursor:pointer;transition:opacity 0.15s;
+}
+.btn-save:hover{opacity:0.85;}
+.btn-clear{
+  height:40px;padding:0 20px;background:transparent;color:var(--mid);
+  border:1px solid var(--border);border-radius:6px;font-family:'Share Tech Mono',monospace;
+  font-size:12px;cursor:pointer;transition:all 0.15s;
+}
+.btn-clear:hover{color:var(--red);border-color:var(--red);}
+.save-msg{font-size:12px;color:var(--green);opacity:0;transition:opacity 0.3s;}
+.save-msg.show{opacity:1;}
+.settings-env-box{
+  margin-top:24px;background:#f5f5fc;border:1px solid var(--border);
+  border-radius:6px;padding:18px 20px;
+}
+.settings-env-title{font-size:10px;color:var(--dim);letter-spacing:0.14em;margin-bottom:12px;font-family:'Orbitron',monospace;}
+.settings-env-code{font-size:11.5px;color:var(--mid);line-height:2;white-space:pre;}
+.settings-env-code span{color:var(--green);}
+</style>
+</head>
+<body>
+
+<!-- ══ STARFIELD ══════════════════════════════ -->
+<canvas id="starfield" style="position:fixed;inset:0;z-index:0;pointer-events:none;"></canvas>
+
+<!-- ══ TOPBAR ══════════════════════════════════ -->
+<div class="topbar">
+  <div class="logo">
+    <div>
+      <div class="logo-text">LEADS<span>GRID</span></div>
+      <div class="logo-sub">AI WAR ROOM</div>
+    </div>
+  </div>
+  <div class="topbar-center">
+    <div class="chip"><div class="chip-dot g"></div><span class="chip-label">Status&nbsp;</span><span class="chip-val green" id="agent-status">ALL ONLINE</span></div>
+    <div class="chip"><div class="chip-dot y"></div><span class="chip-label">Alert&nbsp;</span><span class="chip-val amber">1 WARNING</span></div>
+    <div class="chip"><div class="chip-dot b"></div><span class="chip-label">Client&nbsp;</span><span class="chip-val">COGNIFY AI · SLA 3/21</span></div>
+    <div class="chip" style="margin-left:8px;border-color:rgba(8,145,178,0.2);background:rgba(8,145,178,0.04);"><div class="chip-dot g" style="animation-duration:1s;"></div><span class="chip-val green">14 AGENTS LIVE</span></div>
+  </div>
+  <div class="topbar-right">
+    <div class="top-block">
+      <div class="top-block-val" id="met">T+ 00:00:00</div>
+      <div class="top-block-label">ELAPSED</div>
+    </div>
+    <div class="top-block">
+      <div class="top-block-val w">BELGRADE</div>
+      <div class="top-block-label">CEST · UTC+2</div>
+    </div>
+    <div class="clock" id="clock">--:--:--</div>
+  </div>
+</div>
+
+<!-- ══ LAYOUT ═════════════════════════════════ -->
+<div class="layout">
+
+  <!-- ══ SIDEBAR ════════════════════════════ -->
+  <div class="sidebar">
+    <div class="sidebar-scroll">
+
+      <div class="sgroup">
+        <div class="sgroup-label">Intelligence<div class="sgroup-line"></div></div>
+        <div class="sroom" onclick="openRoom('r1')" id="sroom-r1">
+          <div class="sroom-icon">🔬</div>
+          <div class="sroom-info"><div class="sroom-name">Research Lab</div><div class="sroom-meta">ICP · triggers · market</div></div>
+          <div class="sdot b"></div>
+        </div>
+        <div class="sroom" onclick="openRoom('r2')" id="sroom-r2">
+          <div class="sroom-icon">🏭</div>
+          <div class="sroom-info"><div class="sroom-name">Lead Factory</div><div class="sroom-meta">722 verified leads</div></div>
+          <div class="sdot b"></div>
+        </div>
+      </div>
+
+      <div class="sgroup">
+        <div class="sgroup-label">Execution<div class="sgroup-line"></div></div>
+        <div class="sroom" onclick="openRoom('r4')" id="sroom-r4">
+          <div class="sroom-icon">✍️</div>
+          <div class="sroom-info"><div class="sroom-name">Copy Room</div><div class="sroom-meta">38 sequences · 0 violations</div></div>
+          <div class="sdot g"></div>
+        </div>
+        <div class="sroom" onclick="openRoom('r5')" id="sroom-r5">
+          <div class="sroom-icon">💼</div>
+          <div class="sroom-info"><div class="sroom-name">LinkedIn Room</div><div class="sroom-meta">95 in sequence · 26% acc.</div></div>
+          <div class="sdot g"></div>
+        </div>
+        <div class="sroom" onclick="openRoom('r6')" id="sroom-r6">
+          <div class="sroom-icon">📬</div>
+          <div class="sroom-info"><div class="sroom-name">Comms Lab</div><div class="sroom-meta">8 interested · 47 replies</div></div>
+          <div class="sdot g"></div>
+        </div>
+        <div class="sroom" onclick="openRoom('r7')" id="sroom-r7">
+          <div class="sroom-icon">🧨</div>
+          <div class="sroom-info"><div class="sroom-name">War Room</div><div class="sroom-meta">PulseHR: 1.8% reply ⚠</div></div>
+          <div class="sdot y"></div>
+        </div>
+      </div>
+
+      <div class="sgroup">
+        <div class="sgroup-label">Command &amp; Infra<div class="sgroup-line"></div></div>
+        <div class="sroom" onclick="openRoom('cmd')" id="sroom-cmd">
+          <div class="sroom-icon">⚔️</div>
+          <div class="sroom-info"><div class="sroom-name">Command Agent</div><div class="sroom-meta">Orchestrating 14 rooms</div></div>
+          <div class="sdot g"></div>
+        </div>
+        <div class="sroom" onclick="openRoom('r3')" id="sroom-r3">
+          <div class="sroom-icon">⚙️</div>
+          <div class="sroom-info"><div class="sroom-name">Infra Room</div><div class="sroom-meta">Avg score 74.2 · 1 flagged</div></div>
+          <div class="sdot p"></div>
+        </div>
+        <div class="sroom" onclick="openRoom('r8')" id="sroom-r8">
+          <div class="sroom-icon">🗄️</div>
+          <div class="sroom-info"><div class="sroom-name">Archives</div><div class="sroom-meta">44K leads · 127 hooks</div></div>
+          <div class="sdot p"></div>
+        </div>
+      </div>
+
+      <div class="sgroup">
+        <div class="sgroup-label">System<div class="sgroup-line"></div></div>
+        <div class="sroom" onclick="openRoom('r10')" id="sroom-r10">
+          <div class="sroom-icon">📋</div>
+          <div class="sroom-info"><div class="sroom-name">Intake Room</div><div class="sroom-meta">28 questions · .docx import</div></div>
+          <div class="sdot g"></div>
+        </div>
+        <div class="sroom" onclick="openRoom('r11')" id="sroom-r11">
+          <div class="sroom-icon">📡</div>
+          <div class="sroom-info"><div class="sroom-name">Super Monitor</div><div class="sroom-meta">14/14 live · 0 critical</div></div>
+          <div class="sdot g"></div>
+        </div>
+      </div>
+
+      <div class="sgroup">
+        <div class="sgroup-label">Super Office<div class="sgroup-line"></div></div>
+        <div class="sroom" onclick="openRoom('office')" id="sroom-office">
+          <div class="sroom-icon">🏢</div>
+          <div class="sroom-info"><div class="sroom-name">Agent Live View</div><div class="sroom-meta">14 agents · animated floor</div></div>
+          <div class="sdot" style="background:var(--green);box-shadow:0 0 4px rgba(8,145,178,0.6);animation:pulse 2s infinite;"></div>
+        </div>
+      </div>
+
+      <div class="sgroup">
+        <div class="sgroup-label">Advanced Intel<div class="sgroup-line"></div></div>
+        <div class="sroom" onclick="openRoom('r12')" id="sroom-r12">
+          <div class="sroom-icon">🕵️</div>
+          <div class="sroom-info"><div class="sroom-name">Competitor Intel</div><div class="sroom-meta">3 gaps · 3 saturated</div></div>
+          <div class="sdot" style="background:var(--amber);box-shadow:0 0 4px rgba(217,119,6,0.6);"></div>
+        </div>
+        <div class="sroom" onclick="openRoom('r13')" id="sroom-r13">
+          <div class="sroom-icon">🗺️</div>
+          <div class="sroom-info"><div class="sroom-name">Committee Mapper</div><div class="sroom-meta">7 stakeholders · 8/10 fit</div></div>
+          <div class="sdot" style="background:var(--amber);box-shadow:0 0 4px rgba(217,119,6,0.6);"></div>
+        </div>
+        <div class="sroom" onclick="openRoom('r14')" id="sroom-r14">
+          <div class="sroom-icon">💰</div>
+          <div class="sroom-info"><div class="sroom-name">Deal Intelligence</div><div class="sroom-meta">8 deals · $42K pipeline</div></div>
+          <div class="sdot" style="background:var(--amber);box-shadow:0 0 4px rgba(217,119,6,0.6);"></div>
+        </div>
+      </div>
+
+      <div class="sgroup">
+        <div class="sgroup-label">Config<div class="sgroup-line"></div></div>
+        <div class="sroom" onclick="openSettings()" id="sroom-settings">
+          <div class="sroom-icon">🔑</div>
+          <div class="sroom-info"><div class="sroom-name">API Keys</div><div class="sroom-meta" id="settings-meta">0 / 10 connected</div></div>
+          <div class="sdot y" id="settings-dot"></div>
+        </div>
+      </div>
+
+    </div><!-- end scroll -->
+
+    <div class="sidebar-footer">
+      <div class="sf-title">GLOBAL METRICS</div>
+      <div class="sf-stat"><span class="sf-stat-label">Reply Rate</span><span class="sf-stat-val">6.2%</span></div>
+      <div class="sf-stat"><span class="sf-stat-label">Pipeline</span><span class="sf-stat-val amber">$42K</span></div>
+      <div class="sf-stat"><span class="sf-stat-label">Warm Leads</span><span class="sf-stat-val">8</span></div>
+      <div class="sf-stat"><span class="sf-stat-label">Bounce Rate</span><span class="sf-stat-val blue">0.8%</span></div>
+    </div>
+  </div><!-- end sidebar -->
+
+  <!-- ══ MAIN AREA ══════════════════════════ -->
+  <div class="main">
+
+    <!-- ── OVERVIEW (default) ──────────────── -->
+    <div id="view-overview">
+
+      <div class="overview-hero">
+        <div class="overview-title">⬡ WAR ROOM OVERVIEW</div>
+        <div class="overview-sub">Click any room in the sidebar or below to enter · Real-time AI agent network · Leads Grid</div>
+      </div>
+
+      <div class="overview-kpis">
+        <div class="kpi">
+          <div class="kpi-num green">6.2%</div>
+          <div class="kpi-label">Reply Rate</div>
+          <div class="kpi-bar"><div class="kpi-fill green" style="width:62%"></div></div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-num blue">722</div>
+          <div class="kpi-label">Leads Ready</div>
+          <div class="kpi-bar"><div class="kpi-fill blue" style="width:72%"></div></div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-num green">8</div>
+          <div class="kpi-label">Warm Replies</div>
+          <div class="kpi-bar"><div class="kpi-fill green" style="width:80%"></div></div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-num amber">$42K</div>
+          <div class="kpi-label">Pipeline</div>
+          <div class="kpi-bar"><div class="kpi-fill amber" style="width:42%"></div></div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-num white">0.8%</div>
+          <div class="kpi-label">Bounce Rate</div>
+          <div class="kpi-bar"><div class="kpi-fill green" style="width:8%"></div></div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-num green">74.2</div>
+          <div class="kpi-label">Avg Warmup Score</div>
+          <div class="kpi-bar"><div class="kpi-fill green" style="width:74%"></div></div>
+        </div>
+        <div class="kpi" style="border-right:none;">
+          <div class="kpi-num amber">1</div>
+          <div class="kpi-label">Warnings Active</div>
+          <div class="kpi-bar"><div class="kpi-fill amber" style="width:20%"></div></div>
+        </div>
+      </div>
+
+      <div class="overview-rooms">
+
+        <div class="ov-section">
+          <div class="ov-section-label" style="color:var(--blue);">Intelligence &amp; Lead Generation</div>
+          <div class="ov-grid col2">
+            <div class="ov-card cat-intel" onclick="openRoom('r1')">
+              <div class="ov-card-top"><div class="ov-card-icon">🔬</div><div class="ov-card-name">Research Lab</div><div class="ov-card-status"><div class="sdot b"></div><span style="font-size:7px;color:var(--blue);">SCANNING</span></div></div>
+              <div class="ov-card-body">Apollo · Serper · Claude ICP analysis<br>ICP: B2B SaaS · VP Sales · 50–500 emp<br>Trigger signals: <span class="green">3 found</span> · Angles to avoid: <span class="amber">2</span></div>
+              <div style="display:flex;gap:16px;margin-top:4px;"><div><div class="ov-stat blue">14</div><div class="ov-stat-label">ICP Profiles</div></div><div><div class="ov-stat">5</div><div class="ov-stat-label">Trigger Signals</div></div></div>
+              <div class="scanbar"><div class="sbi b" style="animation-duration:2.2s;"></div></div>
+            </div>
+            <div class="ov-card cat-intel" onclick="openRoom('r2')">
+              <div class="ov-card-top"><div class="ov-card-icon">🏭</div><div class="ov-card-name">Lead Factory</div><div class="ov-card-status"><div class="sdot b"></div><span style="font-size:7px;color:var(--blue);">ENRICHING</span></div></div>
+              <div class="ov-card-body">Clay waterfall · 1,240 raw → <span class="green">722 qualified</span><br>Email verified: 94.2% hit rate (code 5 ✓)<br>Catch-all: <span class="amber">105</span> tagged · Trigger score ≥6</div>
+              <div style="display:flex;gap:16px;margin-top:4px;"><div><div class="ov-stat blue">722</div><div class="ov-stat-label">Verified Leads</div></div><div><div class="ov-stat">0.8%</div><div class="ov-stat-label">Bounce Rate</div></div></div>
+              <div class="scanbar"><div class="sbi b" style="animation-duration:1.8s;"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ov-section">
+          <div class="ov-section-label" style="color:var(--green);">Execution Layer</div>
+          <div class="ov-grid col4">
+            <div class="ov-card cat-exec" onclick="openRoom('r4')">
+              <div class="ov-card-top"><div class="ov-card-icon">✍️</div><div class="ov-card-name">Copy Room</div><div class="sdot g"></div></div>
+              <div class="ov-card-body"><span class="green">PASSED</span> · attempt 1<br>74 words · 0 violations</div>
+              <div style="margin-top:4px;"><div class="ov-stat">38</div><div class="ov-stat-label">Sequences</div></div>
+              <div class="scanbar"><div class="sbi g" style="animation-duration:2.5s;"></div></div>
+            </div>
+            <div class="ov-card cat-exec" onclick="openRoom('r5')">
+              <div class="ov-card-top"><div class="ov-card-icon">💼</div><div class="ov-card-name">LinkedIn</div><div class="sdot g"></div></div>
+              <div class="ov-card-body">3 senders · 95 in sequence<br>Acceptance: <span class="green">26.3%</span></div>
+              <div style="margin-top:4px;"><div class="ov-stat">5</div><div class="ov-stat-label">DMs Active</div></div>
+              <div class="scanbar"><div class="sbi g" style="animation-duration:2.8s;"></div></div>
+            </div>
+            <div class="ov-card cat-exec" onclick="openRoom('r6')">
+              <div class="ov-card-top"><div class="ov-card-icon">📬</div><div class="ov-card-name">Comms Lab</div><div class="sdot g"></div></div>
+              <div class="ov-card-body">47 replies classified today<br>Interested: <span class="green">8</span> routed to Slack</div>
+              <div style="margin-top:4px;"><div class="ov-stat">12</div><div class="ov-stat-label">Drafts Queued</div></div>
+              <div class="scanbar"><div class="sbi g" style="animation-duration:1.6s;"></div></div>
+            </div>
+            <div class="ov-card cat-exec" onclick="openRoom('r7')" style="border-color:#2a1e0a;">
+              <div class="ov-card-top"><div class="ov-card-icon">🧨</div><div class="ov-card-name">War Room</div><div class="sdot y"></div></div>
+              <div class="ov-card-body">4 campaigns · 2 healthy<br>PulseHR: <span class="amber">55/100 ⚠ 1.8%</span></div>
+              <div style="margin-top:4px;"><div class="ov-stat amber">1</div><div class="ov-stat-label">Warning</div></div>
+              <div class="scanbar"><div class="sbi a" style="animation-duration:3.2s;"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ov-section">
+          <div class="ov-section-label" style="color:#9aa3bd;">Command &amp; Infrastructure</div>
+          <div class="ov-grid col3">
+            <div class="ov-card cat-cmd" onclick="openRoom('cmd')">
+              <div class="ov-card-top"><div class="ov-card-icon">⚔️</div><div class="ov-card-name">Command Agent</div><div class="sdot g"></div></div>
+              <div class="ov-card-body">Orchestrating 14 rooms<br>SLA day <span class="green">3/21</span> · 4 active clients</div>
+              <div style="margin-top:4px;"><div class="ov-stat">8</div><div class="ov-stat-label">Warm Leads</div></div>
+              <div class="scanbar"><div class="sbi g" style="animation-duration:1.4s;"></div></div>
+            </div>
+            <div class="ov-card cat-infra" onclick="openRoom('r3')">
+              <div class="ov-card-top"><div class="ov-card-icon">⚙️</div><div class="ov-card-name">Infra Room</div><div class="sdot p"></div></div>
+              <div class="ov-card-body">9 inboxes warming · avg <span class="green">74.2</span><br>Bounce: 0.8% ✓ · <span class="amber">1 inbox flagged</span></div>
+              <div style="margin-top:4px;"><div class="ov-stat" style="color:var(--purple);">74.2</div><div class="ov-stat-label">Avg Warmup</div></div>
+              <div class="scanbar"><div class="sbi p" style="animation-duration:3s;"></div></div>
+            </div>
+            <div class="ov-card cat-infra" onclick="openRoom('r8')">
+              <div class="ov-card-top"><div class="ov-card-icon">🗄️</div><div class="ov-card-name">Archives</div><div class="sdot p"></div></div>
+              <div class="ov-card-body">44,201 leads · 127 hooks · 38 seqs<br>Top hook RPR: <span class="green">7.2%</span> (n=340 sends)</div>
+              <div style="margin-top:4px;"><div class="ov-stat" style="color:var(--purple);">44K</div><div class="ov-stat-label">Total Records</div></div>
+              <div class="scanbar"><div class="sbi p" style="animation-duration:4s;"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ov-section">
+          <div class="ov-section-label" style="color:var(--amber);">System Intelligence &amp; Advanced</div>
+          <div class="ov-grid col3">
+            <div class="ov-card cat-exec" onclick="openRoom('r10')">
+              <div class="ov-card-top"><div class="ov-card-icon">📋</div><div class="ov-card-name">Intake Room</div><div class="sdot g"></div></div>
+              <div class="ov-card-body">28 questions · 6 sections<br>Accepts .docx · Claude structures brief</div>
+              <div style="margin-top:4px;"><div class="ov-stat">0</div><div class="ov-stat-label">Briefs Built</div></div>
+              <div class="scanbar"><div class="sbi g" style="animation-duration:3.5s;"></div></div>
+            </div>
+            <div class="ov-card cat-exec" onclick="openRoom('r11')" style="border-color:#152b1e;">
+              <div class="ov-card-top"><div class="ov-card-icon">📡</div><div class="ov-card-name">Super Monitor</div><div class="sdot g"></div></div>
+              <div class="ov-card-body">14/14 rooms live · <span class="green">0 critical</span><br><span class="amber">1 warning</span> · Claude summary on enter</div>
+              <div style="margin-top:4px;"><div class="ov-stat">14</div><div class="ov-stat-label">Rooms Online</div></div>
+              <div class="scanbar"><div class="sbi g" style="animation-duration:2s;"></div></div>
+            </div>
+            <div class="ov-card cat-adv" onclick="openRoom('r12')">
+              <div class="ov-card-top"><div class="ov-card-icon">🕵️</div><div class="ov-card-name">Competitor Intel</div><div class="sdot" style="background:var(--amber);box-shadow:0 0 4px rgba(217,119,6,0.6);"></div></div>
+              <div class="ov-card-body">G2 · LinkedIn · Job postings scanned<br>Saturated: <span class="amber">3</span> · Gaps found: <span class="green">3</span></div>
+              <div style="margin-top:4px;"><div class="ov-stat amber">3</div><div class="ov-stat-label">Gaps Found</div></div>
+              <div class="scanbar"><div class="sbi a" style="animation-duration:3.5s;"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ov-section">
+          <div class="ov-section-label" style="color:var(--amber);"> </div>
+          <div class="ov-grid col2">
+            <div class="ov-card cat-adv" onclick="openRoom('r13')">
+              <div class="ov-card-top"><div class="ov-card-icon">🗺️</div><div class="ov-card-name">Buying Committee Mapper</div><div class="sdot" style="background:var(--amber);box-shadow:0 0 4px rgba(217,119,6,0.6);"></div></div>
+              <div class="ov-card-body">Stakeholders found: 7 · Fit: <span class="green">STRONG (8/10)</span><br>Economic buyer · Champion · Technical Eval · Blocker<br>Per-role hook lines written by Claude</div>
+              <div style="display:flex;gap:16px;margin-top:4px;"><div><div class="ov-stat amber">7</div><div class="ov-stat-label">Stakeholders</div></div><div><div class="ov-stat">8/10</div><div class="ov-stat-label">Fit Score</div></div></div>
+              <div class="scanbar"><div class="sbi a" style="animation-duration:2.8s;"></div></div>
+            </div>
+            <div class="ov-card cat-adv" onclick="openRoom('r14')" style="border-color:#2a1d08;">
+              <div class="ov-card-top"><div class="ov-card-icon">💰</div><div class="ov-card-name">Deal Intelligence — CRM Sync</div><div class="sdot" style="background:var(--amber);box-shadow:0 0 4px rgba(217,119,6,0.6);"></div></div>
+              <div class="ov-card-body">8 active deals · <span class="amber">$42K</span> pipeline · HubSpot synced<br>AI avg score: <span class="green">74/100</span> · 1 deal at risk (Moontide)<br>Next priority: Archform proposal today</div>
+              <div style="display:flex;gap:16px;margin-top:4px;"><div><div class="ov-stat amber">$42K</div><div class="ov-stat-label">Pipeline</div></div><div><div class="ov-stat">8</div><div class="ov-stat-label">Active Deals</div></div></div>
+              <div class="scanbar"><div class="sbi a" style="animation-duration:1.9s;"></div></div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- end overview-rooms -->
+    </div><!-- end view-overview -->
+
+    <!-- ── ROOM DETAIL VIEW ─────────────────── -->
+    <div id="view-room">
+      <div class="room-detail-header">
+        <div class="rdh-icon" id="rdh-icon">⚔️</div>
+        <div style="flex:1;">
+          <div class="rdh-name" id="rdh-name">COMMAND AGENT</div>
+          <div class="rdh-sub" id="rdh-sub">Orchestrating all rooms · SLA monitor · daily briefing</div>
+        </div>
+        <div class="rdh-id" id="rdh-id">CMD-01</div>
+        <div class="rdh-back" onclick="closeRoom()">← OVERVIEW</div>
+      </div>
+      <div class="room-detail-body" id="rd-body-normal">
+        <div class="rd-terminal" id="rd-terminal"></div>
+        <div class="rd-sidebar">
+          <div class="rd-sidebar-title">ROOM STATS</div>
+          <div class="rd-stats" id="rd-stats"></div>
+          <div class="rd-cmd-box">
+            <div class="rd-cmd-title">QUICK RUN</div>
+            <div class="rd-cmd-line" id="rd-cmd-hint"></div>
+          </div>
+          <div class="rd-about" id="rd-about">
+            <div class="rd-about-title">HOW IT WORKS</div>
+            <div class="rd-about-desc" id="rd-about-desc"></div>
+            <div id="rd-about-steps"></div>
+          </div>
+        </div>
+      </div>
+      <iframe id="rd-office-frame" src="super-office.html" style="display:none;flex:1;border:none;width:100%;background:#07080f;"></iframe>
+
+      <!-- ── INTAKE UPLOAD ──────────────────── -->
+      <div id="intake-upload-zone">
+        <input type="file" id="intake-file-input" accept=".docx,.doc,.pdf,.txt,.csv,.xlsx">
+
+        <div class="upload-drop" id="upload-drop" onclick="document.getElementById('intake-file-input').click()">
+          <div class="upload-drop-icon">📂</div>
+          <div class="upload-drop-title">DROP CLIENT QUESTIONNAIRE HERE</div>
+          <div class="upload-drop-sub">Drag & drop the filled questionnaire file<br>or click to browse your computer</div>
+          <div class="upload-drop-types">SUPPORTED: .docx · .pdf · .txt · .csv · .xlsx</div>
+          <button class="upload-btn" onclick="event.stopPropagation();document.getElementById('intake-file-input').click()">BROWSE FILE</button>
+        </div>
+
+        <div class="upload-processing" id="upload-processing">
+          <div class="proc-spinner"></div>
+          <div class="proc-text">Reading file — <b id="proc-filename">...</b><br>Claude is parsing the 28 questions...</div>
+        </div>
+
+        <div class="upload-result" id="upload-result">
+          <div class="upload-result-hdr">
+            <div class="upload-result-icon">✅</div>
+            <div>
+              <div class="upload-result-name" id="result-filename">brief_cognify.docx</div>
+              <div class="upload-result-size" id="result-size">—</div>
+            </div>
+          </div>
+          <div class="upload-result-lines" id="result-lines"></div>
+          <div class="upload-result-actions">
+            <button class="ura-btn primary" onclick="processIntake()">⚡ RUN INTAKE AGENT</button>
+            <button class="ura-btn secondary" onclick="resetUpload()">Upload different file</button>
+          </div>
+        </div>
+
+        <div class="upload-info-row">
+          <div class="upload-info-card">
+            <div class="uic-title">WHAT HAPPENS NEXT</div>
+            <div class="uic-item"><b>1. Parse</b> — Claude reads all 28 answers from your file</div>
+            <div class="uic-item"><b>2. Structure</b> — Answers mapped to ICP fields, triggers, and pains</div>
+            <div class="uic-item"><b>3. Validate</b> — Gaps flagged before campaign launch</div>
+            <div class="uic-item"><b>4. Save</b> — Client brief saved to Archives for all agents</div>
+          </div>
+          <div class="upload-info-card">
+            <div class="uic-title">QUESTIONNAIRE COVERS</div>
+            <div class="uic-item"><b>Section 1</b> — Who we are targeting (ICP)</div>
+            <div class="uic-item"><b>Section 2</b> — Value proposition & offer</div>
+            <div class="uic-item"><b>Section 3</b> — Buyer intelligence & pains</div>
+            <div class="uic-item"><b>Section 4</b> — Social proof & case studies</div>
+            <div class="uic-item"><b>Section 5</b> — Trigger signals & timing</div>
+            <div class="uic-item"><b>Section 6</b> — Avoid angles & competitors</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SETTINGS VIEW ──────────────────────── -->
+    <div id="view-settings">
+      <div class="settings-header">
+        <div>
+          <div class="settings-title">🔑 API KEYS</div>
+          <div class="settings-sub">Connect your services — keys are saved locally in your browser</div>
+        </div>
+        <div class="settings-back" onclick="closeSettings()">← OVERVIEW</div>
+      </div>
+      <div class="settings-body">
+
+        <div class="settings-section">
+          <div class="settings-section-label">Core — Required for all agents</div>
+          <div class="api-row">
+            <div><div class="api-label">Anthropic (Claude)</div><div class="api-hint">Powers all 14 AI agents</div></div>
+            <input class="api-input" id="k-anthropic" type="password" placeholder="sk-ant-api03-...">
+            <span class="api-where" onclick="window.open('https://console.anthropic.com/settings/keys')">Get key ↗</span>
+            <div class="api-status missing" id="s-anthropic"></div>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <div class="settings-section-label">Prospecting & Enrichment</div>
+          <div class="api-row">
+            <div><div class="api-label">Serper</div><div class="api-hint">Google search · Research Lab, Competitor Intel</div></div>
+            <input class="api-input" id="k-serper" type="password" placeholder="serper_...">
+            <span class="api-where" onclick="window.open('https://serper.dev/api-key')">Get key ↗</span>
+            <div class="api-status missing" id="s-serper"></div>
+          </div>
+          <div class="api-row">
+            <div><div class="api-label">Apollo</div><div class="api-hint">Lead search · Research Lab, Lead Factory</div></div>
+            <input class="api-input" id="k-apollo" type="password" placeholder="apollo_...">
+            <span class="api-where" onclick="window.open('https://app.apollo.io/#/settings/integrations/api')">Get key ↗</span>
+            <div class="api-status missing" id="s-apollo"></div>
+          </div>
+          <div class="api-row">
+            <div><div class="api-label">Prospeo</div><div class="api-hint">Email waterfall step 1 · Lead Factory</div></div>
+            <input class="api-input" id="k-prospeo" type="password" placeholder="prospeo_...">
+            <span class="api-where" onclick="window.open('https://prospeo.io/api')">Get key ↗</span>
+            <div class="api-status missing" id="s-prospeo"></div>
+          </div>
+          <div class="api-row">
+            <div><div class="api-label">Hunter.io</div><div class="api-hint">Email waterfall step 3 · Lead Factory</div></div>
+            <input class="api-input" id="k-hunter" type="password" placeholder="hunter_...">
+            <span class="api-where" onclick="window.open('https://hunter.io/api-keys')">Get key ↗</span>
+            <div class="api-status missing" id="s-hunter"></div>
+          </div>
+          <div class="api-row">
+            <div><div class="api-label">Debounce</div><div class="api-hint">Email validation · Lead Factory</div></div>
+            <input class="api-input" id="k-debounce" type="password" placeholder="debo_...">
+            <span class="api-where" onclick="window.open('https://debounce.io/api')">Get key ↗</span>
+            <div class="api-status missing" id="s-debounce"></div>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <div class="settings-section-label">Sending & Outreach</div>
+          <div class="api-row">
+            <div><div class="api-label">Instantly</div><div class="api-hint">Email sending · Infra Room, Comms Lab, War Room</div></div>
+            <input class="api-input" id="k-instantly" type="password" placeholder="instantly_...">
+            <span class="api-where" onclick="window.open('https://app.instantly.ai/app/settings/integrations')">Get key ↗</span>
+            <div class="api-status missing" id="s-instantly"></div>
+          </div>
+          <div class="api-row">
+            <div><div class="api-label">HeyReach</div><div class="api-hint">LinkedIn outreach · LinkedIn Room, Comms Lab</div></div>
+            <input class="api-input" id="k-heyreach" type="password" placeholder="heyreach_...">
+            <span class="api-where" onclick="window.open('https://app.heyreach.io/settings/api')">Get key ↗</span>
+            <div class="api-status missing" id="s-heyreach"></div>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <div class="settings-section-label">CRM & Notifications</div>
+          <div class="api-row">
+            <div><div class="api-label">HubSpot</div><div class="api-hint">CRM sync · Deal Intelligence</div></div>
+            <input class="api-input" id="k-hubspot" type="password" placeholder="pat-na1-...">
+            <span class="api-where" onclick="window.open('https://app.hubspot.com/l/api-key')">Get key ↗</span>
+            <div class="api-status missing" id="s-hubspot"></div>
+          </div>
+          <div class="api-row">
+            <div><div class="api-label">Slack Webhook</div><div class="api-hint">Reply routing · Comms Lab</div></div>
+            <input class="api-input" id="k-slack" type="password" placeholder="https://hooks.slack.com/services/...">
+            <span class="api-where" onclick="window.open('https://api.slack.com/apps')">Get key ↗</span>
+            <div class="api-status missing" id="s-slack"></div>
+          </div>
+        </div>
+
+        <div class="settings-save-row">
+          <button class="btn-save" onclick="saveKeys()">SAVE ALL KEYS</button>
+          <button class="btn-clear" onclick="clearKeys()">Clear saved</button>
+          <span class="save-msg" id="save-msg">✓ Keys saved to browser storage</span>
+        </div>
+
+        <div class="settings-env-box">
+          <div class="settings-env-title">EXPORT AS .ENV FILE</div>
+          <div class="settings-env-code" id="env-preview"></div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- end main -->
+</div><!-- end layout -->
+
+<!-- ══ BOTTOMBAR ══════════════════════════════ -->
+<div class="bottombar">
+  <div class="bm"><div class="bm-num green">04</div><div class="bm-info"><div class="bm-bar"><div class="bm-fill green" style="width:40%"></div></div><div class="bm-label">Campaigns</div></div></div>
+  <div class="bm"><div class="bm-num blue">722</div><div class="bm-info"><div class="bm-bar"><div class="bm-fill blue" style="width:72%"></div></div><div class="bm-label">Leads Ready</div></div></div>
+  <div class="bm"><div class="bm-num green">6.2%</div><div class="bm-info"><div class="bm-bar"><div class="bm-fill green" style="width:62%"></div></div><div class="bm-label">Reply Rate</div></div></div>
+  <div class="bm"><div class="bm-num green">0.8%</div><div class="bm-info"><div class="bm-bar"><div class="bm-fill green" style="width:8%"></div></div><div class="bm-label">Bounce Rate</div></div></div>
+  <div class="bm"><div class="bm-num green">8</div><div class="bm-info"><div class="bm-bar"><div class="bm-fill green" style="width:80%"></div></div><div class="bm-label">Warm Leads</div></div></div>
+  <div class="bm"><div class="bm-num amber">$42K</div><div class="bm-info"><div class="bm-bar"><div class="bm-fill amber" style="width:42%"></div></div><div class="bm-label">Pipeline</div></div></div>
+  <div class="sys-lights">
+    <div class="sl g"></div><div class="sl g"></div><div class="sl y"></div>
+    <div class="sl g"></div><div class="sl g"></div><div class="sl d"></div>
+    <div class="sl g"></div><div class="sl g"></div>
+  </div>
+  <canvas id="radar" width="44" height="44"></canvas>
+</div>
+
+<script>
+/* ── CLOCK ── */
+(function tick(){
+  const now=new Date();
+  document.getElementById('clock').textContent=[now.getHours(),now.getMinutes(),now.getSeconds()].map(v=>String(v).padStart(2,'0')).join(':');
+  const start=new Date();start.setHours(8,0,0,0);
+  const el=Date.now()-start;
+  if(el>0){const h=Math.floor(el/3600000),m=Math.floor((el%3600000)/60000),s=Math.floor((el%60000)/1000);document.getElementById('met').textContent=`T+ ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;}
+  setTimeout(tick,1000);
+})();
+
+/* ── STARFIELD ── */
+(function(){
+  const c=document.getElementById('starfield'),cx=c.getContext('2d');
+  const resize=()=>{c.width=innerWidth;c.height=innerHeight;};resize();
+  window.addEventListener('resize',resize);
+  const stars=Array.from({length:120},()=>({x:Math.random(),y:Math.random(),r:Math.random()*0.8+0.2,b:Math.random()*0.25+0.04,sp:Math.random()*0.25+0.04,ph:Math.random()*Math.PI*2}));
+  let t=0;
+  (function draw(){cx.clearRect(0,0,c.width,c.height);t+=0.006;stars.forEach(s=>{const tw=0.5+0.5*Math.sin(t*s.sp+s.ph);cx.beginPath();cx.arc(s.x*c.width,s.y*c.height,s.r,0,Math.PI*2);cx.fillStyle=`rgba(8,145,178,${s.b*tw})`;cx.fill();});requestAnimationFrame(draw);})();
+})();
+
+/* ── RADAR ── */
+(function(){
+  const c=document.getElementById('radar'),cx=c.getContext('2d');
+  let ang=0;
+  const blips=Array.from({length:4},()=>({a:Math.random()*Math.PI*2,r:3+Math.random()*16,life:0}));
+  (function draw(){
+    cx.clearRect(0,0,44,44);cx.strokeStyle='rgba(8,145,178,0.1)';cx.lineWidth=0.5;
+    [7,14,20].forEach(r=>{cx.beginPath();cx.arc(22,22,r,0,Math.PI*2);cx.stroke();});
+    cx.beginPath();cx.moveTo(22,2);cx.lineTo(22,42);cx.stroke();cx.beginPath();cx.moveTo(2,22);cx.lineTo(42,22);cx.stroke();
+    cx.save();cx.translate(22,22);cx.beginPath();cx.moveTo(0,0);cx.arc(0,0,20,ang-0.5,ang);cx.closePath();cx.fillStyle='rgba(8,145,178,0.06)';cx.fill();cx.beginPath();cx.moveTo(0,0);cx.lineTo(Math.cos(ang)*20,Math.sin(ang)*20);cx.strokeStyle='rgba(8,145,178,0.4)';cx.lineWidth=1;cx.stroke();cx.restore();
+    blips.forEach(b=>{if(((ang-b.a)%(Math.PI*2)+Math.PI*2)%(Math.PI*2)<0.1)b.life=1;if(b.life>0){cx.beginPath();cx.arc(22+Math.cos(b.a)*b.r,22+Math.sin(b.a)*b.r,1.2,0,Math.PI*2);cx.fillStyle=`rgba(8,145,178,${b.life})`;cx.fill();b.life=Math.max(0,b.life-0.007);}});
+    ang=(ang+0.022)%(Math.PI*2);requestAnimationFrame(draw);
+  })();
+})();
+
+/* ── PANEL DATA ── */
+const ROOMS={
+  cmd:{icon:'⚔️',name:'COMMAND AGENT',sub:'Orchestrating all rooms · SLA monitor · daily briefing · smart routing',id:'CMD-01',cmd:'python super_agent.py status',lines:[{c:'tc',s:'$ python super_agent.py status'},{c:'tb'},{c:'ti',s:'[Command] Checking all 14 rooms...'},{c:'tb'},{c:'ts',s:'  Room r1  — Research Lab      OK'},{c:'ts',s:'  Room r2  — Lead Factory      OK'},{c:'ts',s:'  Room r3  — Infra Room        OK'},{c:'ts',s:'  Room r4  — Copy Room         OK'},{c:'ts',s:'  Room r5  — LinkedIn Room     OK'},{c:'ts',s:'  Room r6  — Comms Lab         OK'},{c:'tw',s:'  Room r7  — War Room          WARNING (PulseHR 1.8%)'},{c:'ts',s:'  Room r8  — Archives          OK'},{c:'ts',s:'  Room r10 — Intake Room       OK'},{c:'ts',s:'  Room r11 — Super Monitor     OK'},{c:'ts',s:'  Room r12 — Competitor Intel  OK'},{c:'ts',s:'  Room r13 — Committee Mapper  OK'},{c:'ts',s:'  Room r14 — Deal Intelligence OK'},{c:'tb'},{c:'tc',s:'Daily briefing:'},{c:'twh',s:'  4 campaigns active. 2 healthy, 1 warning.'},{c:'twh',s:'  8 warm replies — review #interested-replies.'},{c:'tw',s:'  PulseHR reply rate below 3% — D1 rewrite queued.'}],stats:[{l:'SLA Day',v:'3/21'},{l:'Active Clients',v:'4'},{l:'Warm Leads',v:'8'},{l:'Warnings',v:'1'}]},
+  r1:{icon:'🔬',name:'RESEARCH LAB',sub:'ICP & market intelligence · competitor outbound teardown · trigger signals',id:'RES-01',cmd:'python 1-research-lab/research.py build "Cognify AI"',lines:[{c:'tc',s:'[Research Lab] build_icp_brief("Cognify AI")'},{c:'tb'},{c:'ti',s:'Querying Serper: competitor outbound angles...'},{c:'tdim',s:'  → "AI forecasting cold email teardown"'},{c:'tdim',s:'  → "B2B SaaS outbound sequence example"'},{c:'ti',s:'Querying Apollo: VP Sales, SaaS, 50-500 emp...'},{c:'ti',s:'Running Claude ICP analysis...'},{c:'tb'},{c:'ts',s:'ICP Brief Complete:'},{c:'td',s:'  Tier 1: B2B SaaS, RevOps, Sales Tech'},{c:'td',s:'  Titles: VP Sales, CRO, Head of Revenue'},{c:'td',s:'  Trigger 1: Series A/B funded (<6 months)'},{c:'td',s:'  Trigger 2: Hiring 3+ SDRs simultaneously'},{c:'tw',s:'  AVOID: "AI replaces your reps" — oversaturated'},{c:'tb'},{c:'ts',s:'→ saved: cognify_ai_brief.json'}],stats:[{l:'ICP Profiles',v:'14'},{l:'Trigger Signals',v:'5'},{l:'Avoid Angles',v:'2'},{l:'Tier 1 Markets',v:'3'}]},
+  r2:{icon:'🏭',name:'LEAD FACTORY',sub:'Clay enrichment waterfall · Debounce validation · trigger scoring',id:'FAC-01',cmd:'python 2-lead-factory/clay_workflow.py run',lines:[{c:'tc',s:'[Lead Factory] Clay workflow running...'},{c:'tb'},{c:'ti',s:'Block 1 — Apollo import: 1,240 raw leads'},{c:'ti',s:'Block 2 — Email waterfall:'},{c:'tdim',s:'  Prospeo:  847 found (68.3%)'},{c:'tdim',s:'  Apollo:   261 found (21.0%)'},{c:'tdim',s:'  Hunter:    94 found ( 7.6%)'},{c:'tdim',s:'  Failed:    38 removed'},{c:'ts',s:'  Verified: 1,097 (code 5) ✓'},{c:'tw',s:'  Catch-all:  105 (code 6) — tagged'},{c:'ti',s:'Block 5 — Trigger scoring via Claude in Clay...'},{c:'td',s:'  Score ≥6: 722 leads — proceeding'},{c:'tb'},{c:'ts',s:'Export ready: 722 verified leads ✓'}],stats:[{l:'Raw Leads',v:'1,240'},{l:'Verified ≥6',v:'722'},{l:'Email Valid',v:'94.2%'},{l:'Bounce Rate',v:'0.8%'}]},
+  r3:{icon:'⚙️',name:'INFRA ROOM',sub:'Domain health · warmup management · deliverability audit · bounce guarantee',id:'INF-01',cmd:'python 3-infra-room/infra_setup.py audit',lines:[{c:'tc',s:'[Infra Room] run_deliverability_audit()'},{c:'tb'},{c:'ti',s:'Checking 9 Instantly accounts...'},{c:'tb'},{c:'ts',s:'  cognify-mail.com / inbox1   score: 78 ✓'},{c:'ts',s:'  cognify-mail.com / inbox2   score: 74 ✓'},{c:'ts',s:'  getcognify.io / inbox1      score: 82 ✓'},{c:'tw',s:'  getcognify.io / inbox3      score: 58 ⚠ FLAGGED'},{c:'ts',s:'  cognify-hq.com / inbox1     score: 77 ✓'},{c:'tb'},{c:'ti',s:'Avg warmup score: 74.2 / 100'},{c:'tw',s:'getcognify.io/inbox3 — pause sending, re-warm'},{c:'ts',s:'Bounce rate: 0.8% — guarantee maintained ✓'}],stats:[{l:'Avg Warmup',v:'74.2'},{l:'Active Inboxes',v:'9'},{l:'Bounce Rate',v:'0.8%'},{l:'Flagged',v:'1'}]},
+  r4:{icon:'✍️',name:'COPY ROOM',sub:'Sequence writer · playbook enforcer · auto-validator · A/B register',id:'CPY-01',cmd:'python 4-copy-room/copy_generator.py generate "Cognify AI"',lines:[{c:'tc',s:'[Copy Room] generate_and_validate() — attempt 1'},{c:'tb'},{c:'ti',s:'Pulling banned phrases from Archives (15)...'},{c:'ti',s:'Writing D1/D3/D7 + LinkedIn DMs...'},{c:'tb'},{c:'ti',s:'Validating sequence...'},{c:'ts',s:'  ✓ No I/We/My/Our openers'},{c:'ts',s:'  ✓ Subject line: "pipeline predictability"'},{c:'ts',s:'  ✓ D1 Var A: 71 words · Var B: 74 · Var C: 69'},{c:'ts',s:'  ✓ D3: 82 words — fresh thread confirmed'},{c:'ts',s:'  ✓ D7: 58 words — wrong-person redirect'},{c:'ts',s:'  ✓ 0 banned phrases detected'},{c:'tb'},{c:'ts',s:'PASSED on attempt 1 ✓ — A/B test registered'}],stats:[{l:'D1 Variants',v:'3'},{l:'Violations',v:'0'},{l:'D1 Words',v:'74'},{l:'Sequences DB',v:'38'}]},
+  r5:{icon:'💼',name:'LINKEDIN ROOM',sub:'HeyReach campaign manager · DM sequences · double-touch guard',id:'LNK-01',cmd:'python 5-linkedin-room/heyreach_campaigns.py launch "Cognify AI"',lines:[{c:'tc',s:'[LinkedIn Room] launch_full_campaign()'},{c:'tb'},{c:'ti',s:'Checking sender accounts...'},{c:'ts',s:'  goran@cognify-hq / active / 28 conn left ✓'},{c:'ts',s:'  team1@cognify-hq / active / 31 conn left ✓'},{c:'tb'},{c:'ti',s:'Double-touch guard: 12 leads already contacted — excluded'},{c:'td',s:'  Leads added: 95'},{c:'td',s:'  Sequence: 4 steps (visit → connect → DM × 3)'},{c:'tb'},{c:'ts',s:'Campaign launched ✓'},{c:'td',s:'  47 profile visits · 19 connection requests'},{c:'td',s:'  Accepted: 5 (26.3%) — DM sequence started'}],stats:[{l:'In Sequence',v:'95'},{l:'Acceptance',v:'26.3%'},{l:'DMs Active',v:'5'},{l:'Senders',v:'3'}]},
+  r6:{icon:'📬',name:'COMMS LAB',sub:'Reply classifier · draft engine · Slack router · approval gate',id:'COM-01',cmd:'python 6-comms-lab/reply_handler.py process',lines:[{c:'tc',s:'[Comms Lab] process_all_replies(source="both")'},{c:'tb'},{c:'ti',s:'Processing 47 inbound replies...'},{c:'tb'},{c:'ts',s:'[INTERESTED] Mark Chen / Trellis'},{c:'tdim',s:'  "Can we hop on a call this week?"'},{c:'tdim',s:'  → Draft queued · Slack: #interested-replies'},{c:'tb'},{c:'ts',s:'[INTERESTED] Sarah K / Nowfast'},{c:'tdim',s:'  "Curious to see what this looks like"'},{c:'tb'},{c:'tw',s:'[NOT_NOW] David R / Moontide'},{c:'tdim',s:'  "Q3 locked, ping me in September"'},{c:'tb'},{c:'td',s:'  INTERESTED:8 · NOT_NOW:6 · OBJ:4 · WRONG:3'},{c:'ts',s:'  8 warm leads routed → #interested-replies ✓'}],stats:[{l:'Total Replies',v:'47'},{l:'Interested',v:'8'},{l:'Drafts Queued',v:'12'},{l:'Auto-Sent',v:'0'}]},
+  r7:{icon:'🧨',name:'WAR ROOM',sub:'Campaign performance scoring · EOW report · pivot recommendations',id:'WAR-01',cmd:'python 7-war-room/performance_monitor.py run',lines:[{c:'tc',s:'[War Room] run_war_room() — 2026-06-25'},{c:'tb'},{c:'ti',s:'Pulling Instantly analytics...'},{c:'ts',s:'  Cognify AI Email     HEALTHY  score: 82 / 100'},{c:'tw',s:'  PulseHR Q2 Email     WARNING  score: 55 / 100'},{c:'tb'},{c:'ti',s:'Pulling HeyReach analytics...'},{c:'ts',s:'  Cognify LinkedIn     HEALTHY  score: 78 / 100'},{c:'tw',s:'  PulseHR LinkedIn     WARNING  score: 61 / 100'},{c:'tb'},{c:'tw',s:'PulseHR: reply rate 1.8% — below 3% minimum'},{c:'tdim',s:'  Recommendation → Rewrite D1 opener (Pattern hook)'},{c:'tdim',s:'  Recommendation → Raise Clay trigger score: 6 → 7'},{c:'tb'},{c:'ts',s:'EOW reports generated ✓ · Next audit: Mon 08:00'}],stats:[{l:'Campaigns',v:'4'},{l:'Healthy',v:'2'},{l:'Warnings',v:'1'},{l:'Critical',v:'0'}]},
+  r8:{icon:'🗄️',name:'ARCHIVES',sub:'Compounding knowledge base · every sequence · every hook · client configs',id:'ARC-01',cmd:'python 8-archives-room/archives.py status',lines:[{c:'tc',s:'[Archives] Knowledge base status report'},{c:'tb'},{c:'td',s:'icp_profiles:        14 records'},{c:'td',s:'sequences:           38 records (v1–v4 per client)'},{c:'td',s:'hooks_library:      127 hooks (active)'},{c:'td',s:'banned_phrases:      15 active enforcement rules'},{c:'td',s:'case_studies:        11 approved proofs'},{c:'td',s:'leads:           44,201 contact records'},{c:'td',s:'do_not_contact:      34 flagged permanently'},{c:'tb'},{c:'ti',s:'Top performing opener this month:'},{c:'twh',s:'  "Noticed {company} just closed Series A..."'},{c:'twh',s:'  Positive reply rate: 7.2% across 340 sends'},{c:'tb'},{c:'ts',s:'This week: +3 hooks · +1 case study · +722 leads'}],stats:[{l:'Total Leads',v:'44K'},{l:'Hooks Library',v:'127'},{l:'Sequences',v:'38'},{l:'Top Hook RPR',v:'7.2%'}]},
+  r10:{icon:'📋',name:'INTAKE ROOM',sub:'Know Your Business · 28 questions · 6 sections · .docx import · brief builder',id:'INT-01',cmd:'python 10-intake-room/intake_agent.py interactive',lines:[{c:'tc',s:'$ python 10-intake-room/intake_agent.py interactive'},{c:'tb'},{c:'twh',s:'  LEADS GRID — KNOW YOUR BUSINESS'},{c:'twh',s:'  28 questions across 6 sections · ~20 minutes'},{c:'tb'},{c:'ti',s:'── 01 WHO WE ARE TARGETING ──────────────────'},{c:'td',s:'  Q1. Target industry / category'},{c:'td',s:'  Q4. Job titles to target'},{c:'tdim',s:'       e.g. Head of Marketing, VP Sales, Founder'},{c:'tb'},{c:'ti',s:'── 03 BUYER INTELLIGENCE ────────────────────'},{c:'td',s:'  Q13. Main pain points (3-5 frustrations)'},{c:'td',s:'  Q14. Buying trigger signals'},{c:'td',s:'  Q16. Dream outcome — 90 days after signing'},{c:'tb'},{c:'ts',s:'Brief built → Claude structures all 28 answers'},{c:'ts',s:'Output → ICP profiles + client_configs in Archives'},{c:'tw',s:'Gaps flagged automatically before campaign launch'}],stats:[{l:'Questions',v:'28'},{l:'Sections',v:'6'},{l:'Briefs Built',v:'0'},{l:'Gaps Flagged',v:'0'}]},
+  r11:{icon:'📡',name:'SUPER MONITOR',sub:'Live system report across all 14 rooms · alerts · Claude prose summary',id:'MON-01',cmd:'python 11-monitor-room/monitor_agent.py',lines:[{c:'tc',s:'$ python 11-monitor-room/monitor_agent.py'},{c:'tb'},{c:'twh',s:'  ━━ LEADS GRID SUPER MONITOR ━━━━━━━━━━━━━━━'},{c:'tb'},{c:'ti',s:'1. SYSTEM HEALTH'},{c:'ts',s:'   Archives database          — OK'},{c:'ts',s:'   All API keys set           — OK'},{c:'ts',s:'   14/14 room modules loaded  — OK'},{c:'tb'},{c:'ti',s:'2. CAMPAIGN STATUS'},{c:'td',s:'   Cognify AI Email    score: 82/100   HEALTHY'},{c:'tw',s:'   PulseHR Q2 Email    score: 55/100   WARNING'},{c:'tb'},{c:'ti',s:'8. ALERTS'},{c:'ts',s:'   No critical alerts active'},{c:'tw',s:'   PulseHR reply rate 1.8% — below 2% minimum'},{c:'tb'},{c:'twh',s:'9. CLAUDE SUMMARY'},{c:'twh',s:'   One campaign needs attention. PulseHR reply'},{c:'twh',s:'   rate dropped below threshold — D1 rewrite'},{c:'twh',s:'   recommended. Everything else running clean.'}],stats:[{l:'Critical Alerts',v:'0'},{l:'Warnings',v:'1'},{l:'Campaigns Live',v:'4'},{l:'Infra Status',v:'OK'}]},
+  r12:{icon:'🕵️',name:'COMPETITOR INTEL',sub:'G2 review mining · LinkedIn activity · job postings · market gap analysis',id:'CMP-01',cmd:'python 12-competitor-room/competitor_intel.py scan "Cognify AI"',lines:[{c:'tc',s:'$ python 12-competitor-room/competitor_intel.py scan "Cognify AI"'},{c:'tb'},{c:'ti',s:'Scanning 3 competitors...'},{c:'ti',s:'── Salesforge · Lemlist · Outreach.io'},{c:'tb'},{c:'ti',s:'Collecting: G2 reviews · LinkedIn posts · Job postings'},{c:'tb'},{c:'ti',s:'Running Claude competitor analysis...'},{c:'tb'},{c:'ts',s:'SATURATED ANGLES — avoid in copy:'},{c:'tw',s:'  "AI writes your emails for you"'},{c:'tw',s:'  "Scale outbound 10x with automation"'},{c:'tw',s:'  "Personalization at scale"'},{c:'tb'},{c:'ts',s:'MARKET GAPS — use these:'},{c:'twh',s:'  Human-in-the-loop review on every sequence'},{c:'twh',s:'  Deliverability as a service, not just a tool'},{c:'twh',s:'  Reply handling included, not just sending'},{c:'tb'},{c:'ts',s:'Intel saved → Copy Room will avoid saturated angles'}],stats:[{l:'Competitors',v:'3'},{l:'Saturated Angles',v:'3'},{l:'Market Gaps',v:'3'},{l:'Scan Frequency',v:'Weekly'}]},
+  r13:{icon:'🗺️',name:'COMMITTEE MAPPER',sub:'Stakeholder discovery · committee role mapping · per-role hook lines · outreach order',id:'ACT-01',cmd:'python 13-account-room/account_mapper.py map "Cognify AI" "Trellis" "trellis.io"',lines:[{c:'tc',s:'$ python 13-account-room/account_mapper.py map "Cognify AI" "Trellis" "trellis.io"'},{c:'tb'},{c:'ti',s:'Searching stakeholders at Trellis...'},{c:'td',s:'  Found 7 people via LinkedIn search'},{c:'tb'},{c:'ti',s:'Mapping buying committee via Claude...'},{c:'tb'},{c:'ts',s:'[ECONOMIC BUYER]      Mark Chen — CEO'},{c:'tdim',s:'  Pain: growth plateau after Series A'},{c:'tdim',s:'  Hook: "Noticed Trellis raised a Series A..."'},{c:'tb'},{c:'ts',s:'[CHAMPION]            Sarah Kim — Head of Revenue'},{c:'tdim',s:'  Pain: SDR quota miss 2 months running'},{c:'tdim',s:'  Hook: "Your SDRs are probably cold calling..."'},{c:'tb'},{c:'ts',s:'[TECHNICAL EVALUATOR] Raj Patel — VP Engineering'},{c:'tdim',s:'  Pain: integration complexity with current stack'},{c:'tb'},{c:'ts',s:'Fit: STRONG (8/10) · Entry point: Champion first'}],stats:[{l:'Stakeholders',v:'7'},{l:'Account Fit',v:'8/10'},{l:'Fit Label',v:'STRONG'},{l:'Start With',v:'Champion'}]},
+  r14:{icon:'💰',name:'DEAL INTELLIGENCE',sub:'Pipeline tracker · HubSpot CRM sync · AI deal scoring · next-action recommendations',id:'CRM-01',cmd:'python 14-deal-room/deal_intelligence.py sync "Cognify AI"',lines:[{c:'tc',s:'$ python 14-deal-room/deal_intelligence.py sync "Cognify AI"'},{c:'tb'},{c:'ti',s:'Importing interested replies as new deals...'},{c:'ts',s:'  [OK] Imported 3 new deals from replied leads'},{c:'tb'},{c:'ti',s:'Scoring 8 active deals via Claude...'},{c:'tb'},{c:'ts',s:'[INTERESTED]  Mark Chen / Trellis'},{c:'tdim',s:'  AI score: 74/100 · Next: Book discovery call'},{c:'ts',s:'[INTERESTED]  Sarah K / Nowfast'},{c:'tdim',s:'  AI score: 68/100 · Next: Send case study link'},{c:'ts',s:'[DEMO DONE]   David R / Archform'},{c:'tdim',s:'  AI score: 82/100 · Next: Send proposal TODAY'},{c:'tw',s:'[AT RISK]     Jen L / Moontide — 11 days stale'},{c:'tdim',s:'  Next: Re-engage with wrong-person redirect'},{c:'tb'},{c:'ti',s:'Syncing to HubSpot...'},{c:'ts',s:'  8 deals synced · stages updated ✓'},{c:'tb'},{c:'twh',s:'Pipeline health: MODERATE · Focus: Archform proposal'}],stats:[{l:'Active Deals',v:'8'},{l:'Pipeline Value',v:'$42K'},{l:'Avg AI Score',v:'74/100'},{l:'CRM Sync',v:'HubSpot'}]}
+};
+
+const ABOUT={
+  cmd:{desc:'The Command Agent is the brain of the war room. It orchestrates all 14 rooms, monitors SLA health, and sends a daily briefing with alerts and recommendations.',steps:['Pings all 14 rooms and checks their status','Scores campaign health across all active clients','Routes urgent tasks to the right room automatically','Generates a daily briefing with warnings and next actions']},
+  r1:{desc:'Builds a deep ICP brief for each client. Researches what competitors are sending, who the ideal buyers are, and which trigger signals indicate a ready-to-buy account.',steps:['Queries Serper to find competitor cold email angles','Pulls Apollo data for ideal buyer personas and titles','Claude synthesizes everything into a structured ICP brief','Flags oversaturated angles to avoid in copy']},
+  r2:{desc:'Takes a raw lead list and runs it through a 4-step email enrichment waterfall, then scores each lead by trigger signals to keep only the highest-quality contacts.',steps:['Imports raw leads from Apollo (1,000–5,000 contacts)','Waterfalls through Prospeo → Apollo → Hunter for emails','Validates emails with Debounce — removes bounces','Scores leads by trigger signals; exports verified ≥6 score']},
+  r3:{desc:'Monitors the deliverability health of every sending inbox. Catches warmup score drops before they turn into spam flags or bounce rate spikes.',steps:['Pulls warmup scores from all Instantly accounts','Checks SPF, DKIM, DMARC and domain reputation','Flags any inbox scoring below 65 — pauses sending','Recommends re-warming steps or domain rotation']},
+  r4:{desc:'Writes and auto-validates cold email sequences. Enforces the full playbook — word counts, banned phrases, opener rules — and rewrites until every rule passes.',steps:['Pulls ICP brief and banned phrase list from Archives','Claude writes D1, D3, D7 emails + LinkedIn DMs','Validator checks all playbook rules automatically','Re-generates if any violation found; registers A/B test']},
+  r5:{desc:'Manages LinkedIn outreach via HeyReach. Prevents double-touching contacts, launches connection + DM sequences, and tracks acceptance and reply rates.',steps:['Loads verified leads from Lead Factory','Cross-checks against already-contacted list (double-touch guard)','Launches HeyReach sequence: visit → connect → DM × 3','Reports acceptance rate and routes replies to Comms Lab']},
+  r6:{desc:'Reads every inbound reply from email and LinkedIn, classifies intent using Claude, drafts personalized responses, and routes warm leads to Slack for human review.',steps:['Polls Instantly and HeyReach inboxes for new replies','Claude classifies each reply: Interested / Not Now / Objection / Wrong','Drafts a reply for each Interested lead automatically','Routes warm leads to #interested-replies Slack channel']},
+  r7:{desc:'Scores each campaign weekly against benchmarks. When metrics drop below thresholds, it generates specific pivot recommendations — rewrite angles, raise trigger scores, swap senders.',steps:['Pulls reply rate, bounce rate, and open rate from Instantly','Compares each campaign against minimum thresholds','Flags campaigns below 3% reply rate as WARNING','Generates end-of-week report with recommended actions']},
+  r8:{desc:'The shared knowledge base for all rooms. Every sequence, hook, ICP profile, client config, and lead record lives here. All rooms read from and write to Archives.',steps:['Stores every output from every room in a SQLite database','Surfaces the top-performing hooks by positive reply rate','Enforces the active banned phrase list across all copy','Powers compounding learning — better over time per client']},
+  r10:{desc:'Onboards new clients with a structured 28-question interview across 6 sections. Accepts a filled .docx template or runs interactively. Outputs a complete client brief.',steps:['Client fills 28 questions (target audience, pains, triggers, proof)','Accepts .docx import or step-by-step interactive mode','Claude structures all answers into a standardized brief','Saves ICP profiles and client config to Archives for all rooms']},
+  r11:{desc:'One command that gives a full health report across the entire system — API status, campaign scores, active alerts, and a Claude-written prose summary of what needs attention.',steps:['Loads status from all 14 room modules in sequence','Aggregates campaign scores, API health, and alert count','Flags anything below threshold as WARNING or CRITICAL','Claude writes a plain-English summary of the system state']},
+  r12:{desc:'Scans competitor activity on G2, LinkedIn, and job boards. Finds which angles are saturated in the market and surfaces gaps your copy can exploit instead.',steps:['Identifies 3–5 competitors from the client brief','Collects G2 reviews, LinkedIn posts, and job postings','Claude finds oversaturated messaging patterns to avoid','Surfaces market gaps and differentiators to use in copy']},
+  r13:{desc:'For any target account, finds every buying stakeholder via LinkedIn, maps each person to a committee role, and writes a personalized hook line for each role.',steps:['Searches LinkedIn for decision-makers at the target company','Claude assigns each person a role: Economic Buyer / Champion / Technical / Blocker','Writes a role-specific pain point and hook line per person','Defines the optimal outreach order (Champion first, usually)']},
+  r14:{desc:'Tracks every interested reply as a CRM deal. AI scores each deal from 0–100, recommends the exact next action, and syncs everything to HubSpot automatically.',steps:['Imports interested replies from Comms Lab as new deals','Claude scores each deal on fit, engagement, and recency','Recommends next action: call / case study / proposal / re-engage','Syncs all deal stages and scores to HubSpot CRM']}
+};
+
+let typeTimer=null;
+let currentRoom=null;
+
+function openRoom(id){
+  currentRoom=id;
+
+  // sidebar highlight
+  document.querySelectorAll('.sroom').forEach(el=>el.classList.remove('active'));
+  const sroom=document.getElementById('sroom-'+id);
+  if(sroom){sroom.classList.add('active');sroom.scrollIntoView({block:'nearest'});}
+
+  // switch to room view
+  document.getElementById('view-overview').style.display='none';
+  document.getElementById('view-room').style.display='flex';
+
+  // intake room special case
+  if(id==='r10'){
+    document.getElementById('rdh-icon').textContent='📋';
+    document.getElementById('rdh-name').textContent='INTAKE ROOM';
+    document.getElementById('rdh-sub').textContent='Upload client questionnaire · Claude parses 28 answers · saves brief to Archives';
+    document.getElementById('rdh-id').textContent='INT-01';
+    document.getElementById('rd-body-normal').style.display='none';
+    document.getElementById('rd-office-frame').style.display='none';
+    document.getElementById('intake-upload-zone').style.display='flex';
+    return;
+  }
+  document.getElementById('intake-upload-zone').style.display='none';
+
+  // super office special case
+  if(id==='office'){
+    document.getElementById('rdh-icon').textContent='🏢';
+    document.getElementById('rdh-name').textContent='SUPER OFFICE';
+    document.getElementById('rdh-sub').textContent='Live view of all 14 AI agents in their offices · click any agent room';
+    document.getElementById('rdh-id').textContent='HQ-01';
+    document.getElementById('rd-body-normal').style.display='none';
+    document.getElementById('rd-office-frame').style.display='block';
+    return;
+  }
+
+  // normal room
+  document.getElementById('rd-body-normal').style.display='flex';
+  document.getElementById('rd-office-frame').style.display='none';
+  document.getElementById('intake-upload-zone').style.display='none';
+
+  const d=ROOMS[id];if(!d)return;
+
+  // update header
+  document.getElementById('rdh-icon').textContent=d.icon;
+  document.getElementById('rdh-name').textContent=d.name;
+  document.getElementById('rdh-sub').textContent=d.sub;
+  document.getElementById('rdh-id').textContent=d.id;
+
+  // stats
+  document.getElementById('rd-stats').innerHTML=d.stats.map(s=>`<div class="rd-stat"><span class="rd-stat-label">${s.l}</span><span class="rd-stat-val">${s.v}</span></div>`).join('');
+
+  // cmd hint
+  document.getElementById('rd-cmd-hint').innerHTML=`<span class="g">$ </span>${d.cmd}`;
+
+  // about panel
+  const ab=ABOUT[id];
+  if(ab){
+    document.getElementById('rd-about-desc').textContent=ab.desc;
+    document.getElementById('rd-about-steps').innerHTML=ab.steps.map((s,i)=>
+      `<div class="rd-about-step"><span class="rd-about-num">${i+1}.</span><span class="rd-about-text">${s}</span></div>`
+    ).join('');
+    document.getElementById('rd-about').style.display='block';
+  } else {
+    document.getElementById('rd-about').style.display='none';
+  }
+
+  // terminal
+  const term=document.getElementById('rd-terminal');
+  term.innerHTML='';clearTimeout(typeTimer);
+  let i=0;
+  function next(){
+    if(i>=d.lines.length){const cu=document.createElement('span');cu.className='tcur';term.appendChild(cu);return;}
+    const ln=d.lines[i++];
+    const sp=document.createElement('span');sp.className=`tl ${ln.c}`;
+    if(ln.c!=='tb')sp.textContent=ln.s;
+    term.appendChild(sp);term.scrollTop=term.scrollHeight;
+    typeTimer=setTimeout(next,ln.c==='tb'?60:ln.c==='tc'?300:40+Math.random()*45);
+  }
+  next();
+}
+
+function closeRoom(){
+  clearTimeout(typeTimer);currentRoom=null;
+  document.querySelectorAll('.sroom').forEach(el=>el.classList.remove('active'));
+  document.getElementById('view-overview').style.display='flex';
+  document.getElementById('view-room').style.display='none';
+}
+
+/* ── API KEYS SETTINGS ─────────────────────────────────────── */
+const KEY_IDS=['anthropic','serper','apollo','prospeo','hunter','debounce','instantly','heyreach','hubspot','slack'];
+const KEY_ENV={anthropic:'ANTHROPIC_API_KEY',serper:'SERPER_API_KEY',apollo:'APOLLO_API_KEY',prospeo:'PROSPEO_API_KEY',hunter:'HUNTER_API_KEY',debounce:'DEBOUNCE_API_KEY',instantly:'INSTANTLY_API_KEY',heyreach:'HEYREACH_API_KEY',hubspot:'HUBSPOT_API_KEY',slack:'SLACK_WEBHOOK_URL'};
+
+function openSettings(){
+  document.querySelectorAll('.sroom').forEach(el=>el.classList.remove('active'));
+  document.getElementById('sroom-settings').classList.add('active');
+  document.getElementById('view-overview').style.display='none';
+  document.getElementById('view-room').style.display='none';
+  document.getElementById('view-settings').style.display='flex';
+  loadKeysIntoForm();
+  updateEnvPreview();
+}
+
+function closeSettings(){
+  document.querySelectorAll('.sroom').forEach(el=>el.classList.remove('active'));
+  document.getElementById('view-settings').style.display='none';
+  document.getElementById('view-overview').style.display='flex';
+}
+
+function loadKeysIntoForm(){
+  KEY_IDS.forEach(k=>{
+    const val=localStorage.getItem('lgkey_'+k)||'';
+    const inp=document.getElementById('k-'+k);
+    if(inp){inp.value=val;inp.classList.toggle('saved',!!val);}
+    updateDot(k,val);
+  });
+  updateSidebarStatus();
+}
+
+function updateDot(k,val){
+  const dot=document.getElementById('s-'+k);
+  if(!dot)return;
+  dot.className='api-status '+(val?'ok':'missing');
+}
+
+function saveKeys(){
+  KEY_IDS.forEach(k=>{
+    const inp=document.getElementById('k-'+k);
+    if(!inp)return;
+    const v=inp.value.trim();
+    if(v) localStorage.setItem('lgkey_'+k,v);
+    else localStorage.removeItem('lgkey_'+k);
+    inp.classList.toggle('saved',!!v);
+    updateDot(k,v);
+  });
+  updateEnvPreview();
+  updateSidebarStatus();
+  const msg=document.getElementById('save-msg');
+  msg.classList.add('show');
+  setTimeout(()=>msg.classList.remove('show'),2500);
+}
+
+function clearKeys(){
+  if(!confirm('Clear all saved API keys?'))return;
+  KEY_IDS.forEach(k=>{
+    localStorage.removeItem('lgkey_'+k);
+    const inp=document.getElementById('k-'+k);
+    if(inp){inp.value='';inp.classList.remove('saved');}
+    updateDot(k,'');
+  });
+  updateEnvPreview();
+  updateSidebarStatus();
+}
+
+function updateEnvPreview(){
+  const lines=KEY_IDS.map(k=>{
+    const v=localStorage.getItem('lgkey_'+k)||'';
+    const display=v?v.slice(0,6)+'••••••••••••':'YOUR_KEY_HERE';
+    return `<span style="color:var(--mid)">${KEY_ENV[k]}=</span><span>${display}</span>`;
+  });
+  document.getElementById('env-preview').innerHTML=lines.join('\n');
+}
+
+function updateSidebarStatus(){
+  const connected=KEY_IDS.filter(k=>localStorage.getItem('lgkey_'+k)).length;
+  const total=KEY_IDS.length;
+  document.getElementById('settings-meta').textContent=`${connected} / ${total} connected`;
+  const dot=document.getElementById('settings-dot');
+  if(connected===total){dot.className='sdot g';}
+  else if(connected>0){dot.className='sdot y';}
+  else{dot.className='sdot d';}
+}
+
+// init on page load
+updateSidebarStatus();
+
+/* ── INTAKE UPLOAD LOGIC ─────────────────────────────────── */
+(function(){
+  const drop=document.getElementById('upload-drop');
+  const fileInput=document.getElementById('intake-file-input');
+
+  // drag over
+  drop.addEventListener('dragover',e=>{e.preventDefault();drop.classList.add('drag-over');});
+  drop.addEventListener('dragleave',()=>drop.classList.remove('drag-over'));
+  drop.addEventListener('drop',e=>{
+    e.preventDefault();drop.classList.remove('drag-over');
+    const f=e.dataTransfer.files[0];if(f)handleFile(f);
+  });
+  fileInput.addEventListener('change',()=>{
+    if(fileInput.files[0])handleFile(fileInput.files[0]);
+  });
+
+  function handleFile(file){
+    const allowed=['docx','doc','pdf','txt','csv','xlsx'];
+    const ext=file.name.split('.').pop().toLowerCase();
+    if(!allowed.includes(ext)){alert('Unsupported file type. Please upload .docx, .pdf, .txt, .csv, or .xlsx');return;}
+
+    // show processing
+    drop.style.display='none';
+    document.getElementById('upload-result').style.display='none';
+    document.getElementById('upload-processing').style.display='flex';
+    document.getElementById('proc-filename').textContent=file.name;
+
+    // simulate parse (1.8s)
+    setTimeout(()=>{
+      document.getElementById('upload-processing').style.display='none';
+      showResult(file);
+    },1800);
+  }
+
+  function showResult(file){
+    const kb=(file.size/1024).toFixed(1);
+    document.getElementById('result-filename').textContent=file.name;
+    document.getElementById('result-size').textContent=kb+' KB · '+new Date().toLocaleTimeString();
+    document.getElementById('result-lines').innerHTML=
+      `File received: <span>${file.name}</span><br>`+
+      `Size: <span>${kb} KB</span><br>`+
+      `Status: <span>Ready to process — click RUN INTAKE AGENT to parse with Claude</span>`;
+    document.getElementById('upload-result').style.display='block';
+  }
+
+  window.resetUpload=function(){
+    document.getElementById('upload-result').style.display='none';
+    document.getElementById('upload-processing').style.display='none';
+    drop.style.display='flex';
+    fileInput.value='';
+  };
+
+  window.processIntake=function(){
+    const name=document.getElementById('result-filename').textContent;
+    document.getElementById('upload-result').style.display='none';
+    document.getElementById('upload-processing').style.display='flex';
+    document.getElementById('proc-filename').textContent=name;
+    document.getElementById('proc-text-detail') && (document.getElementById('proc-text-detail').textContent='Claude is parsing the 28 questions...');
+    setTimeout(()=>{
+      document.getElementById('upload-processing').style.display='none';
+      document.getElementById('upload-result').style.display='block';
+      document.getElementById('result-lines').innerHTML=
+        `✓ <span>28 answers extracted</span><br>`+
+        `✓ <span>ICP brief structured — 6 sections complete</span><br>`+
+        `✓ <span>0 critical gaps · 2 optional fields empty</span><br>`+
+        `✓ <span>Brief saved to Archives → ready for all agents</span>`;
+      document.getElementById('upload-result').style.borderLeftColor='var(--green)';
+      const btn=document.querySelector('.ura-btn.primary');
+      if(btn){btn.textContent='✓ PROCESSED';btn.disabled=true;btn.style.opacity='.6';}
+    },2200);
+  };
+})();
+
+// rotating status
+const STATUSES=['ALL 14 AGENTS ONLINE','COMMS LAB ACTIVE','LEADS ENRICHING','SEQUENCES QUEUED','INBOX WARMING','PIPELINE SYNCING','REPLIES CLASSIFIED'];
+let si=0;setInterval(()=>{document.getElementById('agent-status').textContent=STATUSES[si++%STATUSES.length];},3200);
+</script>
+</body>
+</html>
+

@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Leads Grid — Super Office HQ</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#f0f0f8;
+  --wall:#e4e4f0;
+  --floor-line:rgba(92,72,232,0.06);
+  --hall:#e8e8f4;
+  --border:#d4d4e8;
+  --purple:#5c48e8;
+  --purple-soft:#7c6ef0;
+  --navy:#1a1f5e;
+  --navy-mid:#3a3f7e;
+  --teal:#00b4a0;
+  --amber:#f59e0b;
+  --red:#e84848;
+  --green:#16a34a;
+  --panel-bg:#ffffff;
+  --text:#1a1f5e;
+  --text-mid:#6b70a8;
+  --text-dim:#a0a4cc;
+}
+
+body{background:var(--bg);font-family:'Share Tech Mono',monospace;overflow:hidden;width:100vw;height:100vh;display:flex;flex-direction:column;color:var(--text);}
+
+/* ── TOPBAR ─────────────────────────────────── */
+#topbar{
+  height:46px;background:#ffffff;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 20px;gap:20px;flex-shrink:0;
+  position:relative;z-index:50;box-shadow:0 1px 8px rgba(92,72,232,.08);
+}
+#topbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,rgba(92,72,232,.4) 40%,rgba(92,72,232,.4) 60%,transparent);}
+.tb-logo{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--purple);letter-spacing:.2em;white-space:nowrap;}
+.tb-tag{font-size:8px;color:var(--text-dim);letter-spacing:.1em;}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:18px;}
+.tb-stat{text-align:right;}
+.tb-stat-val{font-size:9px;color:var(--purple);display:block;font-family:'Press Start 2P',monospace;}
+.tb-stat-lbl{font-size:6px;color:var(--text-dim);display:block;margin-top:1px;letter-spacing:.08em;}
+#clock{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--navy);}
+
+/* ── MAIN SCROLL AREA ───────────────────────── */
+#hq{
+  flex:1;overflow:auto;position:relative;
+  background:
+    repeating-linear-gradient(0deg,transparent,transparent 31px,var(--floor-line) 31px,var(--floor-line) 32px),
+    repeating-linear-gradient(90deg,transparent,transparent 31px,var(--floor-line) 31px,var(--floor-line) 32px),
+    var(--bg);
+}
+
+/* ── BUILDING ────────────────────────────────── */
+#building{padding:24px 28px 60px;min-width:960px;display:inline-block;min-height:100%;}
+
+/* ── WING LABEL ─────────────────────────────── */
+.wing-label{
+  font-family:'Press Start 2P',monospace;font-size:5px;color:var(--text-dim);
+  letter-spacing:.25em;text-transform:uppercase;padding:4px 0 3px 4px;
+}
+
+/* ── ROOM ROW ────────────────────────────────── */
+.room-row{display:flex;gap:5px;margin-bottom:5px;}
+
+/* ── HALLWAY ─────────────────────────────────── */
+.hallway{
+  height:32px;background:var(--hall);margin-bottom:5px;
+  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  position:relative;display:flex;align-items:center;padding:0 12px;gap:8px;overflow:hidden;
+}
+.hallway::before{
+  content:'';position:absolute;top:14px;left:0;right:0;height:3px;
+  background:repeating-linear-gradient(90deg,#dcdcf0 0,#dcdcf0 10px,#e4e4f4 10px,#e4e4f4 20px);
+}
+.hall-id{font-size:5px;color:var(--text-dim);z-index:1;letter-spacing:.2em;font-family:'Press Start 2P',monospace;}
+.hall-walker{position:absolute;font-size:16px;top:6px;transition:left 2.5s linear;z-index:2;}
+
+/* ── ROOM TILE ─────────────────────────────────── */
+.room{
+  width:218px;height:162px;position:relative;
+  border:2px solid var(--border);border-radius:6px;
+  cursor:pointer;overflow:hidden;flex-shrink:0;
+  transition:border-color .2s,box-shadow .2s;
+  box-shadow:0 2px 8px rgba(92,72,232,.06);
+}
+.room:hover{border-color:var(--purple-soft);box-shadow:0 4px 18px rgba(92,72,232,.16);}
+.room.selected{border-color:var(--purple)!important;box-shadow:0 4px 22px rgba(92,72,232,.28)!important;}
+.room.lounge,.room.server-room{cursor:default;}
+.room.lounge:hover,.room.server-room:hover{border-color:var(--border);box-shadow:0 2px 8px rgba(92,72,232,.06);}
+
+/* floor tile pattern */
+.room-floor{
+  position:absolute;inset:0;
+  background-image:
+    repeating-linear-gradient(0deg,transparent,transparent 15px,rgba(92,72,232,.03) 15px,rgba(92,72,232,.03) 16px),
+    repeating-linear-gradient(90deg,transparent,transparent 15px,rgba(92,72,232,.03) 15px,rgba(92,72,232,.03) 16px);
+}
+.room-glow{position:absolute;bottom:0;left:0;right:0;height:60px;pointer-events:none;opacity:.16;}
+
+/* ── ROOM HEADER ─────────────────────────────── */
+.room-hdr{
+  position:absolute;top:0;left:0;right:0;height:24px;
+  display:flex;align-items:center;padding:0 8px;gap:5px;
+  border-bottom:1px solid rgba(92,72,232,.12);z-index:10;
+  background:rgba(255,255,255,.82);backdrop-filter:blur(4px);
+}
+.room-id-tag{font-size:5px;color:var(--text-dim);font-family:'Press Start 2P',monospace;}
+.room-name-tag{
+  font-size:6px;color:var(--navy);flex:1;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  font-family:'Press Start 2P',monospace;letter-spacing:.04em;
+}
+.room-live{width:6px;height:6px;border-radius:50%;flex-shrink:0;animation:blink 2s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+
+/* ── FURNITURE ────────────────────────────────── */
+.furn{position:absolute;}
+.furn.desk{border-radius:3px;}
+.furn.monitor{border-radius:2px;z-index:3;}
+.furn.monitor::before{
+  content:'';position:absolute;inset:2px;border-radius:1px;
+  animation:screenflicker 4s ease-in-out infinite;
+}
+@keyframes screenflicker{0%,88%,100%{opacity:1}94%{opacity:.4}}
+.furn.chair{border-radius:50% 50% 40% 40%;z-index:2;}
+.furn.shelf{border-radius:2px;}
+.furn.server-rack{border-radius:3px;}
+.furn.server-rack::before{
+  content:'';position:absolute;top:6px;left:3px;right:3px;height:3px;
+  background:rgba(92,72,232,.6);border-radius:1px;
+  box-shadow:0 8px rgba(92,72,232,.5),0 16px rgba(0,180,160,.5),0 24px rgba(245,158,11,.5);
+}
+.furn.plant-emoji{font-size:15px;position:absolute;z-index:2;}
+.furn.steam::after{
+  content:'~';position:absolute;top:-10px;left:50%;transform:translateX(-50%);
+  font-size:8px;color:rgba(92,72,232,.25);animation:steamrise 2s ease-in-out infinite;
+}
+@keyframes steamrise{0%,100%{transform:translateX(-50%) translateY(0);opacity:.4}50%{transform:translateX(-50%) translateY(-6px);opacity:0}}
+
+/* ── CHARACTER ────────────────────────────────── */
+.char{
+  position:absolute;z-index:8;font-size:18px;
+  transition:left .8s ease-in-out,top .8s ease-in-out;
+  animation:charBob 1.8s ease-in-out infinite;
+  cursor:default;
+}
+@keyframes charBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.char-status{
+  position:absolute;bottom:-13px;left:50%;transform:translateX(-50%);
+  white-space:nowrap;font-size:5px;color:var(--text-mid);
+  background:rgba(255,255,255,.88);padding:1px 4px;border-radius:2px;
+  border:1px solid var(--border);font-family:'Press Start 2P',monospace;
+  letter-spacing:.02em;pointer-events:none;z-index:9;
+}
+
+/* ── STATUS BAR ────────────────────────────────── */
+.room-status-bar{
+  position:absolute;bottom:0;left:0;right:0;height:20px;
+  background:rgba(255,255,255,.7);border-top:1px solid rgba(92,72,232,.1);
+  display:flex;align-items:center;padding:0 8px;gap:5px;z-index:10;
+}
+.rsb-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+.rsb-dot.ok{background:var(--teal);box-shadow:0 0 4px rgba(0,180,160,.6);animation:blink 2.5s ease-in-out infinite;}
+.rsb-dot.warn{background:var(--amber);box-shadow:0 0 4px rgba(245,158,11,.6);animation:blink 1.2s ease-in-out infinite;}
+.rsb-dot.idle{background:var(--text-dim);}
+.rsb-text{font-size:5px;color:var(--text-mid);font-family:'Press Start 2P',monospace;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.rsb-text.warn{color:var(--amber);}
+
+/* ── INFO PANEL ──────────────────────────────── */
+#panel{
+  position:fixed;right:0;top:46px;bottom:0;width:290px;
+  background:var(--panel-bg);border-left:1px solid var(--border);
+  display:none;flex-direction:column;z-index:200;
+  box-shadow:-4px 0 20px rgba(92,72,232,.1);
+}
+#panel.open{display:flex;}
+.panel-hdr{
+  padding:18px 18px 14px;border-bottom:1px solid var(--border);
+  background:linear-gradient(135deg,rgba(92,72,232,.04),transparent);flex-shrink:0;
+}
+.panel-icon{font-size:26px;margin-bottom:8px;display:block;}
+.panel-name{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--purple);letter-spacing:.08em;margin-bottom:6px;line-height:1.6;}
+.panel-sub{font-size:9px;color:var(--text-mid);line-height:1.65;}
+.panel-close{
+  position:absolute;top:12px;right:12px;cursor:pointer;font-size:12px;
+  color:var(--text-dim);width:24px;height:24px;display:flex;align-items:center;
+  justify-content:center;border-radius:4px;border:1px solid var(--border);transition:all .15s;
+}
+.panel-close:hover{color:var(--navy);border-color:var(--border);}
+.panel-body{flex:1;overflow-y:auto;padding:14px 18px;}
+.panel-body::-webkit-scrollbar{width:3px;}
+.panel-body::-webkit-scrollbar-thumb{background:var(--border);}
+.psec{margin-bottom:16px;}
+.psec-title{font-family:'Press Start 2P',monospace;font-size:6px;color:var(--purple);letter-spacing:.14em;margin-bottom:8px;text-transform:uppercase;}
+.psec-text{font-size:10px;color:var(--text-mid);line-height:1.75;}
+.pstat{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border);}
+.pstat:last-child{border-bottom:none;}
+.pstat-label{font-size:9px;color:var(--text-mid);}
+.pstat-val{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--purple);}
+.pcmd{background:rgba(92,72,232,.04);border:1px solid var(--border);border-radius:5px;padding:10px 12px;font-size:9px;color:var(--text-mid);line-height:1.9;word-break:break-all;}
+.pcmd span{color:var(--purple);}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <div class="tb-logo">LEADS GRID</div>
+  <div class="tb-tag">SUPER OFFICE — AI OPERATIONS FLOOR</div>
+  <div class="tb-right">
+    <div class="tb-stat"><span class="tb-stat-val">14 ONLINE</span><span class="tb-stat-lbl">AGENTS ACTIVE</span></div>
+    <div class="tb-stat"><span class="tb-stat-val" id="tasks-val">60 TASKS</span><span class="tb-stat-lbl">ACTIVE WORK</span></div>
+    <div id="clock">--:--:--</div>
+  </div>
+</div>
+
+<div id="hq">
+  <div id="building"></div>
+</div>
+
+<div id="panel">
+  <div class="panel-hdr">
+    <span class="panel-icon" id="p-icon">🔬</span>
+    <div class="panel-name" id="p-name">RESEARCH LAB</div>
+    <div class="panel-sub" id="p-sub">ICP & market intelligence</div>
+    <div class="panel-close" onclick="closePanel()">✕</div>
+  </div>
+  <div class="panel-body">
+    <div class="psec">
+      <div class="psec-title">What it does</div>
+      <div class="psec-text" id="p-desc"></div>
+    </div>
+    <div class="psec">
+      <div class="psec-title">Live Stats</div>
+      <div id="p-stats"></div>
+    </div>
+    <div class="psec">
+      <div class="psec-title">Run Command</div>
+      <div class="pcmd" id="p-cmd"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── AGENT DATA ────────────────────────────────────────────────
+const AGENTS = {
+  r1:{icon:'🔬',name:'Research Lab',tag:'R01',color:'#dde8ff',accentTop:'#5c48e8',char:'🧑‍💻',status:'ok',
+    statusText:'Building ICP brief...',statuses:['Building ICP brief...','Querying Apollo...','Analyzing triggers...'],
+    desc:'Builds deep ICP briefs per client. Researches competitor outbound, identifies ideal buyer personas, and flags which trigger signals mean an account is ready-to-buy.',
+    stats:[{l:'ICP Profiles',v:'14'},{l:'Trigger Signals',v:'5'},{l:'Avoid Angles',v:'2'},{l:'Tier 1 Markets',v:'3'}],
+    cmd:'python 1-research-lab/research.py build "Cognify AI"',
+    furniture:[
+      {cls:'desk',s:'width:72px;height:36px;background:#c8d0f8;bottom:34px;left:14px;'},
+      {cls:'monitor',s:'width:36px;height:28px;background:#3a3a7a;bottom:68px;left:26px;',screen:'background:#6060c8;'},
+      {cls:'chair',s:'width:22px;height:22px;background:#a0a8e8;bottom:24px;left:34px;'},
+      {cls:'shelf',s:'width:48px;height:10px;background:#b8c0f0;top:36px;right:10px;'},
+      {cls:'plant-emoji',s:'right:10px;bottom:34px;',txt:'🌿'},
+    ]},
+  r2:{icon:'🏭',name:'Lead Factory',tag:'R02',color:'#ddf0ea',accentTop:'#00b4a0',char:'⚙️',status:'ok',
+    statusText:'Waterfall running...',statuses:['Waterfall running...','Scoring 722 leads...','Export ready ✓'],
+    desc:'Takes raw Apollo leads through a 4-step email waterfall (Prospeo → Apollo → Hunter → Debounce), then scores each lead by trigger signals.',
+    stats:[{l:'Raw Leads',v:'1,240'},{l:'Verified ≥6',v:'722'},{l:'Email Valid',v:'94.2%'},{l:'Bounce Rate',v:'0.8%'}],
+    cmd:'python 2-lead-factory/clay_workflow.py run',
+    furniture:[
+      {cls:'desk',s:'width:80px;height:34px;background:#b8e8d8;bottom:34px;left:10px;'},
+      {cls:'monitor',s:'width:40px;height:30px;background:#2a6a5a;bottom:66px;left:20px;',screen:'background:#00b4a0;'},
+      {cls:'chair',s:'width:22px;height:22px;background:#90d8c0;bottom:24px;left:28px;'},
+      {cls:'server-rack',s:'width:22px;height:52px;background:#3a5a50;right:16px;bottom:34px;'},
+      {cls:'plant-emoji',s:'right:50px;bottom:34px;',txt:'🌱'},
+    ]},
+  r4:{icon:'✍️',name:'Copy Room',tag:'R04',color:'#eeddf8',accentTop:'#8b5cf6',char:'🖊️',status:'ok',
+    statusText:'0 violations ✓',statuses:['Writing D1/D3/D7...','Validating sequence...','0 violations ✓'],
+    desc:'Writes and auto-validates cold email sequences. Enforces the full playbook — word counts, banned phrases, opener rules — and rewrites until every rule passes.',
+    stats:[{l:'Sequences',v:'38'},{l:'Violations',v:'0'},{l:'D1 Words',v:'74'},{l:'A/B Tests',v:'12'}],
+    cmd:'python 4-copy-room/copy_generator.py generate "Cognify AI"',
+    furniture:[
+      {cls:'desk',s:'width:70px;height:34px;background:#d8b8f8;bottom:34px;left:14px;'},
+      {cls:'monitor',s:'width:34px;height:26px;background:#5a3a8a;bottom:66px;left:24px;',screen:'background:#a060e0;'},
+      {cls:'chair',s:'width:22px;height:22px;background:#c0a0e8;bottom:24px;left:30px;'},
+      {cls:'shelf',s:'width:44px;height:10px;background:#c8a8f0;top:36px;left:10px;'},
+      {cls:'plant-emoji',s:'right:12px;bottom:34px;',txt:'🪴'},
+    ]},
+  r5:{icon:'💼',name:'LinkedIn Room',tag:'R05',color:'#dde8ff',accentTop:'#3b82f6',char:'🔗',status:'ok',
+    statusText:'95 in sequence',statuses:['95 in sequence','26% acceptance','DMs active...'],
+    desc:'Manages LinkedIn outreach via HeyReach. Prevents double-touching, launches connect + DM sequences, monitors acceptance rates.',
+    stats:[{l:'In Sequence',v:'95'},{l:'Acceptance',v:'26.3%'},{l:'DMs Active',v:'5'},{l:'Senders',v:'3'}],
+    cmd:'python 5-linkedin-room/heyreach_campaigns.py launch "Cognify AI"',
+    furniture:[
+      {cls:'desk',s:'width:72px;height:34px;background:#b8c8f8;bottom:34px;left:14px;'},
+      {cls:'monitor',s:'width:36px;height:28px;background:#2a3a8a;bottom:66px;left:24px;',screen:'background:#3b82f6;'},
+      {cls:'chair',s:'width:22px;height:22px;background:#a0b0e8;bottom:24px;left:30px;'},
+      {cls:'plant-emoji',s:'right:12px;bottom:34px;',txt:'🌿'},
+    ]},
+  r6:{icon:'📬',name:'Comms Lab',tag:'R06',color:'#ddf8ec',accentTop:'#16a34a',char:'📩',status:'ok',
+    statusText:'8 warm replies →',statuses:['Classifying 47 replies...','8 warm leads found','Slack routed ✓'],
+    desc:'Reads every inbound reply from email and LinkedIn, classifies intent with Claude, drafts personalized responses, and routes warm leads to Slack.',
+    stats:[{l:'Total Replies',v:'47'},{l:'Interested',v:'8'},{l:'Drafts Queued',v:'12'},{l:'Auto-Sent',v:'0'}],
+    cmd:'python 6-comms-lab/reply_handler.py process',
+    furniture:[
+      {cls:'desk',s:'width:72px;height:34px;background:#b8e8cc;bottom:34px;left:14px;'},
+      {cls:'monitor',s:'width:36px;height:28px;background:#2a5a3a;bottom:66px;left:24px;',screen:'background:#16a34a;'},
+      {cls:'chair',s:'width:22px;height:22px;background:#90d0a8;bottom:24px;left:30px;'},
+      {cls:'shelf',s:'width:44px;height:10px;background:#a8e0bc;top:36px;right:10px;'},
+      {cls:'plant-emoji',s:'right:10px;bottom:34px;',txt:'🌺'},
+    ]},
+  r7:{icon:'🧨',name:'War Room',tag:'R07',color:'#fff4dd',accentTop:'#f59e0b',char:'📊',status:'warn',
+    statusText:'⚠ PulseHR 1.8%',statuses:['⚠ PulseHR 1.8%','Score: 55 WARNING','D1 rewrite queued'],
+    desc:'Scores each campaign weekly against benchmarks. When metrics drop below thresholds, generates specific pivot recommendations.',
+    stats:[{l:'Campaigns',v:'4'},{l:'Healthy',v:'2'},{l:'Warnings',v:'1'},{l:'Critical',v:'0'}],
+    cmd:'python 7-war-room/performance_monitor.py run',
+    furniture:[
+      {cls:'desk',s:'width:80px;height:36px;background:#f8e0a8;bottom:34px;left:10px;'},
+      {cls:'monitor',s:'width:40px;height:30px;background:#7a5000;bottom:68px;left:20px;',screen:'background:#f59e0b;'},
+      {cls:'chair',s:'width:22px;height:22px;background:#f0c870;bottom:24px;left:28px;'},
+      {cls:'plant-emoji',s:'right:12px;bottom:34px;',txt:'🌵'},
+    ]},
+  r8:{icon:'🗄️',name:'Archives',tag:'R08',color:'#f0f0f8',accentTop:'#6b728a',char:'🗃️',status:'ok',
+    statusText:'44K leads stored',statuses:['44K leads stored','127 hooks indexed','All rooms synced ✓'],
+    desc:'The shared knowledge base. Every sequence, hook, ICP profile, client config, and lead record lives here. All rooms read from and write to Archives.',
+    stats:[{l:'Total Leads',v:'44K'},{l:'Hooks Library',v:'127'},{l:'Sequences',v:'38'},{l:'Top Hook RPR',v:'7.2%'}],
+    cmd:'python 8-archives-room/archives.py status',
+    furniture:[
+      {cls:'shelf',s:'width:60px;height:12px;background:#c0c0d8;top:32px;left:12px;'},
+      {cls:'shelf',s:'width:60px;height:12px;background:#b8b8d0;top:50px;left:12px;'},
+      {cls:'shelf',s:'width:60px;height:12px;background:#c0c0d8;top:68px;left:12px;'},
+      {cls:'server-rack',s:'width:24px;height:56px;background:#4a4a6a;right:14px;bottom:34px;'},
+      {cls:'desk',s:'width:60px;height:30px;background:#d0d0e8;bottom:34px;left:10px;'},
+      {cls:'chair',s:'width:20px;height:20px;background:#b0b0cc;bottom:26px;left:28px;'},
+    ]},
+  cmd:{icon:'⚔️',name:'Command Agent',tag:'CMD',color:'#e8e8f8',accentTop:'#1a1f5e',char:'🤖',status:'ok',
+    statusText:'Orchestrating 14...',statuses:['Orchestrating 14...','Daily briefing sent','SLA 3/21 on track'],
+    desc:'The brain of the war room. Orchestrates all 14 rooms, monitors SLA health, routes urgent tasks, and generates daily briefings with alerts.',
+    stats:[{l:'SLA Day',v:'3/21'},{l:'Active Clients',v:'4'},{l:'Warm Leads',v:'8'},{l:'Warnings',v:'1'}],
+    cmd:'python super_agent.py status',
+    furniture:[
+      {cls:'desk',s:'width:90px;height:38px;background:#c0c0e0;bottom:34px;left:8px;'},
+      {cls:'monitor',s:'width:44px;height:34px;background:#1a1f5e;bottom:70px;left:18px;',screen:'background:#3a3f9e;'},
+      {cls:'monitor',s:'width:26px;height:20px;background:#2a2f7e;bottom:66px;left:68px;',screen:'background:#5c48e8;'},
+      {cls:'chair',s:'width:24px;height:24px;background:#9090c0;bottom:22px;left:36px;'},
+      {cls:'server-rack',s:'width:20px;height:50px;background:#3a3a6a;right:12px;bottom:34px;'},
+    ]},
+  r3:{icon:'⚙️',name:'Infra Room',tag:'R03',color:'#fef0dd',accentTop:'#f59e0b',char:'🛠️',status:'warn',
+    statusText:'⚠ 1 inbox flagged',statuses:['⚠ 1 inbox flagged','Avg score: 74.2','Re-warming queued'],
+    desc:'Monitors deliverability health across all sending inboxes. Catches warmup score drops before they become spam flags.',
+    stats:[{l:'Avg Warmup',v:'74.2'},{l:'Active Inboxes',v:'9'},{l:'Bounce Rate',v:'0.8%'},{l:'Flagged',v:'1'}],
+    cmd:'python 3-infra-room/infra_setup.py audit',
+    furniture:[
+      {cls:'server-rack',s:'width:22px;height:60px;background:#7a5000;left:14px;bottom:34px;'},
+      {cls:'server-rack',s:'width:22px;height:60px;background:#6a4000;left:42px;bottom:34px;'},
+      {cls:'desk',s:'width:60px;height:28px;background:#f8d898;bottom:34px;right:10px;'},
+      {cls:'monitor',s:'width:30px;height:24px;background:#7a5000;bottom:60px;right:22px;',screen:'background:#f59e0b;'},
+      {cls:'chair',s:'width:20px;height:20px;background:#e8c060;bottom:26px;right:26px;'},
+    ]},
+  r10:{icon:'📋',name:'Intake Room',tag:'R10',color:'#f5f5ff',accentTop:'#a0a4cc',char:'📝',status:'ok',
+    statusText:'Ready for client',statuses:['Ready for client','28 questions loaded','.docx import ready'],
+    desc:'Onboards new clients with a 28-question interview. Accepts .docx or interactive mode. Outputs structured ICP profiles to Archives.',
+    stats:[{l:'Questions',v:'28'},{l:'Sections',v:'6'},{l:'Briefs Built',v:'0'},{l:'Gaps Flagged',v:'0'}],
+    cmd:'python 10-intake-room/intake_agent.py interactive',
+    furniture:[
+      {cls:'desk',s:'width:72px;height:34px;background:#c8c8e8;bottom:34px;left:14px;'},
+      {cls:'monitor',s:'width:36px;height:28px;background:#4a4a7a;bottom:66px;left:24px;',screen:'background:#8080c0;'},
+      {cls:'chair',s:'width:22px;height:22px;background:#a8a8cc;bottom:24px;left:30px;'},
+      {cls:'shelf',s:'width:50px;height:10px;background:#b0b0d0;top:36px;right:10px;'},
+      {cls:'plant-emoji',s:'right:10px;bottom:34px;',txt:'🌿'},
+    ]},
+  r11:{icon:'📡',name:'Super Monitor',tag:'R11',color:'#ddf8f8',accentTop:'#00b4a0',char:'👁️',status:'ok',
+    statusText:'14/14 rooms live',statuses:['14/14 rooms live','0 critical alerts','System nominal ✓'],
+    desc:'One command gives a full health report across all 14 rooms — API status, campaign scores, active alerts, and a Claude prose summary.',
+    stats:[{l:'Critical',v:'0'},{l:'Warnings',v:'1'},{l:'Campaigns Live',v:'4'},{l:'Infra Status',v:'OK'}],
+    cmd:'python 11-monitor-room/monitor_agent.py',
+    furniture:[
+      {cls:'desk',s:'width:80px;height:34px;background:#a8e0e0;bottom:34px;left:10px;'},
+      {cls:'monitor',s:'width:44px;height:34px;background:#2a5a5a;bottom:66px;left:18px;',screen:'background:#00b4a0;'},
+      {cls:'monitor',s:'width:24px;height:18px;background:#3a7070;bottom:62px;left:68px;',screen:'background:#00d4c0;'},
+      {cls:'chair',s:'width:22px;height:22px;background:#80c8c8;bottom:24px;left:28px;'},
+    ]},
+  r12:{icon:'🕵️',name:'Competitor Intel',tag:'R12',color:'#eeeeff',accentTop:'#5c48e8',char:'🔍',status:'ok',
+    statusText:'3 gaps found',statuses:['3 gaps found','Scanning G2...','Angles updated ✓'],
+    desc:'Scans G2, LinkedIn, and job boards for competitor signals. Finds saturated angles to avoid and market gaps to exploit in copy.',
+    stats:[{l:'Competitors',v:'3'},{l:'Saturated Angles',v:'3'},{l:'Market Gaps',v:'3'},{l:'Scan Frequency',v:'Weekly'}],
+    cmd:'python 12-competitor-room/competitor_intel.py scan "Cognify AI"',
+    furniture:[
+      {cls:'desk',s:'width:72px;height:34px;background:#c0c0f0;bottom:34px;left:14px;'},
+      {cls:'monitor',s:'width:38px;height:30px;background:#3a3a8a;bottom:66px;left:22px;',screen:'background:#5c48e8;'},
+      {cls:'chair',s:'width:22px;height:22px;background:#a8a8e8;bottom:24px;left:30px;'},
+      {cls:'shelf',s:'width:46px;height:10px;background:#b0b0e0;top:36px;right:10px;'},
+    ]},
+  r13:{icon:'🗺️',name:'Committee Mapper',tag:'R13',color:'#fdf0ff',accentTop:'#8b5cf6',char:'🧩',status:'ok',
+    statusText:'7 stakeholders mapped',statuses:['7 stakeholders mapped','Fit: STRONG 8/10','Outreach order set ✓'],
+    desc:'For any target account, finds all buying stakeholders via LinkedIn, maps each to a committee role, and writes personalized hook lines per role.',
+    stats:[{l:'Stakeholders',v:'7'},{l:'Account Fit',v:'8/10'},{l:'Fit Label',v:'STRONG'},{l:'Start With',v:'Champion'}],
+    cmd:'python 13-account-room/account_mapper.py map "Cognify AI" "Trellis" "trellis.io"',
+    furniture:[
+      {cls:'desk',s:'width:72px;height:34px;background:#d8b8f8;bottom:34px;left:14px;'},
+      {cls:'monitor',s:'width:36px;height:28px;background:#5a3a8a;bottom:66px;left:24px;',screen:'background:#8b5cf6;'},
+      {cls:'chair',s:'width:22px;height:22px;background:#c0a0e8;bottom:24px;left:30px;'},
+      {cls:'plant-emoji',s:'right:12px;bottom:34px;',txt:'🗺️'},
+    ]},
+  r14:{icon:'💰',name:'Deal Intelligence',tag:'R14',color:'#ddf8ec',accentTop:'#16a34a',char:'💹',status:'ok',
+    statusText:'$42K pipeline',statuses:['$42K pipeline','8 deals scored','HubSpot synced ✓'],
+    desc:'Tracks interested leads as CRM deals. AI scores each 0–100, recommends exact next actions, and syncs to HubSpot automatically.',
+    stats:[{l:'Active Deals',v:'8'},{l:'Pipeline Value',v:'$42K'},{l:'Avg AI Score',v:'74/100'},{l:'CRM Sync',v:'HubSpot'}],
+    cmd:'python 14-deal-room/deal_intelligence.py sync "Cognify AI"',
+    furniture:[
+      {cls:'desk',s:'width:78px;height:36px;background:#b0e8cc;bottom:34px;left:10px;'},
+      {cls:'monitor',s:'width:40px;height:30px;background:#2a6a3a;bottom:68px;left:19px;',screen:'background:#16a34a;'},
+      {cls:'chair',s:'width:22px;height:22px;background:#88d0a8;bottom:24px;left:28px;'},
+      {cls:'server-rack',s:'width:20px;height:48px;background:#3a6a4a;right:14px;bottom:34px;'},
+      {cls:'plant-emoji',s:'right:44px;bottom:34px;',txt:'💎'},
+    ]},
+};
+
+// Wing layout — 4 columns per row
+const WINGS = [
+  {label:'WING A — INTELLIGENCE',ids:['r1','r2',null,null]},
+  {label:'WING B — EXECUTION',ids:['r4','r5','r6','r7']},
+  {label:'WING C — COMMAND & INFRA',ids:['cmd','r3','r8',null]},
+  {label:'WING D — SYSTEM',ids:['r10','r11',null,null]},
+  {label:'WING E — ADVANCED INTEL',ids:['r12','r13','r14',null]},
+];
+
+// ── BUILD ─────────────────────────────────────────────────────
+function buildUI(){
+  const building = document.getElementById('building');
+  building.innerHTML = '';
+  WINGS.forEach((wing, wi)=>{
+    const wLabel = document.createElement('div');
+    wLabel.className = 'wing-label';
+    wLabel.textContent = wing.label;
+    building.appendChild(wLabel);
+
+    const row = document.createElement('div');
+    row.className = 'room-row';
+    wing.ids.forEach(id=>{
+      if(!id || !AGENTS[id]){
+        const sp = document.createElement('div');
+        sp.style.cssText = 'width:218px;height:162px;flex-shrink:0;';
+        row.appendChild(sp);
+        return;
+      }
+      row.appendChild(buildRoom(id));
+    });
+    building.appendChild(row);
+
+    if(wi < WINGS.length-1){
+      const hall = document.createElement('div');
+      hall.className = 'hallway';
+      const hallId = document.createElement('div');
+      hallId.className = 'hall-id';
+      hallId.textContent = 'CORRIDOR '+(wi+1);
+      hall.appendChild(hallId);
+      ['🏃','🚶','🧑'].forEach((e,i)=>{
+        const w = document.createElement('div');
+        w.className = 'hall-walker';
+        w.textContent = e;
+        w.style.left = (60 + i*240)+'px';
+        hall.appendChild(w);
+        walkLoop(w);
+      });
+      building.appendChild(hall);
+    }
+  });
+}
+
+function buildRoom(id){
+  const a = AGENTS[id];
+  const div = document.createElement('div');
+  div.className = 'room';
+  div.id = 'room-'+id;
+  div.onclick = ()=>openPanel(id);
+  div.style.background = a.color;
+
+  // floor
+  const floor = document.createElement('div');
+  floor.className = 'room-floor';
+  div.appendChild(floor);
+
+  // glow
+  const glow = document.createElement('div');
+  glow.className = 'room-glow';
+  glow.style.background = `linear-gradient(transparent, ${a.accentTop}22)`;
+  div.appendChild(glow);
+
+  // header
+  const hdr = document.createElement('div');
+  hdr.className = 'room-hdr';
+  hdr.style.borderBottomColor = `${a.accentTop}20`;
+  const dot = document.createElement('div');
+  dot.className = 'room-live';
+  dot.style.background = a.status==='warn'?'#f59e0b':a.accentTop;
+  hdr.innerHTML = `<div class="room-id-tag">${a.tag}</div><div class="room-name-tag">${a.name.toUpperCase()}</div>`;
+  hdr.appendChild(dot);
+  div.appendChild(hdr);
+
+  // furniture
+  a.furniture.forEach(f=>{
+    const el = document.createElement('div');
+    el.className = 'furn '+f.cls;
+    el.style.cssText = f.s;
+    if(f.txt) el.textContent = f.txt;
+    if(f.screen){
+      const inner = document.createElement('div');
+      inner.style.cssText = `position:absolute;inset:2px;border-radius:1px;${f.screen};animation:screenflicker 4s ease-in-out infinite;`;
+      el.appendChild(inner);
+    }
+    div.appendChild(el);
+  });
+
+  // character
+  const char = document.createElement('div');
+  char.className = 'char';
+  char.id = 'char-'+id;
+  char.textContent = a.char;
+  char.style.right = '14px';
+  char.style.bottom = '34px';
+  const charStatus = document.createElement('div');
+  charStatus.className = 'char-status';
+  charStatus.id = 'cstatus-'+id;
+  charStatus.textContent = a.statuses[0];
+  char.appendChild(charStatus);
+  div.appendChild(char);
+
+  // status bar
+  const sb = document.createElement('div');
+  sb.className = 'room-status-bar';
+  const sdot = document.createElement('div');
+  sdot.className = 'rsb-dot '+(a.status==='warn'?'warn':'ok');
+  const stxt = document.createElement('div');
+  stxt.className = 'rsb-text'+(a.status==='warn'?' warn':'');
+  stxt.id = 'sbar-'+id;
+  stxt.textContent = a.statuses[0];
+  sb.appendChild(sdot);
+  sb.appendChild(stxt);
+  div.appendChild(sb);
+
+  return div;
+}
+
+// ── PANEL ─────────────────────────────────────────────────────
+let selId = null;
+function openPanel(id){
+  if(selId) document.getElementById('room-'+selId)?.classList.remove('selected');
+  selId = id;
+  document.getElementById('room-'+id).classList.add('selected');
+  const a = AGENTS[id];
+  document.getElementById('p-icon').textContent = a.icon;
+  document.getElementById('p-name').textContent = a.name.toUpperCase();
+  document.getElementById('p-sub').textContent = a.tag + ' · ' + (a.status==='warn'?'⚠ WARNING':'ACTIVE');
+  document.getElementById('p-desc').textContent = a.desc;
+  document.getElementById('p-stats').innerHTML = a.stats.map(s=>
+    `<div class="pstat"><span class="pstat-label">${s.l}</span><span class="pstat-val">${s.v}</span></div>`
+  ).join('');
+  document.getElementById('p-cmd').innerHTML = `<span>$ </span>${a.cmd}`;
+  document.getElementById('panel').classList.add('open');
+}
+function closePanel(){
+  if(selId) document.getElementById('room-'+selId)?.classList.remove('selected');
+  selId = null;
+  document.getElementById('panel').classList.remove('open');
+}
+
+// ── WALKERS ───────────────────────────────────────────────────
+function walkLoop(el){
+  function step(){
+    const x = 40 + Math.random()*700;
+    el.style.left = x+'px';
+    setTimeout(step, 2500+Math.random()*2500);
+  }
+  setTimeout(step, Math.random()*2000);
+}
+
+// ── STATUS ROTATION ───────────────────────────────────────────
+setInterval(()=>{
+  Object.entries(AGENTS).forEach(([id,a])=>{
+    const idx = Math.floor(Date.now()/4000) % a.statuses.length;
+    const txt = a.statuses[idx];
+    const sbar = document.getElementById('sbar-'+id);
+    const cstatus = document.getElementById('cstatus-'+id);
+    if(sbar) sbar.textContent = txt;
+    if(cstatus) cstatus.textContent = txt;
+  });
+}, 4000);
+
+// ── CLOCK ─────────────────────────────────────────────────────
+setInterval(()=>{
+  const n = new Date();
+  document.getElementById('clock').textContent =
+    String(n.getHours()).padStart(2,'0')+':'+
+    String(n.getMinutes()).padStart(2,'0')+':'+
+    String(n.getSeconds()).padStart(2,'0');
+}, 1000);
+
+// ── INIT ──────────────────────────────────────────────────────
+buildUI();
+(()=>{const n=new Date();document.getElementById('clock').textContent=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')+':'+String(n.getSeconds()).padStart(2,'0');})();
+</script>
+</body>
+</html>
