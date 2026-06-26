@@ -605,7 +605,7 @@ function makeFurnEl(f, room){
   if(f.s) el.style.cssText = f.s;
   if(f.emoji){ el.style.position='absolute'; el.style.zIndex='3'; el.textContent=f.emoji; }
   if(f.text){ const t=document.createElement('span'); t.textContent=f.text; t.style.cssText='font-size:4px;color:rgba(26,31,94,.6);font-family:monospace;'; el.appendChild(t); }
-  if(f.children) f.children.forEach(c=>el.appendChild(makeFurnEl(c)));
+  if(f.children) f.children.forEach(c=>makeFurnEl(c, el));
   room.appendChild(el);
 }
 
