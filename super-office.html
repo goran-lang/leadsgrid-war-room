@@ -8,14 +8,10 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{
   --bg:#f0f0f8;
-  --wall:#e4e4f0;
-  --floor-line:rgba(92,72,232,0.06);
-  --hall:#e8e8f4;
-  --border:#d4d4e8;
+  --hall:#e2e2f0;
+  --border:#d0d0e8;
   --purple:#5c48e8;
-  --purple-soft:#7c6ef0;
   --navy:#1a1f5e;
-  --navy-mid:#3a3f7e;
   --teal:#00b4a0;
   --amber:#f59e0b;
   --red:#e84848;
@@ -25,198 +21,151 @@
   --text-mid:#6b70a8;
   --text-dim:#a0a4cc;
 }
-
 body{background:var(--bg);font-family:'Share Tech Mono',monospace;overflow:hidden;width:100vw;height:100vh;display:flex;flex-direction:column;color:var(--text);}
 
-/* ── TOPBAR ─────────────────────────────────── */
-#topbar{
-  height:46px;background:#ffffff;border-bottom:1px solid var(--border);
-  display:flex;align-items:center;padding:0 20px;gap:20px;flex-shrink:0;
-  position:relative;z-index:50;box-shadow:0 1px 8px rgba(92,72,232,.08);
-}
-#topbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,transparent,rgba(92,72,232,.4) 40%,rgba(92,72,232,.4) 60%,transparent);}
-.tb-logo{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--purple);letter-spacing:.2em;white-space:nowrap;}
+/* TOPBAR */
+#topbar{height:46px;background:#fff;border-bottom:2px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:16px;flex-shrink:0;position:relative;z-index:50;box-shadow:0 1px 8px rgba(92,72,232,.07);}
+#topbar::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(92,72,232,.45) 40%,rgba(92,72,232,.45) 60%,transparent);}
+.tb-logo{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--purple);letter-spacing:.18em;}
+.tb-sep{width:1px;height:20px;background:var(--border);}
 .tb-tag{font-size:8px;color:var(--text-dim);letter-spacing:.1em;}
-.tb-right{margin-left:auto;display:flex;align-items:center;gap:18px;}
-.tb-stat{text-align:right;}
-.tb-stat-val{font-size:9px;color:var(--purple);display:block;font-family:'Press Start 2P',monospace;}
-.tb-stat-lbl{font-size:6px;color:var(--text-dim);display:block;margin-top:1px;letter-spacing:.08em;}
+.tb-pill{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:20px;background:rgba(92,72,232,.07);border:1px solid rgba(92,72,232,.18);font-size:8px;color:var(--purple);}
+.pulse{width:6px;height:6px;border-radius:50%;background:var(--teal);box-shadow:0 0 6px rgba(0,180,160,.8);animation:pulseAnim 2s ease-in-out infinite;}
+@keyframes pulseAnim{0%,100%{opacity:1}50%{opacity:.3}}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:16px;}
+.tb-stat-val{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--purple);}
+.tb-stat-lbl{font-size:6px;color:var(--text-dim);letter-spacing:.08em;display:block;margin-top:1px;}
 #clock{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--navy);}
 
-/* ── MAIN SCROLL AREA ───────────────────────── */
-#hq{
-  flex:1;overflow:auto;position:relative;
-  background:
-    repeating-linear-gradient(0deg,transparent,transparent 31px,var(--floor-line) 31px,var(--floor-line) 32px),
-    repeating-linear-gradient(90deg,transparent,transparent 31px,var(--floor-line) 31px,var(--floor-line) 32px),
-    var(--bg);
-}
+/* SCROLL */
+#hq{flex:1;overflow:auto;position:relative;
+  background:repeating-linear-gradient(0deg,transparent,transparent 31px,rgba(92,72,232,.04) 31px,rgba(92,72,232,.04) 32px),
+  repeating-linear-gradient(90deg,transparent,transparent 31px,rgba(92,72,232,.04) 31px,rgba(92,72,232,.04) 32px),var(--bg);}
 
-/* ── BUILDING ────────────────────────────────── */
-#building{padding:24px 28px 60px;min-width:960px;display:inline-block;min-height:100%;}
+/* SVG PATHS LAYER */
+#path-layer{position:absolute;top:0;left:0;pointer-events:none;z-index:5;}
 
-/* ── WING LABEL ─────────────────────────────── */
-.wing-label{
-  font-family:'Press Start 2P',monospace;font-size:5px;color:var(--text-dim);
-  letter-spacing:.25em;text-transform:uppercase;padding:4px 0 3px 4px;
-}
+/* BUILDING */
+#building{padding:20px 24px 60px;display:inline-block;min-height:100%;position:relative;z-index:10;}
 
-/* ── ROOM ROW ────────────────────────────────── */
-.room-row{display:flex;gap:5px;margin-bottom:5px;}
+/* WING */
+.wing-label{font-family:'Press Start 2P',monospace;font-size:5px;color:var(--text-dim);letter-spacing:.22em;padding:4px 0 3px 2px;text-transform:uppercase;}
+.room-row{display:flex;gap:6px;margin-bottom:6px;}
 
-/* ── HALLWAY ─────────────────────────────────── */
-.hallway{
-  height:32px;background:var(--hall);margin-bottom:5px;
-  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
-  position:relative;display:flex;align-items:center;padding:0 12px;gap:8px;overflow:hidden;
-}
-.hallway::before{
-  content:'';position:absolute;top:14px;left:0;right:0;height:3px;
-  background:repeating-linear-gradient(90deg,#dcdcf0 0,#dcdcf0 10px,#e4e4f4 10px,#e4e4f4 20px);
-}
+/* HALLWAY */
+.hallway{height:34px;background:var(--hall);margin-bottom:6px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);position:relative;overflow:visible;display:flex;align-items:center;padding:0 14px;}
+.hallway::before{content:'';position:absolute;top:15px;left:0;right:0;height:4px;background:repeating-linear-gradient(90deg,#d8d8ee 0,#d8d8ee 12px,#e0e0f0 12px,#e0e0f0 24px);}
 .hall-id{font-size:5px;color:var(--text-dim);z-index:1;letter-spacing:.2em;font-family:'Press Start 2P',monospace;}
-.hall-walker{position:absolute;font-size:16px;top:6px;transition:left 2.5s linear;z-index:2;}
 
-/* ── ROOM TILE ─────────────────────────────────── */
-.room{
-  width:218px;height:162px;position:relative;
-  border:2px solid var(--border);border-radius:6px;
-  cursor:pointer;overflow:hidden;flex-shrink:0;
-  transition:border-color .2s,box-shadow .2s;
-  box-shadow:0 2px 8px rgba(92,72,232,.06);
-}
-.room:hover{border-color:var(--purple-soft);box-shadow:0 4px 18px rgba(92,72,232,.16);}
+/* ROOM */
+.room{width:224px;height:180px;position:relative;border:2px solid var(--border);border-radius:8px;cursor:pointer;overflow:hidden;flex-shrink:0;transition:border-color .2s,box-shadow .2s;box-shadow:0 2px 10px rgba(92,72,232,.07);}
+.room:hover{border-color:rgba(92,72,232,.5);box-shadow:0 4px 18px rgba(92,72,232,.16);}
 .room.selected{border-color:var(--purple)!important;box-shadow:0 4px 22px rgba(92,72,232,.28)!important;}
 .room.lounge,.room.server-room{cursor:default;}
-.room.lounge:hover,.room.server-room:hover{border-color:var(--border);box-shadow:0 2px 8px rgba(92,72,232,.06);}
+.room.lounge:hover,.room.server-room:hover{border-color:var(--border);box-shadow:0 2px 10px rgba(92,72,232,.07);}
 
-/* floor tile pattern */
-.room-floor{
-  position:absolute;inset:0;
-  background-image:
-    repeating-linear-gradient(0deg,transparent,transparent 15px,rgba(92,72,232,.03) 15px,rgba(92,72,232,.03) 16px),
-    repeating-linear-gradient(90deg,transparent,transparent 15px,rgba(92,72,232,.03) 15px,rgba(92,72,232,.03) 16px);
-}
-.room-glow{position:absolute;bottom:0;left:0;right:0;height:60px;pointer-events:none;opacity:.16;}
+/* floor tile */
+.room-floor{position:absolute;inset:0;background-image:repeating-linear-gradient(0deg,transparent,transparent 15px,rgba(92,72,232,.025) 15px,rgba(92,72,232,.025) 16px),repeating-linear-gradient(90deg,transparent,transparent 15px,rgba(92,72,232,.025) 15px,rgba(92,72,232,.025) 16px);}
+.room-glow{position:absolute;bottom:0;left:0;right:0;height:55px;pointer-events:none;opacity:.14;}
 
-/* ── ROOM HEADER ─────────────────────────────── */
-.room-hdr{
-  position:absolute;top:0;left:0;right:0;height:24px;
-  display:flex;align-items:center;padding:0 8px;gap:5px;
-  border-bottom:1px solid rgba(92,72,232,.12);z-index:10;
-  background:rgba(255,255,255,.82);backdrop-filter:blur(4px);
-}
+/* header */
+.room-hdr{position:absolute;top:0;left:0;right:0;height:24px;display:flex;align-items:center;padding:0 8px;gap:5px;border-bottom:1px solid rgba(92,72,232,.1);z-index:20;background:rgba(255,255,255,.85);backdrop-filter:blur(3px);}
 .room-id-tag{font-size:5px;color:var(--text-dim);font-family:'Press Start 2P',monospace;}
-.room-name-tag{
-  font-size:6px;color:var(--navy);flex:1;
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-  font-family:'Press Start 2P',monospace;letter-spacing:.04em;
-}
+.room-name-tag{font-size:5.5px;color:var(--navy);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:'Press Start 2P',monospace;letter-spacing:.03em;}
 .room-live{width:6px;height:6px;border-radius:50%;flex-shrink:0;animation:blink 2s ease-in-out infinite;}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
 
-/* ── FURNITURE ────────────────────────────────── */
-.furn{position:absolute;}
-.furn.desk{border-radius:3px;}
-.furn.monitor{border-radius:2px;z-index:3;}
-.furn.monitor::before{
-  content:'';position:absolute;inset:2px;border-radius:1px;
-  animation:screenflicker 4s ease-in-out infinite;
-}
-@keyframes screenflicker{0%,88%,100%{opacity:1}94%{opacity:.4}}
-.furn.chair{border-radius:50% 50% 40% 40%;z-index:2;}
-.furn.shelf{border-radius:2px;}
-.furn.server-rack{border-radius:3px;}
-.furn.server-rack::before{
-  content:'';position:absolute;top:6px;left:3px;right:3px;height:3px;
-  background:rgba(92,72,232,.6);border-radius:1px;
-  box-shadow:0 8px rgba(92,72,232,.5),0 16px rgba(0,180,160,.5),0 24px rgba(245,158,11,.5);
-}
-.furn.plant-emoji{font-size:15px;position:absolute;z-index:2;}
-.furn.steam::after{
-  content:'~';position:absolute;top:-10px;left:50%;transform:translateX(-50%);
-  font-size:8px;color:rgba(92,72,232,.25);animation:steamrise 2s ease-in-out infinite;
-}
-@keyframes steamrise{0%,100%{transform:translateX(-50%) translateY(0);opacity:.4}50%{transform:translateX(-50%) translateY(-6px);opacity:0}}
+/* PIXEL FURNITURE */
+.px{position:absolute;}
 
-/* ── CHARACTER ────────────────────────────────── */
-.char{
-  position:absolute;z-index:8;font-size:18px;
-  transition:left .8s ease-in-out,top .8s ease-in-out;
-  animation:charBob 1.8s ease-in-out infinite;
-  cursor:default;
-}
-@keyframes charBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
-.char-status{
-  position:absolute;bottom:-13px;left:50%;transform:translateX(-50%);
-  white-space:nowrap;font-size:5px;color:var(--text-mid);
-  background:rgba(255,255,255,.88);padding:1px 4px;border-radius:2px;
-  border:1px solid var(--border);font-family:'Press Start 2P',monospace;
-  letter-spacing:.02em;pointer-events:none;z-index:9;
-}
+/* desk */
+.desk{border-radius:3px 3px 2px 2px;}
+.desk-leg{position:absolute;bottom:-5px;width:3px;height:5px;background:inherit;border-radius:0 0 1px 1px;opacity:.7;}
 
-/* ── STATUS BAR ────────────────────────────────── */
-.room-status-bar{
-  position:absolute;bottom:0;left:0;right:0;height:20px;
-  background:rgba(255,255,255,.7);border-top:1px solid rgba(92,72,232,.1);
-  display:flex;align-items:center;padding:0 8px;gap:5px;z-index:10;
-}
+/* laptop */
+.laptop-base{border-radius:2px;}
+.laptop-screen{border-radius:2px 2px 0 0;position:absolute;}
+.laptop-screen::before{content:'';position:absolute;inset:2px;border-radius:1px;animation:screenflicker 5s ease-in-out infinite;}
+@keyframes screenflicker{0%,85%,100%{opacity:1}92%{opacity:.4}}
+
+/* bookshelf */
+.shelf-unit{border-radius:2px;}
+.shelf-book{position:absolute;bottom:2px;border-radius:1px 1px 0 0;}
+
+/* plant pot */
+.pot{border-radius:0 0 3px 3px;}
+.plant-leaves{position:absolute;font-size:14px;bottom:8px;left:50%;transform:translateX(-50%);}
+
+/* coffee cup */
+.cup{border-radius:2px 2px 3px 3px;}
+.cup-steam{position:absolute;top:-8px;left:50%;transform:translateX(-50%);font-size:8px;color:rgba(150,150,200,.5);animation:steamUp 2.5s ease-in-out infinite;}
+@keyframes steamUp{0%,100%{transform:translateX(-50%) translateY(0);opacity:.5}50%{transform:translateX(-50%) translateY(-5px);opacity:0}}
+
+/* whiteboard */
+.whiteboard{border-radius:3px;border:2px solid #b0b0d0;}
+.wb-line{position:absolute;height:2px;border-radius:1px;background:rgba(92,72,232,.25);}
+
+/* rug */
+.rug{border-radius:4px;opacity:.35;}
+
+/* status bar */
+.room-status-bar{position:absolute;bottom:0;left:0;right:0;height:20px;background:rgba(255,255,255,.75);border-top:1px solid rgba(92,72,232,.1);display:flex;align-items:center;padding:0 8px;gap:5px;z-index:20;}
 .rsb-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
-.rsb-dot.ok{background:var(--teal);box-shadow:0 0 4px rgba(0,180,160,.6);animation:blink 2.5s ease-in-out infinite;}
-.rsb-dot.warn{background:var(--amber);box-shadow:0 0 4px rgba(245,158,11,.6);animation:blink 1.2s ease-in-out infinite;}
+.rsb-dot.ok{background:var(--teal);box-shadow:0 0 4px rgba(0,180,160,.7);animation:blink 2.5s ease-in-out infinite;}
+.rsb-dot.warn{background:var(--amber);box-shadow:0 0 4px rgba(245,158,11,.7);animation:blink 1.2s ease-in-out infinite;}
 .rsb-dot.idle{background:var(--text-dim);}
 .rsb-text{font-size:5px;color:var(--text-mid);font-family:'Press Start 2P',monospace;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .rsb-text.warn{color:var(--amber);}
 
-/* ── INFO PANEL ──────────────────────────────── */
-#panel{
-  position:fixed;right:0;top:46px;bottom:0;width:290px;
-  background:var(--panel-bg);border-left:1px solid var(--border);
-  display:none;flex-direction:column;z-index:200;
-  box-shadow:-4px 0 20px rgba(92,72,232,.1);
-}
+/* VISITING AGENT (walks between rooms) */
+.visitor{position:fixed;font-size:18px;z-index:200;pointer-events:none;transition:left 1.8s cubic-bezier(.4,0,.2,1),top 1.8s cubic-bezier(.4,0,.2,1);filter:drop-shadow(0 2px 4px rgba(0,0,0,.2));}
+.visitor-bubble{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);white-space:nowrap;background:#fff;border:1px solid var(--border);border-radius:8px 8px 8px 2px;padding:2px 6px;font-size:5px;color:var(--navy);font-family:'Press Start 2P',monospace;box-shadow:0 2px 8px rgba(0,0,0,.1);opacity:0;transition:opacity .3s;}
+.visitor.talking .visitor-bubble{opacity:1;}
+
+/* RESIDENT CHAR */
+.char{position:absolute;z-index:15;font-size:17px;animation:charBob 2s ease-in-out infinite;cursor:default;transition:opacity .5s;}
+@keyframes charBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.char.away{opacity:.15;}
+.char-label{position:absolute;bottom:-13px;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:4.5px;color:var(--text-mid);background:rgba(255,255,255,.9);padding:1px 4px;border-radius:2px;border:1px solid var(--border);font-family:'Press Start 2P',monospace;pointer-events:none;z-index:16;}
+
+/* INFO PANEL */
+#panel{position:fixed;right:0;top:46px;bottom:0;width:288px;background:var(--panel-bg);border-left:1px solid var(--border);display:none;flex-direction:column;z-index:300;box-shadow:-4px 0 20px rgba(92,72,232,.1);}
 #panel.open{display:flex;}
-.panel-hdr{
-  padding:18px 18px 14px;border-bottom:1px solid var(--border);
-  background:linear-gradient(135deg,rgba(92,72,232,.04),transparent);flex-shrink:0;
-}
-.panel-icon{font-size:26px;margin-bottom:8px;display:block;}
-.panel-name{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--purple);letter-spacing:.08em;margin-bottom:6px;line-height:1.6;}
+.panel-hdr{padding:16px 16px 12px;border-bottom:1px solid var(--border);background:linear-gradient(135deg,rgba(92,72,232,.04),transparent);flex-shrink:0;}
+.panel-icon{font-size:24px;margin-bottom:7px;display:block;}
+.panel-name{font-family:'Press Start 2P',monospace;font-size:7.5px;color:var(--purple);letter-spacing:.07em;margin-bottom:5px;line-height:1.6;}
 .panel-sub{font-size:9px;color:var(--text-mid);line-height:1.65;}
-.panel-close{
-  position:absolute;top:12px;right:12px;cursor:pointer;font-size:12px;
-  color:var(--text-dim);width:24px;height:24px;display:flex;align-items:center;
-  justify-content:center;border-radius:4px;border:1px solid var(--border);transition:all .15s;
-}
-.panel-close:hover{color:var(--navy);border-color:var(--border);}
-.panel-body{flex:1;overflow-y:auto;padding:14px 18px;}
+.panel-close{position:absolute;top:12px;right:12px;cursor:pointer;font-size:12px;color:var(--text-dim);width:22px;height:22px;display:flex;align-items:center;justify-content:center;border-radius:4px;border:1px solid var(--border);transition:all .15s;}
+.panel-close:hover{color:var(--navy);}
+.panel-body{flex:1;overflow-y:auto;padding:12px 16px;}
 .panel-body::-webkit-scrollbar{width:3px;}
 .panel-body::-webkit-scrollbar-thumb{background:var(--border);}
-.psec{margin-bottom:16px;}
-.psec-title{font-family:'Press Start 2P',monospace;font-size:6px;color:var(--purple);letter-spacing:.14em;margin-bottom:8px;text-transform:uppercase;}
+.psec{margin-bottom:14px;}
+.psec-title{font-family:'Press Start 2P',monospace;font-size:5.5px;color:var(--purple);letter-spacing:.12em;margin-bottom:7px;}
 .psec-text{font-size:10px;color:var(--text-mid);line-height:1.75;}
 .pstat{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border);}
 .pstat:last-child{border-bottom:none;}
-.pstat-label{font-size:9px;color:var(--text-mid);}
-.pstat-val{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--purple);}
-.pcmd{background:rgba(92,72,232,.04);border:1px solid var(--border);border-radius:5px;padding:10px 12px;font-size:9px;color:var(--text-mid);line-height:1.9;word-break:break-all;}
+.pstat-l{font-size:9px;color:var(--text-mid);}
+.pstat-v{font-family:'Press Start 2P',monospace;font-size:6.5px;color:var(--purple);}
+.pcmd{background:rgba(92,72,232,.04);border:1px solid var(--border);border-radius:5px;padding:9px 11px;font-size:9px;color:var(--text-mid);line-height:1.9;word-break:break-all;}
 .pcmd span{color:var(--purple);}
 </style>
 </head>
 <body>
-
 <div id="topbar">
   <div class="tb-logo">LEADS GRID</div>
+  <div class="tb-sep"></div>
   <div class="tb-tag">SUPER OFFICE — AI OPERATIONS FLOOR</div>
+  <div class="tb-pill"><div class="pulse"></div>14 ONLINE</div>
   <div class="tb-right">
-    <div class="tb-stat"><span class="tb-stat-val">14 ONLINE</span><span class="tb-stat-lbl">AGENTS ACTIVE</span></div>
-    <div class="tb-stat"><span class="tb-stat-val" id="tasks-val">60 TASKS</span><span class="tb-stat-lbl">ACTIVE WORK</span></div>
+    <div><span class="tb-stat-val">14 LIVE</span><span class="tb-stat-lbl">AGENTS ACTIVE</span></div>
+    <div><span class="tb-stat-val" id="visit-count">0 VISITS</span><span class="tb-stat-lbl">TODAY</span></div>
     <div id="clock">--:--:--</div>
   </div>
 </div>
 
 <div id="hq">
+  <svg id="path-layer" width="2000" height="2000"></svg>
   <div id="building"></div>
 </div>
 
@@ -228,192 +177,103 @@ body{background:var(--bg);font-family:'Share Tech Mono',monospace;overflow:hidde
     <div class="panel-close" onclick="closePanel()">✕</div>
   </div>
   <div class="panel-body">
-    <div class="psec">
-      <div class="psec-title">What it does</div>
-      <div class="psec-text" id="p-desc"></div>
-    </div>
-    <div class="psec">
-      <div class="psec-title">Live Stats</div>
-      <div id="p-stats"></div>
-    </div>
-    <div class="psec">
-      <div class="psec-title">Run Command</div>
-      <div class="pcmd" id="p-cmd"></div>
-    </div>
+    <div class="psec"><div class="psec-title">WHAT IT DOES</div><div class="psec-text" id="p-desc"></div></div>
+    <div class="psec"><div class="psec-title">LIVE STATS</div><div id="p-stats"></div></div>
+    <div class="psec"><div class="psec-title">RUN COMMAND</div><div class="pcmd" id="p-cmd"></div></div>
   </div>
 </div>
 
 <script>
-// ── AGENT DATA ────────────────────────────────────────────────
+// ── AGENT DATA ────────────────────────────────────────────────────────────────
 const AGENTS = {
-  r1:{icon:'🔬',name:'Research Lab',tag:'R01',color:'#dde8ff',accentTop:'#5c48e8',char:'🧑‍💻',status:'ok',
-    statusText:'Building ICP brief...',statuses:['Building ICP brief...','Querying Apollo...','Analyzing triggers...'],
-    desc:'Builds deep ICP briefs per client. Researches competitor outbound, identifies ideal buyer personas, and flags which trigger signals mean an account is ready-to-buy.',
-    stats:[{l:'ICP Profiles',v:'14'},{l:'Trigger Signals',v:'5'},{l:'Avoid Angles',v:'2'},{l:'Tier 1 Markets',v:'3'}],
-    cmd:'python 1-research-lab/research.py build "Cognify AI"',
-    furniture:[
-      {cls:'desk',s:'width:72px;height:36px;background:#c8d0f8;bottom:34px;left:14px;'},
-      {cls:'monitor',s:'width:36px;height:28px;background:#3a3a7a;bottom:68px;left:26px;',screen:'background:#6060c8;'},
-      {cls:'chair',s:'width:22px;height:22px;background:#a0a8e8;bottom:24px;left:34px;'},
-      {cls:'shelf',s:'width:48px;height:10px;background:#b8c0f0;top:36px;right:10px;'},
-      {cls:'plant-emoji',s:'right:10px;bottom:34px;',txt:'🌿'},
-    ]},
-  r2:{icon:'🏭',name:'Lead Factory',tag:'R02',color:'#ddf0ea',accentTop:'#00b4a0',char:'⚙️',status:'ok',
-    statusText:'Waterfall running...',statuses:['Waterfall running...','Scoring 722 leads...','Export ready ✓'],
-    desc:'Takes raw Apollo leads through a 4-step email waterfall (Prospeo → Apollo → Hunter → Debounce), then scores each lead by trigger signals.',
-    stats:[{l:'Raw Leads',v:'1,240'},{l:'Verified ≥6',v:'722'},{l:'Email Valid',v:'94.2%'},{l:'Bounce Rate',v:'0.8%'}],
-    cmd:'python 2-lead-factory/clay_workflow.py run',
-    furniture:[
-      {cls:'desk',s:'width:80px;height:34px;background:#b8e8d8;bottom:34px;left:10px;'},
-      {cls:'monitor',s:'width:40px;height:30px;background:#2a6a5a;bottom:66px;left:20px;',screen:'background:#00b4a0;'},
-      {cls:'chair',s:'width:22px;height:22px;background:#90d8c0;bottom:24px;left:28px;'},
-      {cls:'server-rack',s:'width:22px;height:52px;background:#3a5a50;right:16px;bottom:34px;'},
-      {cls:'plant-emoji',s:'right:50px;bottom:34px;',txt:'🌱'},
-    ]},
-  r4:{icon:'✍️',name:'Copy Room',tag:'R04',color:'#eeddf8',accentTop:'#8b5cf6',char:'🖊️',status:'ok',
-    statusText:'0 violations ✓',statuses:['Writing D1/D3/D7...','Validating sequence...','0 violations ✓'],
-    desc:'Writes and auto-validates cold email sequences. Enforces the full playbook — word counts, banned phrases, opener rules — and rewrites until every rule passes.',
+  r1:{icon:'🔬',name:'Research Lab',tag:'R01',char:'🧑‍💻',charLabel:'Dr. IRIS',
+    bg:'#dde8ff',top:'#5c48e8',status:'ok',
+    statuses:['Building ICP brief...','Querying Apollo...','Analyzing triggers...','Competitor teardown ✓'],
+    desc:'Builds deep ICP briefs per client. Researches competitor outbound, identifies ideal buyers, flags which trigger signals mean an account is ready-to-buy.',
+    stats:[{l:'ICP Profiles',v:'14'},{l:'Trigger Signals',v:'5'},{l:'Avoid Angles',v:'2'},{l:'Markets',v:'3'}],
+    cmd:'python 1-research-lab/research.py build "Cognify AI"'},
+  r2:{icon:'🏭',name:'Lead Factory',tag:'R02',char:'⚙️',charLabel:'FELIX',
+    bg:'#ddf0ea',top:'#00b4a0',status:'ok',
+    statuses:['Waterfall running...','Scoring 722 leads...','Export ready ✓','Enriching batch...'],
+    desc:'Takes raw Apollo leads through a 4-step email waterfall, then scores each lead by trigger signals.',
+    stats:[{l:'Raw Leads',v:'1,240'},{l:'Verified',v:'722'},{l:'Email Valid',v:'94.2%'},{l:'Bounce Rate',v:'0.8%'}],
+    cmd:'python 2-lead-factory/clay_workflow.py run'},
+  r4:{icon:'✍️',name:'Copy Room',tag:'R04',char:'🖊️',charLabel:'COPY',
+    bg:'#eeddf8',top:'#8b5cf6',status:'ok',
+    statuses:['Writing D1/D3/D7...','Validating sequence...','0 violations ✓','A/B test registered'],
+    desc:'Writes and auto-validates cold email sequences. Enforces playbook rules. Re-generates until every rule passes.',
     stats:[{l:'Sequences',v:'38'},{l:'Violations',v:'0'},{l:'D1 Words',v:'74'},{l:'A/B Tests',v:'12'}],
-    cmd:'python 4-copy-room/copy_generator.py generate "Cognify AI"',
-    furniture:[
-      {cls:'desk',s:'width:70px;height:34px;background:#d8b8f8;bottom:34px;left:14px;'},
-      {cls:'monitor',s:'width:34px;height:26px;background:#5a3a8a;bottom:66px;left:24px;',screen:'background:#a060e0;'},
-      {cls:'chair',s:'width:22px;height:22px;background:#c0a0e8;bottom:24px;left:30px;'},
-      {cls:'shelf',s:'width:44px;height:10px;background:#c8a8f0;top:36px;left:10px;'},
-      {cls:'plant-emoji',s:'right:12px;bottom:34px;',txt:'🪴'},
-    ]},
-  r5:{icon:'💼',name:'LinkedIn Room',tag:'R05',color:'#dde8ff',accentTop:'#3b82f6',char:'🔗',status:'ok',
-    statusText:'95 in sequence',statuses:['95 in sequence','26% acceptance','DMs active...'],
-    desc:'Manages LinkedIn outreach via HeyReach. Prevents double-touching, launches connect + DM sequences, monitors acceptance rates.',
+    cmd:'python 4-copy-room/copy_generator.py generate "Cognify AI"'},
+  r5:{icon:'💼',name:'LinkedIn Room',tag:'R05',char:'🔗',charLabel:'LINX',
+    bg:'#dde8ff',top:'#3b82f6',status:'ok',
+    statuses:['95 in sequence','26% acceptance','DMs active...','Guard: 12 excluded'],
+    desc:'Manages LinkedIn outreach via HeyReach. Prevents double-touching, tracks acceptance rates.',
     stats:[{l:'In Sequence',v:'95'},{l:'Acceptance',v:'26.3%'},{l:'DMs Active',v:'5'},{l:'Senders',v:'3'}],
-    cmd:'python 5-linkedin-room/heyreach_campaigns.py launch "Cognify AI"',
-    furniture:[
-      {cls:'desk',s:'width:72px;height:34px;background:#b8c8f8;bottom:34px;left:14px;'},
-      {cls:'monitor',s:'width:36px;height:28px;background:#2a3a8a;bottom:66px;left:24px;',screen:'background:#3b82f6;'},
-      {cls:'chair',s:'width:22px;height:22px;background:#a0b0e8;bottom:24px;left:30px;'},
-      {cls:'plant-emoji',s:'right:12px;bottom:34px;',txt:'🌿'},
-    ]},
-  r6:{icon:'📬',name:'Comms Lab',tag:'R06',color:'#ddf8ec',accentTop:'#16a34a',char:'📩',status:'ok',
-    statusText:'8 warm replies →',statuses:['Classifying 47 replies...','8 warm leads found','Slack routed ✓'],
-    desc:'Reads every inbound reply from email and LinkedIn, classifies intent with Claude, drafts personalized responses, and routes warm leads to Slack.',
+    cmd:'python 5-linkedin-room/heyreach_campaigns.py launch "Cognify AI"'},
+  r6:{icon:'📬',name:'Comms Lab',tag:'R06',char:'📩',charLabel:'COMM',
+    bg:'#ddf8ec',top:'#16a34a',status:'ok',
+    statuses:['Classifying 47 replies...','8 warm leads found','Slack routed ✓','Drafts queued: 12'],
+    desc:'Reads every inbound reply, classifies intent with Claude, drafts responses, routes warm leads to Slack.',
     stats:[{l:'Total Replies',v:'47'},{l:'Interested',v:'8'},{l:'Drafts Queued',v:'12'},{l:'Auto-Sent',v:'0'}],
-    cmd:'python 6-comms-lab/reply_handler.py process',
-    furniture:[
-      {cls:'desk',s:'width:72px;height:34px;background:#b8e8cc;bottom:34px;left:14px;'},
-      {cls:'monitor',s:'width:36px;height:28px;background:#2a5a3a;bottom:66px;left:24px;',screen:'background:#16a34a;'},
-      {cls:'chair',s:'width:22px;height:22px;background:#90d0a8;bottom:24px;left:30px;'},
-      {cls:'shelf',s:'width:44px;height:10px;background:#a8e0bc;top:36px;right:10px;'},
-      {cls:'plant-emoji',s:'right:10px;bottom:34px;',txt:'🌺'},
-    ]},
-  r7:{icon:'🧨',name:'War Room',tag:'R07',color:'#fff4dd',accentTop:'#f59e0b',char:'📊',status:'warn',
-    statusText:'⚠ PulseHR 1.8%',statuses:['⚠ PulseHR 1.8%','Score: 55 WARNING','D1 rewrite queued'],
-    desc:'Scores each campaign weekly against benchmarks. When metrics drop below thresholds, generates specific pivot recommendations.',
+    cmd:'python 6-comms-lab/reply_handler.py process'},
+  r7:{icon:'🧨',name:'War Room',tag:'R07',char:'📊',charLabel:'WARA',
+    bg:'#fff4dd',top:'#f59e0b',status:'warn',
+    statuses:['⚠ PulseHR 1.8%','Score: 55 WARNING','D1 rewrite queued','Pivot: raise score →7'],
+    desc:'Scores each campaign weekly. When metrics drop below thresholds, generates specific pivot recommendations.',
     stats:[{l:'Campaigns',v:'4'},{l:'Healthy',v:'2'},{l:'Warnings',v:'1'},{l:'Critical',v:'0'}],
-    cmd:'python 7-war-room/performance_monitor.py run',
-    furniture:[
-      {cls:'desk',s:'width:80px;height:36px;background:#f8e0a8;bottom:34px;left:10px;'},
-      {cls:'monitor',s:'width:40px;height:30px;background:#7a5000;bottom:68px;left:20px;',screen:'background:#f59e0b;'},
-      {cls:'chair',s:'width:22px;height:22px;background:#f0c870;bottom:24px;left:28px;'},
-      {cls:'plant-emoji',s:'right:12px;bottom:34px;',txt:'🌵'},
-    ]},
-  r8:{icon:'🗄️',name:'Archives',tag:'R08',color:'#f0f0f8',accentTop:'#6b728a',char:'🗃️',status:'ok',
-    statusText:'44K leads stored',statuses:['44K leads stored','127 hooks indexed','All rooms synced ✓'],
-    desc:'The shared knowledge base. Every sequence, hook, ICP profile, client config, and lead record lives here. All rooms read from and write to Archives.',
+    cmd:'python 7-war-room/performance_monitor.py run'},
+  r8:{icon:'🗄️',name:'Archives',tag:'R08',char:'🗃️',charLabel:'ARCH',
+    bg:'#f0f0f8',top:'#6b728a',status:'ok',
+    statuses:['44K leads stored','127 hooks indexed','All rooms synced ✓','Top hook: 7.2% RPR'],
+    desc:'The shared knowledge base. Every sequence, hook, ICP profile, and lead record lives here.',
     stats:[{l:'Total Leads',v:'44K'},{l:'Hooks Library',v:'127'},{l:'Sequences',v:'38'},{l:'Top Hook RPR',v:'7.2%'}],
-    cmd:'python 8-archives-room/archives.py status',
-    furniture:[
-      {cls:'shelf',s:'width:60px;height:12px;background:#c0c0d8;top:32px;left:12px;'},
-      {cls:'shelf',s:'width:60px;height:12px;background:#b8b8d0;top:50px;left:12px;'},
-      {cls:'shelf',s:'width:60px;height:12px;background:#c0c0d8;top:68px;left:12px;'},
-      {cls:'server-rack',s:'width:24px;height:56px;background:#4a4a6a;right:14px;bottom:34px;'},
-      {cls:'desk',s:'width:60px;height:30px;background:#d0d0e8;bottom:34px;left:10px;'},
-      {cls:'chair',s:'width:20px;height:20px;background:#b0b0cc;bottom:26px;left:28px;'},
-    ]},
-  cmd:{icon:'⚔️',name:'Command Agent',tag:'CMD',color:'#e8e8f8',accentTop:'#1a1f5e',char:'🤖',status:'ok',
-    statusText:'Orchestrating 14...',statuses:['Orchestrating 14...','Daily briefing sent','SLA 3/21 on track'],
-    desc:'The brain of the war room. Orchestrates all 14 rooms, monitors SLA health, routes urgent tasks, and generates daily briefings with alerts.',
-    stats:[{l:'SLA Day',v:'3/21'},{l:'Active Clients',v:'4'},{l:'Warm Leads',v:'8'},{l:'Warnings',v:'1'}],
-    cmd:'python super_agent.py status',
-    furniture:[
-      {cls:'desk',s:'width:90px;height:38px;background:#c0c0e0;bottom:34px;left:8px;'},
-      {cls:'monitor',s:'width:44px;height:34px;background:#1a1f5e;bottom:70px;left:18px;',screen:'background:#3a3f9e;'},
-      {cls:'monitor',s:'width:26px;height:20px;background:#2a2f7e;bottom:66px;left:68px;',screen:'background:#5c48e8;'},
-      {cls:'chair',s:'width:24px;height:24px;background:#9090c0;bottom:22px;left:36px;'},
-      {cls:'server-rack',s:'width:20px;height:50px;background:#3a3a6a;right:12px;bottom:34px;'},
-    ]},
-  r3:{icon:'⚙️',name:'Infra Room',tag:'R03',color:'#fef0dd',accentTop:'#f59e0b',char:'🛠️',status:'warn',
-    statusText:'⚠ 1 inbox flagged',statuses:['⚠ 1 inbox flagged','Avg score: 74.2','Re-warming queued'],
-    desc:'Monitors deliverability health across all sending inboxes. Catches warmup score drops before they become spam flags.',
+    cmd:'python 8-archives-room/archives.py status'},
+  cmd:{icon:'⚔️',name:'Command Agent',tag:'CMD',char:'🤖',charLabel:'CMD-1',
+    bg:'#e8e8f8',top:'#1a1f5e',status:'ok',
+    statuses:['Orchestrating 14...','Daily briefing sent','SLA 3/21 on track','Routing tasks...'],
+    desc:'The brain. Orchestrates all 14 rooms, monitors SLA, routes tasks, generates daily briefings.',
+    stats:[{l:'SLA Day',v:'3/21'},{l:'Clients',v:'4'},{l:'Warm Leads',v:'8'},{l:'Warnings',v:'1'}],
+    cmd:'python super_agent.py status'},
+  r3:{icon:'⚙️',name:'Infra Room',tag:'R03',char:'🛠️',charLabel:'INF',
+    bg:'#fef0dd',top:'#f59e0b',status:'warn',
+    statuses:['⚠ 1 inbox flagged','Avg score: 74.2','Re-warming queued','Pause: inbox3'],
+    desc:'Monitors deliverability health across all inboxes. Catches warmup drops before they cause damage.',
     stats:[{l:'Avg Warmup',v:'74.2'},{l:'Active Inboxes',v:'9'},{l:'Bounce Rate',v:'0.8%'},{l:'Flagged',v:'1'}],
-    cmd:'python 3-infra-room/infra_setup.py audit',
-    furniture:[
-      {cls:'server-rack',s:'width:22px;height:60px;background:#7a5000;left:14px;bottom:34px;'},
-      {cls:'server-rack',s:'width:22px;height:60px;background:#6a4000;left:42px;bottom:34px;'},
-      {cls:'desk',s:'width:60px;height:28px;background:#f8d898;bottom:34px;right:10px;'},
-      {cls:'monitor',s:'width:30px;height:24px;background:#7a5000;bottom:60px;right:22px;',screen:'background:#f59e0b;'},
-      {cls:'chair',s:'width:20px;height:20px;background:#e8c060;bottom:26px;right:26px;'},
-    ]},
-  r10:{icon:'📋',name:'Intake Room',tag:'R10',color:'#f5f5ff',accentTop:'#a0a4cc',char:'📝',status:'ok',
-    statusText:'Ready for client',statuses:['Ready for client','28 questions loaded','.docx import ready'],
-    desc:'Onboards new clients with a 28-question interview. Accepts .docx or interactive mode. Outputs structured ICP profiles to Archives.',
+    cmd:'python 3-infra-room/infra_setup.py audit'},
+  r10:{icon:'📋',name:'Intake Room',tag:'R10',char:'📝',charLabel:'INTA',
+    bg:'#f5f5ff',top:'#a0a4cc',status:'ok',
+    statuses:['Ready for client','28 questions loaded','.docx import ready','Awaiting brief...'],
+    desc:'Onboards new clients with 28 questions. Accepts .docx or interactive. Outputs structured ICP profiles.',
     stats:[{l:'Questions',v:'28'},{l:'Sections',v:'6'},{l:'Briefs Built',v:'0'},{l:'Gaps Flagged',v:'0'}],
-    cmd:'python 10-intake-room/intake_agent.py interactive',
-    furniture:[
-      {cls:'desk',s:'width:72px;height:34px;background:#c8c8e8;bottom:34px;left:14px;'},
-      {cls:'monitor',s:'width:36px;height:28px;background:#4a4a7a;bottom:66px;left:24px;',screen:'background:#8080c0;'},
-      {cls:'chair',s:'width:22px;height:22px;background:#a8a8cc;bottom:24px;left:30px;'},
-      {cls:'shelf',s:'width:50px;height:10px;background:#b0b0d0;top:36px;right:10px;'},
-      {cls:'plant-emoji',s:'right:10px;bottom:34px;',txt:'🌿'},
-    ]},
-  r11:{icon:'📡',name:'Super Monitor',tag:'R11',color:'#ddf8f8',accentTop:'#00b4a0',char:'👁️',status:'ok',
-    statusText:'14/14 rooms live',statuses:['14/14 rooms live','0 critical alerts','System nominal ✓'],
-    desc:'One command gives a full health report across all 14 rooms — API status, campaign scores, active alerts, and a Claude prose summary.',
+    cmd:'python 10-intake-room/intake_agent.py interactive'},
+  r11:{icon:'📡',name:'Super Monitor',tag:'R11',char:'👁️',charLabel:'MON',
+    bg:'#ddf8f8',top:'#00b4a0',status:'ok',
+    statuses:['14/14 rooms live','0 critical alerts','System nominal ✓','Watching...'],
+    desc:'Full health report across all 14 rooms — API status, campaign scores, alerts, and Claude prose summary.',
     stats:[{l:'Critical',v:'0'},{l:'Warnings',v:'1'},{l:'Campaigns Live',v:'4'},{l:'Infra Status',v:'OK'}],
-    cmd:'python 11-monitor-room/monitor_agent.py',
-    furniture:[
-      {cls:'desk',s:'width:80px;height:34px;background:#a8e0e0;bottom:34px;left:10px;'},
-      {cls:'monitor',s:'width:44px;height:34px;background:#2a5a5a;bottom:66px;left:18px;',screen:'background:#00b4a0;'},
-      {cls:'monitor',s:'width:24px;height:18px;background:#3a7070;bottom:62px;left:68px;',screen:'background:#00d4c0;'},
-      {cls:'chair',s:'width:22px;height:22px;background:#80c8c8;bottom:24px;left:28px;'},
-    ]},
-  r12:{icon:'🕵️',name:'Competitor Intel',tag:'R12',color:'#eeeeff',accentTop:'#5c48e8',char:'🔍',status:'ok',
-    statusText:'3 gaps found',statuses:['3 gaps found','Scanning G2...','Angles updated ✓'],
-    desc:'Scans G2, LinkedIn, and job boards for competitor signals. Finds saturated angles to avoid and market gaps to exploit in copy.',
+    cmd:'python 11-monitor-room/monitor_agent.py'},
+  r12:{icon:'🕵️',name:'Competitor Intel',tag:'R12',char:'🔍',charLabel:'CIXT',
+    bg:'#eeeeff',top:'#5c48e8',status:'ok',
+    statuses:['3 gaps found','Scanning G2...','Angles updated ✓','Weekly scan done'],
+    desc:'Scans G2, LinkedIn, and job boards. Finds saturated angles to avoid and market gaps to exploit.',
     stats:[{l:'Competitors',v:'3'},{l:'Saturated Angles',v:'3'},{l:'Market Gaps',v:'3'},{l:'Scan Frequency',v:'Weekly'}],
-    cmd:'python 12-competitor-room/competitor_intel.py scan "Cognify AI"',
-    furniture:[
-      {cls:'desk',s:'width:72px;height:34px;background:#c0c0f0;bottom:34px;left:14px;'},
-      {cls:'monitor',s:'width:38px;height:30px;background:#3a3a8a;bottom:66px;left:22px;',screen:'background:#5c48e8;'},
-      {cls:'chair',s:'width:22px;height:22px;background:#a8a8e8;bottom:24px;left:30px;'},
-      {cls:'shelf',s:'width:46px;height:10px;background:#b0b0e0;top:36px;right:10px;'},
-    ]},
-  r13:{icon:'🗺️',name:'Committee Mapper',tag:'R13',color:'#fdf0ff',accentTop:'#8b5cf6',char:'🧩',status:'ok',
-    statusText:'7 stakeholders mapped',statuses:['7 stakeholders mapped','Fit: STRONG 8/10','Outreach order set ✓'],
-    desc:'For any target account, finds all buying stakeholders via LinkedIn, maps each to a committee role, and writes personalized hook lines per role.',
+    cmd:'python 12-competitor-room/competitor_intel.py scan "Cognify AI"'},
+  r13:{icon:'🗺️',name:'Committee Mapper',tag:'R13',char:'🧩',charLabel:'MAPA',
+    bg:'#fdf0ff',top:'#8b5cf6',status:'ok',
+    statuses:['7 stakeholders mapped','Fit: STRONG 8/10','Order set ✓','Hook lines ready'],
+    desc:'Finds all buying stakeholders at any account, maps committee roles, writes personalized hook lines.',
     stats:[{l:'Stakeholders',v:'7'},{l:'Account Fit',v:'8/10'},{l:'Fit Label',v:'STRONG'},{l:'Start With',v:'Champion'}],
-    cmd:'python 13-account-room/account_mapper.py map "Cognify AI" "Trellis" "trellis.io"',
-    furniture:[
-      {cls:'desk',s:'width:72px;height:34px;background:#d8b8f8;bottom:34px;left:14px;'},
-      {cls:'monitor',s:'width:36px;height:28px;background:#5a3a8a;bottom:66px;left:24px;',screen:'background:#8b5cf6;'},
-      {cls:'chair',s:'width:22px;height:22px;background:#c0a0e8;bottom:24px;left:30px;'},
-      {cls:'plant-emoji',s:'right:12px;bottom:34px;',txt:'🗺️'},
-    ]},
-  r14:{icon:'💰',name:'Deal Intelligence',tag:'R14',color:'#ddf8ec',accentTop:'#16a34a',char:'💹',status:'ok',
-    statusText:'$42K pipeline',statuses:['$42K pipeline','8 deals scored','HubSpot synced ✓'],
-    desc:'Tracks interested leads as CRM deals. AI scores each 0–100, recommends exact next actions, and syncs to HubSpot automatically.',
-    stats:[{l:'Active Deals',v:'8'},{l:'Pipeline Value',v:'$42K'},{l:'Avg AI Score',v:'74/100'},{l:'CRM Sync',v:'HubSpot'}],
-    cmd:'python 14-deal-room/deal_intelligence.py sync "Cognify AI"',
-    furniture:[
-      {cls:'desk',s:'width:78px;height:36px;background:#b0e8cc;bottom:34px;left:10px;'},
-      {cls:'monitor',s:'width:40px;height:30px;background:#2a6a3a;bottom:68px;left:19px;',screen:'background:#16a34a;'},
-      {cls:'chair',s:'width:22px;height:22px;background:#88d0a8;bottom:24px;left:28px;'},
-      {cls:'server-rack',s:'width:20px;height:48px;background:#3a6a4a;right:14px;bottom:34px;'},
-      {cls:'plant-emoji',s:'right:44px;bottom:34px;',txt:'💎'},
-    ]},
+    cmd:'python 13-account-room/account_mapper.py map "Cognify AI" "Trellis" "trellis.io"'},
+  r14:{icon:'💰',name:'Deal Intelligence',tag:'R14',char:'💹',charLabel:'DEAL',
+    bg:'#ddf8ec',top:'#16a34a',status:'ok',
+    statuses:['$42K pipeline','8 deals scored','HubSpot synced ✓','Archform: send proposal'],
+    desc:'Tracks interested leads as CRM deals. AI scores each 0–100, recommends exact next actions, syncs to HubSpot.',
+    stats:[{l:'Active Deals',v:'8'},{l:'Pipeline Value',v:'$42K'},{l:'Avg Score',v:'74/100'},{l:'CRM',v:'HubSpot'}],
+    cmd:'python 14-deal-room/deal_intelligence.py sync "Cognify AI"'},
 };
 
-// Wing layout — 4 columns per row
-const WINGS = [
+// Wing layout
+const WINGS=[
   {label:'WING A — INTELLIGENCE',ids:['r1','r2',null,null]},
   {label:'WING B — EXECUTION',ids:['r4','r5','r6','r7']},
   {label:'WING C — COMMAND & INFRA',ids:['cmd','r3','r8',null]},
@@ -421,7 +281,258 @@ const WINGS = [
   {label:'WING E — ADVANCED INTEL',ids:['r12','r13','r14',null]},
 ];
 
-// ── BUILD ─────────────────────────────────────────────────────
+// Visit messages (agent A visits agent B)
+const VISIT_MSGS = {
+  'r1→r2':'Got new ICP data!','r2→r1':'Lead batch ready','r4→r6':'Sequence validated ✓',
+  'r6→r4':'Reply pattern found','cmd→r7':'Check warning!','r7→cmd':'Scores updated',
+  'r3→cmd':'Inbox flagged ⚠','r11→cmd':'All clear ✓','r1→r12':'Competitor data?',
+  'r12→r1':'Angles to avoid','r13→r14':'Account mapped!','r14→r6':'Deal needs reply',
+  'r8→r4':'Hook library ready','r5→r6':'LinkedIn replies in','r10→r1':'New brief loaded',
+};
+
+// Furniture builder per room
+function buildFurniture(id, room){
+  const furniture = {
+    r1:[
+      // main desk
+      {tag:'div',cls:'px desk',s:'width:80px;height:32px;background:#b8c8f8;bottom:38px;left:12px;border-radius:3px;z-index:3;'},
+      // laptop on desk
+      {tag:'div',cls:'px laptop-base',s:'width:36px;height:6px;background:#888;bottom:70px;left:26px;border-radius:2px;z-index:4;',
+        children:[{tag:'div',cls:'laptop-screen',s:'width:34px;height:24px;background:#2a2a7a;bottom:4px;left:1px;border-radius:2px 2px 0 0;',
+          children:[{tag:'div',s:'position:absolute;inset:2px;border-radius:1px;background:#5560e8;animation:screenflicker 5s ease-in-out infinite;'}]}]},
+      // chair
+      {tag:'div',cls:'px',s:'width:22px;height:22px;background:#a0b0e8;bottom:28px;left:40px;border-radius:50% 50% 40% 40%;z-index:2;'},
+      // bookshelf right wall
+      {tag:'div',cls:'px shelf-unit',s:'width:14px;height:58px;background:#c8a870;right:12px;top:28px;z-index:2;border-radius:2px;'},
+      {tag:'div',cls:'px shelf-book',s:'width:6px;height:18px;background:#e84848;right:16px;top:32px;border-radius:1px;z-index:3;'},
+      {tag:'div',cls:'px shelf-book',s:'width:5px;height:15px;background:#5c48e8;right:22px;top:35px;border-radius:1px;z-index:3;'},
+      {tag:'div',cls:'px shelf-book',s:'width:6px;height:20px;background:#00b4a0;right:14px;top:50px;border-radius:1px;z-index:3;'},
+      // potted plant
+      {tag:'div',cls:'px',s:'width:18px;height:16px;background:#8B5E3C;right:36px;bottom:38px;border-radius:0 0 4px 4px;z-index:3;',
+        children:[{tag:'div',s:'position:absolute;bottom:14px;left:50%;transform:translateX(-50%);font-size:16px;'}], emoji:'🌿'},
+      // coffee cup
+      {tag:'div',cls:'px cup',s:'width:10px;height:10px;background:#d4a06a;left:80px;bottom:74px;border-radius:2px 2px 3px 3px;z-index:5;',
+        children:[{tag:'div',cls:'cup-steam',s:''}]},
+      // rug
+      {tag:'div',cls:'px rug',s:'width:70px;height:30px;background:#5c48e8;bottom:34px;left:8px;border-radius:4px;z-index:1;opacity:.12;'},
+    ],
+    r2:[
+      {tag:'div',cls:'px desk',s:'width:78px;height:30px;background:#a8d8c8;bottom:38px;left:10px;border-radius:3px;z-index:3;'},
+      {tag:'div',cls:'px laptop-base',s:'width:34px;height:6px;background:#777;bottom:68px;left:22px;border-radius:2px;z-index:4;',
+        children:[{tag:'div',cls:'laptop-screen',s:'width:32px;height:22px;background:#2a5a4a;bottom:4px;left:1px;border-radius:2px 2px 0 0;',
+          children:[{tag:'div',s:'position:absolute;inset:2px;border-radius:1px;background:#00b4a0;animation:screenflicker 5s ease-in-out infinite;'}]}]},
+      {tag:'div',cls:'px',s:'width:20px;height:20px;background:#7ec8a8;bottom:30px;left:38px;border-radius:50% 50% 40% 40%;z-index:2;'},
+      // server rack
+      {tag:'div',cls:'px',s:'width:22px;height:54px;background:#3a5a50;right:14px;bottom:38px;border-radius:3px;z-index:3;',
+        children:[{tag:'div',s:'position:absolute;top:6px;left:3px;right:3px;height:3px;background:rgba(0,180,160,.7);border-radius:1px;box-shadow:0 8px rgba(0,180,160,.5),0 16px rgba(245,158,11,.5),0 24px rgba(92,72,232,.5);'}]},
+      {tag:'div',cls:'px',s:'width:16px;height:48px;background:#2a4a40;right:40px;bottom:38px;border-radius:3px;z-index:2;'},
+      {tag:'div',cls:'px',s:'right:60px;bottom:38px;font-size:15px;',emoji:'🌱'},
+      {tag:'div',cls:'px rug',s:'width:65px;height:28px;background:#00b4a0;bottom:34px;left:6px;border-radius:4px;opacity:.1;'},
+      {tag:'div',cls:'px cup',s:'width:9px;height:9px;background:#c4905a;left:72px;bottom:70px;border-radius:2px 2px 3px 3px;z-index:5;',children:[{tag:'div',cls:'cup-steam',s:''}]},
+    ],
+    r4:[
+      {tag:'div',cls:'px desk',s:'width:76px;height:30px;background:#c8a8f0;bottom:38px;left:12px;border-radius:3px;z-index:3;'},
+      {tag:'div',cls:'px laptop-base',s:'width:38px;height:6px;background:#666;bottom:68px;left:20px;border-radius:2px;z-index:4;',
+        children:[{tag:'div',cls:'laptop-screen',s:'width:36px;height:26px;background:#5a3a8a;bottom:4px;left:1px;border-radius:2px 2px 0 0;',
+          children:[{tag:'div',s:'position:absolute;inset:2px;border-radius:1px;background:#9060d0;animation:screenflicker 5s ease-in-out infinite;'}]}]},
+      {tag:'div',cls:'px',s:'width:22px;height:22px;background:#b090d8;bottom:28px;left:38px;border-radius:50% 50% 40% 40%;z-index:2;'},
+      // whiteboard
+      {tag:'div',cls:'px whiteboard',s:'width:50px;height:34px;background:#f5f5ff;right:10px;top:28px;z-index:3;',
+        children:[
+          {tag:'div',cls:'wb-line',s:'width:36px;left:7px;top:8px;'},
+          {tag:'div',cls:'wb-line',s:'width:28px;left:7px;top:16px;'},
+          {tag:'div',cls:'wb-line',s:'width:32px;left:7px;top:24px;'},
+        ]},
+      {tag:'div',cls:'px',s:'right:12px;bottom:38px;font-size:14px;',emoji:'🪴'},
+      {tag:'div',cls:'px cup',s:'width:9px;height:9px;background:#c4805a;left:76px;bottom:70px;border-radius:2px 2px 3px 3px;z-index:5;',children:[{tag:'div',cls:'cup-steam',s:''}]},
+      {tag:'div',cls:'px rug',s:'width:68px;height:28px;background:#8b5cf6;bottom:34px;left:8px;border-radius:4px;opacity:.1;'},
+      // sticky notes
+      {tag:'div',cls:'px',s:'width:16px;height:16px;background:#fef08a;right:14px;top:65px;border-radius:1px;z-index:4;transform:rotate(-3deg);'},
+      {tag:'div',cls:'px',s:'width:14px;height:14px;background:#fca5a5;right:30px;top:68px;border-radius:1px;z-index:4;transform:rotate(2deg);'},
+    ],
+    r5:[
+      {tag:'div',cls:'px desk',s:'width:72px;height:30px;background:#b0c0f0;bottom:38px;left:12px;border-radius:3px;z-index:3;'},
+      {tag:'div',cls:'px laptop-base',s:'width:36px;height:6px;background:#777;bottom:68px;left:20px;border-radius:2px;z-index:4;',
+        children:[{tag:'div',cls:'laptop-screen',s:'width:34px;height:23px;background:#2a3a8a;bottom:4px;left:1px;border-radius:2px 2px 0 0;',
+          children:[{tag:'div',s:'position:absolute;inset:2px;border-radius:1px;background:#3b82f6;animation:screenflicker 5s ease-in-out infinite;'}]}]},
+      {tag:'div',cls:'px',s:'width:20px;height:20px;background:#90a8e0;bottom:28px;left:35px;border-radius:50% 50% 40% 40%;z-index:2;'},
+      {tag:'div',cls:'px',s:'right:12px;bottom:38px;font-size:15px;',emoji:'🌿'},
+      {tag:'div',cls:'px',s:'right:14px;top:28px;font-size:13px;',emoji:'📌'},
+      // second monitor small
+      {tag:'div',cls:'px',s:'width:28px;height:20px;background:#1a2a7a;bottom:68px;left:60px;border-radius:2px;z-index:4;',
+        children:[{tag:'div',s:'position:absolute;inset:2px;border-radius:1px;background:#2244cc;animation:screenflicker 6s ease-in-out infinite;'}]},
+      {tag:'div',cls:'px rug',s:'width:65px;height:28px;background:#3b82f6;bottom:34px;left:8px;border-radius:4px;opacity:.09;'},
+      {tag:'div',cls:'px cup',s:'width:9px;height:9px;background:#b4804a;left:78px;bottom:70px;border-radius:2px 2px 3px 3px;z-index:5;',children:[{tag:'div',cls:'cup-steam',s:''}]},
+    ],
+    r6:[
+      {tag:'div',cls:'px desk',s:'width:78px;height:30px;background:#a8d8b8;bottom:38px;left:10px;border-radius:3px;z-index:3;'},
+      {tag:'div',cls:'px laptop-base',s:'width:38px;height:6px;background:#666;bottom:68px;left:18px;border-radius:2px;z-index:4;',
+        children:[{tag:'div',cls:'laptop-screen',s:'width:36px;height:25px;background:#2a5a3a;bottom:4px;left:1px;border-radius:2px 2px 0 0;',
+          children:[{tag:'div',s:'position:absolute;inset:2px;border-radius:1px;background:#16a34a;animation:screenflicker 5s ease-in-out infinite;'}]}]},
+      {tag:'div',cls:'px',s:'width:22px;height:22px;background:#88c8a0;bottom:28px;left:36px;border-radius:50% 50% 40% 40%;z-index:2;'},
+      {tag:'div',cls:'px',s:'right:10px;bottom:38px;font-size:15px;',emoji:'🌺'},
+      // inbox tray
+      {tag:'div',cls:'px',s:'width:30px;height:8px;background:#c8e8c0;right:10px;top:28px;border-radius:2px;z-index:3;border:1px solid rgba(22,163,74,.3);'},
+      {tag:'div',cls:'px',s:'width:30px;height:8px;background:#e8f8e0;right:10px;top:38px;border-radius:2px;z-index:3;border:1px solid rgba(22,163,74,.2);'},
+      {tag:'div',cls:'px',s:'right:14px;top:50px;font-size:9px;color:rgba(22,163,74,.7);z-index:4;font-family:Press Start 2P;font-size:4px;',text:'8 IN'},
+      {tag:'div',cls:'px rug',s:'width:68px;height:28px;background:#16a34a;bottom:34px;left:6px;border-radius:4px;opacity:.09;'},
+      {tag:'div',cls:'px cup',s:'width:9px;height:9px;background:#d4904a;left:80px;bottom:70px;border-radius:2px 2px 3px 3px;z-index:5;',children:[{tag:'div',cls:'cup-steam',s:''}]},
+    ],
+    r7:[
+      {tag:'div',cls:'px desk',s:'width:82px;height:32px;background:#f0d890;bottom:38px;left:8px;border-radius:3px;z-index:3;'},
+      {tag:'div',cls:'px laptop-base',s:'width:40px;height:6px;background:#888;bottom:70px;left:18px;border-radius:2px;z-index:4;',
+        children:[{tag:'div',cls:'laptop-screen',s:'width:38px;height:27px;background:#7a4a00;bottom:4px;left:1px;border-radius:2px 2px 0 0;',
+          children:[{tag:'div',s:'position:absolute;inset:2px;border-radius:1px;background:#f59e0b;animation:screenflicker 4s ease-in-out infinite;'}]}]},
+      // second monitor
+      {tag:'div',cls:'px',s:'width:28px;height:20px;background:#5a3800;bottom:70px;left:62px;border-radius:2px;z-index:4;',
+        children:[{tag:'div',s:'position:absolute;inset:2px;border-radius:1px;background:#d97706;animation:screenflicker 6s ease-in-out infinite;'}]},
+      {tag:'div',cls:'px',s:'width:24px;height:24px;background:#e8c060;bottom:26px;left:36px;border-radius:50% 50% 40% 40%;z-index:2;'},
+      {tag:'div',cls:'px',s:'right:12px;bottom:38px;font-size:14px;',emoji:'🌵'},
+      // warning sticky
+      {tag:'div',cls:'px',s:'width:20px;height:18px;background:#fef08a;right:12px;top:28px;border-radius:1px;z-index:4;transform:rotate(2deg);',
+        children:[{tag:'div',s:'position:absolute;inset:3px;font-size:8px;display:flex;align-items:center;justify-content:center;',text:'⚠️'}]},
+      {tag:'div',cls:'px rug',s:'width:72px;height:28px;background:#f59e0b;bottom:34px;left:4px;border-radius:4px;opacity:.1;'},
+    ],
+    r8:[
+      // filing cabinets
+      {tag:'div',cls:'px',s:'width:20px;height:52px;background:#b8b8d8;left:10px;top:28px;border-radius:2px;z-index:3;'},
+      {tag:'div',cls:'px',s:'width:20px;height:52px;background:#c0c0e0;left:32px;top:28px;border-radius:2px;z-index:3;'},
+      // server
+      {tag:'div',cls:'px',s:'width:22px;height:56px;background:#4a4a6a;right:10px;bottom:38px;border-radius:3px;z-index:3;',
+        children:[{tag:'div',s:'position:absolute;top:6px;left:3px;right:3px;height:3px;background:rgba(92,72,232,.6);border-radius:1px;box-shadow:0 8px rgba(92,72,232,.5),0 16px rgba(0,180,160,.5),0 24px rgba(245,158,11,.5);'}]},
+      {tag:'div',cls:'px desk',s:'width:60px;height:28px;background:#c8c8e8;bottom:38px;left:8px;border-radius:3px;z-index:3;'},
+      {tag:'div',cls:'px laptop-base',s:'width:30px;height:5px;background:#888;bottom:66px;left:16px;border-radius:2px;z-index:4;',
+        children:[{tag:'div',cls:'laptop-screen',s:'width:28px;height:19px;background:#3a3a6a;bottom:3px;left:1px;border-radius:2px 2px 0 0;',
+          children:[{tag:'div',s:'position:absolute;inset:2px;border-radius:1px;background:#5c48e8;animation:screenflicker 5s ease-in-out infinite;'}]}]},
+      {tag:'div',cls:'px',s:'width:18px;height:18px;background:#a0a0c0;bottom:30px;left:28px;border-radius:50% 50% 40% 40%;z-index:2;'},
+      {tag:'div',cls:'px',s:'right:36px;bottom:38px;font-size:13px;',emoji:'📚'},
+    ],
+    cmd:[
+      {tag:'div',cls:'px desk',s:'width:92px;height:34px;background:#b0b0d8;bottom:38px;left:6px;border-radius:3px;z-index:3;'},
+      // dual monitors
+      {tag:'div',cls:'px laptop-base',s:'width:42px;height:6px;background:#555;bottom:72px;left:10px;border-radius:2px;z-index:4;',
+        children:[{tag:'div',cls:'laptop-screen',s:'width:40px;height:30px;background:#1a1f5e;bottom:4px;left:1px;border-radius:2px 2px 0 0;',
+          children:[{tag:'div',s:'position:absolute;inset:2px;border-radius:1px;background:#3a3f9e;animation:screenflicker 5s ease-in-out infinite;'}]}]},
+      {tag:'div',cls:'px',s:'width:30px;height:22px;background:#2a2f7e;bottom:70px;left:56px;border-radius:2px;z-index:4;',
+        children:[{tag:'div',s:'position:absolute;inset:2px;border-radius:1px;background:#5c48e8;animation:screenflicker 7s ease-in-out infinite;'}]},
+      {tag:'div',cls:'px',s:'width:26px;height:26px;background:#8888b8;bottom:26px;left:42px;border-radius:50% 50% 40% 40%;z-index:2;'},
+      {tag:'div',cls:'px',s:'width:20px;height:50px;background:#3a3a6a;right:10px;bottom:38px;border-radius:3px;z-index:3;',
+        children:[{tag:'div',s:'position:absolute;top:6px;left:3px;right:3px;height:3px;background:rgba(92,72,232,.8);border-radius:1px;box-shadow:0 8px rgba(0,180,160,.6),0 16px rgba(245,158,11,.5);'}]},
+      {tag:'div',cls:'px',s:'right:36px;bottom:38px;font-size:14px;',emoji:'🏆'},
+      {tag:'div',cls:'px rug',s:'width:80px;height:30px;background:#1a1f5e;bottom:34px;left:2px;border-radius:4px;opacity:.1;'},
+    ],
+    r3:[
+      {tag:'div',cls:'px',s:'width:22px;height:58px;background:#7a6000;left:10px;bottom:38px;border-radius:3px;z-index:3;',
+        children:[{tag:'div',s:'position:absolute;top:6px;left:3px;right:3px;height:3px;background:rgba(245,158,11,.7);border-radius:1px;box-shadow:0 10px rgba(245,158,11,.5),0 20px rgba(232,72,72,.5);'}]},
+      {tag:'div',cls:'px',s:'width:22px;height:58px;background:#6a5000;left:36px;bottom:38px;border-radius:3px;z-index:2;'},
+      {tag:'div',cls:'px',s:'width:22px;height:48px;background:#5a4000;left:62px;bottom:38px;border-radius:3px;z-index:2;'},
+      {tag:'div',cls:'px desk',s:'width:56px;height:28px;background:#f0d080;bottom:38px;right:8px;border-radius:3px;z-index:3;'},
+      {tag:'div',cls:'px laptop-base',s:'width:28px;height:5px;background:#888;bottom:66px;right:18px;border-radius:2px;z-index:4;',
+        children:[{tag:'div',cls:'laptop-screen',s:'width:26px;height:19px;background:#7a5000;bottom:3px;left:1px;border-radius:2px 2px 0 0;',
+          children:[{tag:'div',s:'position:absolute;inset:2px;border-radius:1px;background:#f59e0b;animation:screenflicker 5s ease-in-out infinite;'}]}]},
+      {tag:'div',cls:'px',s:'width:18px;height:18px;background:#e0b050;bottom:30px;right:30px;border-radius:50% 50% 40% 40%;z-index:2;'},
+      {tag:'div',cls:'px',s:'right:8px;bottom:70px;font-size:9px;',emoji:'⚠️'},
+    ],
+    r10:[
+      {tag:'div',cls:'px desk',s:'width:74px;height:30px;background:#c0c0e0;bottom:38px;left:12px;border-radius:3px;z-index:3;'},
+      {tag:'div',cls:'px laptop-base',s:'width:36px;height:6px;background:#777;bottom:68px;left:20px;border-radius:2px;z-index:4;',
+        children:[{tag:'div',cls:'laptop-screen',s:'width:34px;height:23px;background:#4a4a7a;bottom:4px;left:1px;border-radius:2px 2px 0 0;',
+          children:[{tag:'div',s:'position:absolute;inset:2px;border-radius:1px;background:#8080c0;animation:screenflicker 5s ease-in-out infinite;'}]}]},
+      {tag:'div',cls:'px',s:'width:20px;height:20px;background:#a0a0c8;bottom:28px;left:36px;border-radius:50% 50% 40% 40%;z-index:2;'},
+      // document stack
+      {tag:'div',cls:'px',s:'width:24px;height:3px;background:#fff;right:14px;top:42px;border-radius:1px;z-index:4;box-shadow:0 4px 0 #f0f0f8,0 8px 0 #e8e8f4;border:1px solid rgba(160,164,200,.3);'},
+      {tag:'div',cls:'px',s:'right:12px;bottom:38px;font-size:14px;',emoji:'🌿'},
+      {tag:'div',cls:'px',s:'right:14px;top:28px;font-size:12px;',emoji:'📄'},
+      {tag:'div',cls:'px rug',s:'width:66px;height:28px;background:#a0a4cc;bottom:34px;left:8px;border-radius:4px;opacity:.1;'},
+      {tag:'div',cls:'px cup',s:'width:9px;height:9px;background:#c49a6a;left:76px;bottom:70px;border-radius:2px 2px 3px 3px;z-index:5;',children:[{tag:'div',cls:'cup-steam',s:''}]},
+    ],
+    r11:[
+      {tag:'div',cls:'px desk',s:'width:82px;height:30px;background:#98d8d8;bottom:38px;left:8px;border-radius:3px;z-index:3;'},
+      // big monitor
+      {tag:'div',cls:'px laptop-base',s:'width:46px;height:6px;background:#666;bottom:68px;left:12px;border-radius:2px;z-index:4;',
+        children:[{tag:'div',cls:'laptop-screen',s:'width:44px;height:32px;background:#2a5a5a;bottom:4px;left:1px;border-radius:2px 2px 0 0;',
+          children:[{tag:'div',s:'position:absolute;inset:2px;border-radius:1px;background:#00b4a0;animation:screenflicker 5s ease-in-out infinite;'}]}]},
+      // side monitor
+      {tag:'div',cls:'px',s:'width:26px;height:19px;background:#3a7070;bottom:68px;left:62px;border-radius:2px;z-index:4;',
+        children:[{tag:'div',s:'position:absolute;inset:2px;border-radius:1px;background:#00d4c0;animation:screenflicker 7s ease-in-out infinite;'}]},
+      {tag:'div',cls:'px',s:'width:22px;height:22px;background:#70c0c0;bottom:26px;left:30px;border-radius:50% 50% 40% 40%;z-index:2;'},
+      {tag:'div',cls:'px',s:'right:10px;bottom:38px;font-size:14px;',emoji:'📡'},
+      {tag:'div',cls:'px rug',s:'width:72px;height:28px;background:#00b4a0;bottom:34px;left:4px;border-radius:4px;opacity:.1;'},
+    ],
+    r12:[
+      {tag:'div',cls:'px desk',s:'width:74px;height:30px;background:#c0c0f0;bottom:38px;left:12px;border-radius:3px;z-index:3;'},
+      {tag:'div',cls:'px laptop-base',s:'width:38px;height:6px;background:#777;bottom:68px;left:18px;border-radius:2px;z-index:4;',
+        children:[{tag:'div',cls:'laptop-screen',s:'width:36px;height:26px;background:#3a3a8a;bottom:4px;left:1px;border-radius:2px 2px 0 0;',
+          children:[{tag:'div',s:'position:absolute;inset:2px;border-radius:1px;background:#5c48e8;animation:screenflicker 5s ease-in-out infinite;'}]}]},
+      {tag:'div',cls:'px',s:'width:20px;height:20px;background:#a0a0e0;bottom:28px;left:38px;border-radius:50% 50% 40% 40%;z-index:2;'},
+      // pinboard
+      {tag:'div',cls:'px whiteboard',s:'width:44px;height:38px;background:#fef9e8;right:10px;top:26px;z-index:3;',
+        children:[
+          {tag:'div',cls:'px',s:'width:6px;height:6px;background:#e84848;border-radius:50%;top:6px;left:8px;z-index:5;'},
+          {tag:'div',cls:'px',s:'width:6px;height:6px;background:#5c48e8;border-radius:50%;top:6px;left:20px;z-index:5;'},
+          {tag:'div',cls:'px',s:'width:28px;height:2px;background:rgba(92,72,232,.2);top:16px;left:8px;border-radius:1px;'},
+          {tag:'div',cls:'px',s:'width:20px;height:2px;background:rgba(92,72,232,.2);top:22px;left:8px;border-radius:1px;'},
+          {tag:'div',cls:'px',s:'width:24px;height:2px;background:rgba(92,72,232,.2);top:28px;left:8px;border-radius:1px;'},
+        ]},
+      {tag:'div',cls:'px',s:'right:12px;bottom:38px;font-size:14px;',emoji:'🌿'},
+      {tag:'div',cls:'px rug',s:'width:66px;height:28px;background:#5c48e8;bottom:34px;left:8px;border-radius:4px;opacity:.09;'},
+    ],
+    r13:[
+      {tag:'div',cls:'px desk',s:'width:76px;height:30px;background:#d0b0f0;bottom:38px;left:12px;border-radius:3px;z-index:3;'},
+      {tag:'div',cls:'px laptop-base',s:'width:36px;height:6px;background:#777;bottom:68px;left:20px;border-radius:2px;z-index:4;',
+        children:[{tag:'div',cls:'laptop-screen',s:'width:34px;height:24px;background:#5a3a8a;bottom:4px;left:1px;border-radius:2px 2px 0 0;',
+          children:[{tag:'div',s:'position:absolute;inset:2px;border-radius:1px;background:#8b5cf6;animation:screenflicker 5s ease-in-out infinite;'}]}]},
+      {tag:'div',cls:'px',s:'width:20px;height:20px;background:#b890e0;bottom:28px;left:38px;border-radius:50% 50% 40% 40%;z-index:2;'},
+      // org chart on wall
+      {tag:'div',cls:'px whiteboard',s:'width:48px;height:40px;background:#fdf4ff;right:10px;top:26px;z-index:3;',
+        children:[
+          {tag:'div',cls:'px',s:'width:12px;height:8px;background:rgba(139,92,246,.3);border-radius:2px;top:4px;left:18px;'},
+          {tag:'div',cls:'px',s:'width:1px;height:8px;background:rgba(139,92,246,.3);top:12px;left:23px;'},
+          {tag:'div',cls:'px',s:'width:30px;height:1px;background:rgba(139,92,246,.3);top:20px;left:8px;'},
+          {tag:'div',cls:'px',s:'width:10px;height:7px;background:rgba(139,92,246,.2);border-radius:2px;top:21px;left:6px;'},
+          {tag:'div',cls:'px',s:'width:10px;height:7px;background:rgba(139,92,246,.2);border-radius:2px;top:21px;left:20px;'},
+          {tag:'div',cls:'px',s:'width:10px;height:7px;background:rgba(139,92,246,.2);border-radius:2px;top:21px;left:34px;'},
+        ]},
+      {tag:'div',cls:'px',s:'right:12px;bottom:38px;font-size:14px;',emoji:'🗺️'},
+      {tag:'div',cls:'px rug',s:'width:68px;height:28px;background:#8b5cf6;bottom:34px;left:8px;border-radius:4px;opacity:.09;'},
+    ],
+    r14:[
+      {tag:'div',cls:'px desk',s:'width:80px;height:32px;background:#a8d8b8;bottom:38px;left:8px;border-radius:3px;z-index:3;'},
+      {tag:'div',cls:'px laptop-base',s:'width:40px;height:6px;background:#666;bottom:70px;left:14px;border-radius:2px;z-index:4;',
+        children:[{tag:'div',cls:'laptop-screen',s:'width:38px;height:28px;background:#2a6a3a;bottom:4px;left:1px;border-radius:2px 2px 0 0;',
+          children:[{tag:'div',s:'position:absolute;inset:2px;border-radius:1px;background:#16a34a;animation:screenflicker 5s ease-in-out infinite;'}]}]},
+      {tag:'div',cls:'px',s:'width:22px;height:22px;background:#80c898;bottom:26px;left:32px;border-radius:50% 50% 40% 40%;z-index:2;'},
+      {tag:'div',cls:'px',s:'width:20px;height:46px;background:#3a6a4a;right:10px;bottom:38px;border-radius:3px;z-index:3;',
+        children:[{tag:'div',s:'position:absolute;top:6px;left:3px;right:3px;height:3px;background:rgba(22,163,74,.7);border-radius:1px;box-shadow:0 8px rgba(22,163,74,.5),0 16px rgba(245,158,11,.5);'}]},
+      {tag:'div',cls:'px',s:'right:36px;bottom:38px;font-size:13px;',emoji:'💎'},
+      // deal pipeline chart
+      {tag:'div',cls:'px',s:'right:10px;top:28px;width:44px;height:38px;z-index:3;',
+        children:[
+          {tag:'div',cls:'px',s:'width:8px;height:20px;background:rgba(22,163,74,.4);bottom:0;left:0;border-radius:2px 2px 0 0;'},
+          {tag:'div',cls:'px',s:'width:8px;height:28px;background:rgba(22,163,74,.5);bottom:0;left:10px;border-radius:2px 2px 0 0;'},
+          {tag:'div',cls:'px',s:'width:8px;height:16px;background:rgba(245,158,11,.5);bottom:0;left:20px;border-radius:2px 2px 0 0;'},
+          {tag:'div',cls:'px',s:'width:8px;height:34px;background:rgba(22,163,74,.6);bottom:0;left:30px;border-radius:2px 2px 0 0;'},
+        ]},
+      {tag:'div',cls:'px rug',s:'width:70px;height:28px;background:#16a34a;bottom:34px;left:4px;border-radius:4px;opacity:.09;'},
+    ],
+  };
+  return furniture[id] || [];
+}
+
+function makeFurnEl(f, room){
+  const el = document.createElement(f.tag||'div');
+  if(f.cls) el.className = f.cls;
+  if(f.s) el.style.cssText = f.s;
+  if(f.emoji){ el.style.position='absolute'; el.style.zIndex='3'; el.textContent=f.emoji; }
+  if(f.text){ const t=document.createElement('span'); t.textContent=f.text; t.style.cssText='font-size:4px;color:rgba(26,31,94,.6);font-family:monospace;'; el.appendChild(t); }
+  if(f.children) f.children.forEach(c=>el.appendChild(makeFurnEl(c)));
+  room.appendChild(el);
+}
+
+// ── BUILD UI ──────────────────────────────────────────────────────────────────
+const roomEls = {}; // id → DOM element
+const roomCenters = {}; // id → {x,y} in page coords
+
 function buildUI(){
   const building = document.getElementById('building');
   building.innerHTML = '';
@@ -433,166 +544,213 @@ function buildUI(){
 
     const row = document.createElement('div');
     row.className = 'room-row';
+    row.id = 'row-'+wi;
     wing.ids.forEach(id=>{
       if(!id || !AGENTS[id]){
         const sp = document.createElement('div');
-        sp.style.cssText = 'width:218px;height:162px;flex-shrink:0;';
+        sp.style.cssText='width:224px;height:180px;flex-shrink:0;';
         row.appendChild(sp);
         return;
       }
-      row.appendChild(buildRoom(id));
+      const card = buildRoomCard(id);
+      roomEls[id] = card;
+      row.appendChild(card);
     });
     building.appendChild(row);
 
     if(wi < WINGS.length-1){
       const hall = document.createElement('div');
       hall.className = 'hallway';
-      const hallId = document.createElement('div');
-      hallId.className = 'hall-id';
-      hallId.textContent = 'CORRIDOR '+(wi+1);
-      hall.appendChild(hallId);
-      ['🏃','🚶','🧑'].forEach((e,i)=>{
-        const w = document.createElement('div');
-        w.className = 'hall-walker';
-        w.textContent = e;
-        w.style.left = (60 + i*240)+'px';
-        hall.appendChild(w);
-        walkLoop(w);
-      });
+      hall.id = 'hall-'+wi;
+      const hid = document.createElement('div');
+      hid.className = 'hall-id';
+      hid.textContent = 'CORRIDOR '+(wi+1);
+      hall.appendChild(hid);
       building.appendChild(hall);
     }
   });
+
+  // compute centers after layout
+  requestAnimationFrame(()=>{
+    const hq = document.getElementById('hq');
+    const hqRect = hq.getBoundingClientRect();
+    Object.keys(roomEls).forEach(id=>{
+      const r = roomEls[id].getBoundingClientRect();
+      roomCenters[id] = {
+        x: r.left - hqRect.left + hq.scrollLeft + r.width/2,
+        y: r.top  - hqRect.top  + hq.scrollTop  + r.height/2
+      };
+    });
+    startVisitors();
+  });
 }
 
-function buildRoom(id){
+function buildRoomCard(id){
   const a = AGENTS[id];
   const div = document.createElement('div');
   div.className = 'room';
   div.id = 'room-'+id;
+  div.style.background = a.bg;
   div.onclick = ()=>openPanel(id);
-  div.style.background = a.color;
+
+  // accent top
+  const acc = document.createElement('div');
+  acc.style.cssText=`position:absolute;top:0;left:0;right:0;height:3px;border-radius:8px 8px 0 0;background:linear-gradient(90deg,${a.top},transparent);`;
+  div.appendChild(acc);
 
   // floor
-  const floor = document.createElement('div');
-  floor.className = 'room-floor';
-  div.appendChild(floor);
-
-  // glow
-  const glow = document.createElement('div');
-  glow.className = 'room-glow';
-  glow.style.background = `linear-gradient(transparent, ${a.accentTop}22)`;
-  div.appendChild(glow);
+  const fl = document.createElement('div'); fl.className='room-floor'; div.appendChild(fl);
+  const glow = document.createElement('div'); glow.className='room-glow';
+  glow.style.background=`linear-gradient(transparent,${a.top}22)`; div.appendChild(glow);
 
   // header
-  const hdr = document.createElement('div');
-  hdr.className = 'room-hdr';
-  hdr.style.borderBottomColor = `${a.accentTop}20`;
-  const dot = document.createElement('div');
-  dot.className = 'room-live';
-  dot.style.background = a.status==='warn'?'#f59e0b':a.accentTop;
-  hdr.innerHTML = `<div class="room-id-tag">${a.tag}</div><div class="room-name-tag">${a.name.toUpperCase()}</div>`;
-  hdr.appendChild(dot);
-  div.appendChild(hdr);
+  const hdr = document.createElement('div'); hdr.className='room-hdr';
+  const dot = document.createElement('div'); dot.className='room-live';
+  dot.style.background=a.status==='warn'?'#f59e0b':a.top;
+  hdr.innerHTML=`<div class="room-id-tag">${a.tag}</div><div class="room-name-tag">${a.name.toUpperCase()}</div>`;
+  hdr.appendChild(dot); div.appendChild(hdr);
 
   // furniture
-  a.furniture.forEach(f=>{
-    const el = document.createElement('div');
-    el.className = 'furn '+f.cls;
-    el.style.cssText = f.s;
-    if(f.txt) el.textContent = f.txt;
-    if(f.screen){
-      const inner = document.createElement('div');
-      inner.style.cssText = `position:absolute;inset:2px;border-radius:1px;${f.screen};animation:screenflicker 4s ease-in-out infinite;`;
-      el.appendChild(inner);
-    }
-    div.appendChild(el);
-  });
+  buildFurniture(id, div).forEach(f=>makeFurnEl(f, div));
 
-  // character
+  // resident character
   const char = document.createElement('div');
-  char.className = 'char';
-  char.id = 'char-'+id;
-  char.textContent = a.char;
-  char.style.right = '14px';
-  char.style.bottom = '34px';
-  const charStatus = document.createElement('div');
-  charStatus.className = 'char-status';
-  charStatus.id = 'cstatus-'+id;
-  charStatus.textContent = a.statuses[0];
-  char.appendChild(charStatus);
-  div.appendChild(char);
+  char.className='char'; char.id='char-'+id;
+  char.textContent=a.char;
+  char.style.cssText='right:16px;bottom:38px;';
+  const lbl = document.createElement('div');
+  lbl.className='char-label'; lbl.textContent=a.charLabel;
+  char.appendChild(lbl); div.appendChild(char);
 
   // status bar
-  const sb = document.createElement('div');
-  sb.className = 'room-status-bar';
-  const sdot = document.createElement('div');
-  sdot.className = 'rsb-dot '+(a.status==='warn'?'warn':'ok');
-  const stxt = document.createElement('div');
-  stxt.className = 'rsb-text'+(a.status==='warn'?' warn':'');
-  stxt.id = 'sbar-'+id;
-  stxt.textContent = a.statuses[0];
-  sb.appendChild(sdot);
-  sb.appendChild(stxt);
-  div.appendChild(sb);
+  const sb = document.createElement('div'); sb.className='room-status-bar';
+  const sdot = document.createElement('div'); sdot.className='rsb-dot '+(a.status==='warn'?'warn':'ok');
+  const stxt = document.createElement('div'); stxt.className='rsb-text'+(a.status==='warn'?' warn':'');
+  stxt.id='sbar-'+id; stxt.textContent=a.statuses[0];
+  sb.appendChild(sdot); sb.appendChild(stxt); div.appendChild(sb);
 
   return div;
 }
 
-// ── PANEL ─────────────────────────────────────────────────────
-let selId = null;
+// ── INFO PANEL ────────────────────────────────────────────────────────────────
+let selId=null;
 function openPanel(id){
   if(selId) document.getElementById('room-'+selId)?.classList.remove('selected');
-  selId = id;
-  document.getElementById('room-'+id).classList.add('selected');
-  const a = AGENTS[id];
-  document.getElementById('p-icon').textContent = a.icon;
-  document.getElementById('p-name').textContent = a.name.toUpperCase();
-  document.getElementById('p-sub').textContent = a.tag + ' · ' + (a.status==='warn'?'⚠ WARNING':'ACTIVE');
-  document.getElementById('p-desc').textContent = a.desc;
-  document.getElementById('p-stats').innerHTML = a.stats.map(s=>
-    `<div class="pstat"><span class="pstat-label">${s.l}</span><span class="pstat-val">${s.v}</span></div>`
-  ).join('');
-  document.getElementById('p-cmd').innerHTML = `<span>$ </span>${a.cmd}`;
+  selId=id; document.getElementById('room-'+id).classList.add('selected');
+  const a=AGENTS[id];
+  document.getElementById('p-icon').textContent=a.icon;
+  document.getElementById('p-name').textContent=a.name.toUpperCase();
+  document.getElementById('p-sub').textContent=a.tag+' · '+(a.status==='warn'?'⚠ WARNING':'ACTIVE');
+  document.getElementById('p-desc').textContent=a.desc;
+  document.getElementById('p-stats').innerHTML=a.stats.map(s=>`<div class="pstat"><span class="pstat-l">${s.l}</span><span class="pstat-v">${s.v}</span></div>`).join('');
+  document.getElementById('p-cmd').innerHTML=`<span>$ </span>${a.cmd}`;
   document.getElementById('panel').classList.add('open');
 }
 function closePanel(){
   if(selId) document.getElementById('room-'+selId)?.classList.remove('selected');
-  selId = null;
-  document.getElementById('panel').classList.remove('open');
+  selId=null; document.getElementById('panel').classList.remove('open');
 }
 
-// ── WALKERS ───────────────────────────────────────────────────
-function walkLoop(el){
-  function step(){
-    const x = 40 + Math.random()*700;
-    el.style.left = x+'px';
-    setTimeout(step, 2500+Math.random()*2500);
+// ── VISITING SYSTEM ───────────────────────────────────────────────────────────
+const VISIT_PAIRS = [
+  ['r1','r2'],['r4','r6'],['cmd','r7'],['r3','cmd'],['r11','cmd'],
+  ['r1','r12'],['r13','r14'],['r8','r4'],['r5','r6'],['r10','r1'],
+  ['r6','r14'],['r12','r1'],['r2','r8'],['r7','cmd'],['r14','r6'],
+];
+
+let visitCount = 0;
+const activeVisitors = {};
+
+function startVisitors(){
+  // start 2-3 visitors with staggered delays
+  setTimeout(()=>launchVisitor(), 2000);
+  setTimeout(()=>launchVisitor(), 5000);
+  setTimeout(()=>launchVisitor(), 8500);
+  setInterval(()=>{
+    if(Object.keys(activeVisitors).length < 3) launchVisitor();
+  }, 6000);
+}
+
+function launchVisitor(){
+  const ids = Object.keys(AGENTS);
+  const fromId = ids[Math.floor(Math.random()*ids.length)];
+  let toId;
+  // pick a pair involving fromId
+  const pairs = VISIT_PAIRS.filter(p=>p[0]===fromId||p[1]===fromId);
+  if(pairs.length){
+    const pair = pairs[Math.floor(Math.random()*pairs.length)];
+    toId = pair[0]===fromId ? pair[1] : pair[0];
+  } else {
+    do { toId=ids[Math.floor(Math.random()*ids.length)]; } while(toId===fromId);
   }
-  setTimeout(step, Math.random()*2000);
+  if(!roomCenters[fromId]||!roomCenters[toId]) return;
+  if(activeVisitors[fromId]) return; // already visiting
+
+  visitCount++;
+  document.getElementById('visit-count').textContent=visitCount+' VISITS';
+
+  const msgKey = `${fromId}→${toId}`;
+  const revKey = `${toId}→${fromId}`;
+  const msg = VISIT_MSGS[msgKey]||VISIT_MSGS[revKey]||'Checking in...';
+
+  // dim the resident
+  const resChar = document.getElementById('char-'+fromId);
+  if(resChar) resChar.classList.add('away');
+
+  // create visitor element
+  const hq = document.getElementById('hq');
+  const hqRect = hq.getBoundingClientRect();
+  const fromC = roomCenters[fromId];
+  const toC = roomCenters[toId];
+
+  const v = document.createElement('div');
+  v.className='visitor';
+  v.innerHTML=`${AGENTS[fromId].char}<div class="visitor-bubble">${msg}</div>`;
+  v.style.cssText=`left:${fromC.x+hqRect.left-9}px;top:${fromC.y+hqRect.top-9}px;`;
+  document.body.appendChild(v);
+  activeVisitors[fromId]=v;
+
+  // move to destination
+  setTimeout(()=>{
+    v.style.left=(toC.x+hqRect.left-9)+'px';
+    v.style.top=(toC.y+hqRect.top-9)+'px';
+  }, 100);
+
+  // show bubble on arrival
+  setTimeout(()=>v.classList.add('talking'), 1900);
+
+  // stay, then return
+  setTimeout(()=>{
+    v.classList.remove('talking');
+    v.style.left=(fromC.x+hqRect.left-9)+'px';
+    v.style.top=(fromC.y+hqRect.top-9)+'px';
+  }, 4500);
+
+  // cleanup
+  setTimeout(()=>{
+    v.remove();
+    delete activeVisitors[fromId];
+    if(resChar) resChar.classList.remove('away');
+  }, 6400);
 }
 
-// ── STATUS ROTATION ───────────────────────────────────────────
+// ── STATUS ROTATION ───────────────────────────────────────────────────────────
 setInterval(()=>{
   Object.entries(AGENTS).forEach(([id,a])=>{
-    const idx = Math.floor(Date.now()/4000) % a.statuses.length;
-    const txt = a.statuses[idx];
-    const sbar = document.getElementById('sbar-'+id);
-    const cstatus = document.getElementById('cstatus-'+id);
-    if(sbar) sbar.textContent = txt;
-    if(cstatus) cstatus.textContent = txt;
+    const idx=Math.floor(Date.now()/4500)%a.statuses.length;
+    const el=document.getElementById('sbar-'+id);
+    if(el) el.textContent=a.statuses[idx];
   });
-}, 4000);
+},4500);
 
-// ── CLOCK ─────────────────────────────────────────────────────
+// ── CLOCK ─────────────────────────────────────────────────────────────────────
 setInterval(()=>{
-  const n = new Date();
-  document.getElementById('clock').textContent =
-    String(n.getHours()).padStart(2,'0')+':'+
-    String(n.getMinutes()).padStart(2,'0')+':'+
-    String(n.getSeconds()).padStart(2,'0');
-}, 1000);
+  const n=new Date();
+  document.getElementById('clock').textContent=
+    String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')+':'+String(n.getSeconds()).padStart(2,'0');
+},1000);
 
-// ── INIT ──────────────────────────────────────────────────────
+// ── INIT ──────────────────────────────────────────────────────────────────────
 buildUI();
 (()=>{const n=new Date();document.getElementById('clock').textContent=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')+':'+String(n.getSeconds()).padStart(2,'0');})();
 </script>
