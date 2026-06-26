@@ -129,26 +129,94 @@ body{background:var(--bg);font-family:'Share Tech Mono',monospace;overflow:hidde
 .char-label{position:absolute;bottom:-13px;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:4.5px;color:var(--text-mid);background:rgba(255,255,255,.9);padding:1px 4px;border-radius:2px;border:1px solid var(--border);font-family:'Press Start 2P',monospace;pointer-events:none;z-index:16;}
 
 /* INFO PANEL */
-#panel{position:fixed;right:0;top:46px;bottom:0;width:288px;background:var(--panel-bg);border-left:1px solid var(--border);display:none;flex-direction:column;z-index:300;box-shadow:-4px 0 20px rgba(92,72,232,.1);}
+#panel{position:fixed;right:0;top:46px;bottom:0;width:360px;background:var(--panel-bg);border-left:2px solid var(--border);display:none;flex-direction:column;z-index:300;box-shadow:-6px 0 32px rgba(92,72,232,.13);}
 #panel.open{display:flex;}
-.panel-hdr{padding:16px 16px 12px;border-bottom:1px solid var(--border);background:linear-gradient(135deg,rgba(92,72,232,.04),transparent);flex-shrink:0;}
-.panel-icon{font-size:24px;margin-bottom:7px;display:block;}
-.panel-name{font-family:'Press Start 2P',monospace;font-size:7.5px;color:var(--purple);letter-spacing:.07em;margin-bottom:5px;line-height:1.6;}
-.panel-sub{font-size:9px;color:var(--text-mid);line-height:1.65;}
-.panel-close{position:absolute;top:12px;right:12px;cursor:pointer;font-size:12px;color:var(--text-dim);width:22px;height:22px;display:flex;align-items:center;justify-content:center;border-radius:4px;border:1px solid var(--border);transition:all .15s;}
-.panel-close:hover{color:var(--navy);}
-.panel-body{flex:1;overflow-y:auto;padding:12px 16px;}
+
+/* panel header */
+.panel-hdr{padding:0;border-bottom:1px solid var(--border);flex-shrink:0;position:relative;}
+.panel-hdr-accent{height:4px;border-radius:0;}
+.panel-hdr-inner{padding:14px 16px 12px;}
+.panel-hdr-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.panel-icon{font-size:28px;flex-shrink:0;}
+.panel-id-badge{font-family:'Press Start 2P',monospace;font-size:5px;color:var(--text-dim);background:rgba(92,72,232,.06);border:1px solid var(--border);border-radius:3px;padding:2px 6px;}
+.panel-status-pill{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:7px;font-family:'Press Start 2P',monospace;margin-left:auto;}
+.panel-status-pill.ok{background:rgba(22,163,74,.08);border:1px solid rgba(22,163,74,.25);color:#16a34a;}
+.panel-status-pill.warn{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);color:#d97706;}
+.panel-status-dot{width:5px;height:5px;border-radius:50%;animation:blink 2s ease-in-out infinite;}
+.panel-status-dot.ok{background:#16a34a;}
+.panel-status-dot.warn{background:#f59e0b;}
+.panel-name{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--navy);letter-spacing:.04em;margin-bottom:5px;line-height:1.6;}
+.panel-desc{font-size:10px;color:var(--text-mid);line-height:1.7;}
+.panel-close{position:absolute;top:10px;right:10px;cursor:pointer;font-size:11px;color:var(--text-dim);width:22px;height:22px;display:flex;align-items:center;justify-content:center;border-radius:4px;border:1px solid var(--border);transition:all .15s;background:#fff;}
+.panel-close:hover{color:var(--navy);border-color:var(--navy);}
+
+/* tabs */
+.panel-tabs{display:flex;border-bottom:1px solid var(--border);background:#fafafe;flex-shrink:0;}
+.ptab{flex:1;padding:9px 4px;text-align:center;font-family:'Press Start 2P',monospace;font-size:5px;color:var(--text-dim);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;letter-spacing:.05em;}
+.ptab:hover{color:var(--navy);}
+.ptab.active{color:var(--purple);border-bottom-color:var(--purple);background:#fff;}
+
+/* tab bodies */
+.panel-body{flex:1;overflow-y:auto;display:none;}
+.panel-body.active{display:block;}
 .panel-body::-webkit-scrollbar{width:3px;}
 .panel-body::-webkit-scrollbar-thumb{background:var(--border);}
-.psec{margin-bottom:14px;}
-.psec-title{font-family:'Press Start 2P',monospace;font-size:5.5px;color:var(--purple);letter-spacing:.12em;margin-bottom:7px;}
-.psec-text{font-size:10px;color:var(--text-mid);line-height:1.75;}
-.pstat{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border);}
-.pstat:last-child{border-bottom:none;}
-.pstat-l{font-size:9px;color:var(--text-mid);}
-.pstat-v{font-family:'Press Start 2P',monospace;font-size:6.5px;color:var(--purple);}
-.pcmd{background:rgba(92,72,232,.04);border:1px solid var(--border);border-radius:5px;padding:9px 11px;font-size:9px;color:var(--text-mid);line-height:1.9;word-break:break-all;}
-.pcmd span{color:var(--purple);}
+
+/* section */
+.psec{padding:14px 16px;border-bottom:1px solid var(--border);}
+.psec:last-child{border-bottom:none;}
+.psec-title{font-family:'Press Start 2P',monospace;font-size:5.5px;letter-spacing:.12em;margin-bottom:9px;display:flex;align-items:center;gap:6px;}
+.psec-title::after{content:'';flex:1;height:1px;background:var(--border);}
+.psec-text{font-size:10.5px;color:var(--text-mid);line-height:1.8;}
+
+/* kpi row */
+.kpi-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:0;}
+.kpi-card{background:rgba(92,72,232,.03);border:1px solid var(--border);border-radius:6px;padding:9px 10px;}
+.kpi-val{font-family:'Press Start 2P',monospace;font-size:11px;color:var(--purple);margin-bottom:3px;}
+.kpi-lbl{font-size:8px;color:var(--text-dim);}
+.kpi-card.warn .kpi-val{color:var(--amber);}
+.kpi-card.good .kpi-val{color:var(--green);}
+
+/* timeline */
+.timeline{display:flex;flex-direction:column;gap:0;}
+.tl-item{display:flex;gap:10px;padding:8px 0;}
+.tl-item:not(:last-child){border-bottom:1px dashed var(--border);}
+.tl-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:3px;border:2px solid;}
+.tl-dot.done{background:var(--teal);border-color:var(--teal);}
+.tl-dot.active{background:var(--purple);border-color:var(--purple);box-shadow:0 0 6px rgba(92,72,232,.4);animation:pulseAnim 1.5s ease-in-out infinite;}
+.tl-dot.pending{background:transparent;border-color:var(--border);}
+.tl-dot.warn{background:var(--amber);border-color:var(--amber);}
+.tl-right{flex:1;}
+.tl-label{font-size:10px;color:var(--text);margin-bottom:2px;font-weight:600;}
+.tl-sub{font-size:9px;color:var(--text-dim);line-height:1.6;}
+.tl-time{font-family:'Press Start 2P',monospace;font-size:5px;color:var(--text-dim);margin-top:3px;}
+
+/* action items */
+.action-list{display:flex;flex-direction:column;gap:6px;}
+.action-item{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border-radius:6px;background:rgba(92,72,232,.03);border:1px solid var(--border);}
+.action-item.urgent{background:rgba(245,158,11,.04);border-color:rgba(245,158,11,.25);}
+.action-item.done{background:rgba(22,163,74,.03);border-color:rgba(22,163,74,.2);opacity:.7;}
+.action-icon{font-size:13px;flex-shrink:0;margin-top:1px;}
+.action-text{font-size:10px;color:var(--text-mid);line-height:1.6;}
+.action-text strong{color:var(--text);display:block;margin-bottom:1px;font-size:10.5px;}
+.action-badge{font-family:'Press Start 2P',monospace;font-size:4.5px;padding:1px 5px;border-radius:3px;margin-left:auto;flex-shrink:0;align-self:flex-start;}
+.action-badge.now{background:rgba(92,72,232,.1);color:var(--purple);}
+.action-badge.today{background:rgba(0,180,160,.1);color:var(--teal);}
+.action-badge.done{background:rgba(22,163,74,.1);color:var(--green);}
+.action-badge.blocked{background:rgba(245,158,11,.1);color:var(--amber);}
+
+/* log feed */
+.log-feed{display:flex;flex-direction:column;gap:4px;}
+.log-line{font-size:9px;color:var(--text-mid);padding:4px 8px;border-left:2px solid var(--border);line-height:1.5;}
+.log-line.ok{border-left-color:var(--teal);}
+.log-line.warn{border-left-color:var(--amber);color:#92640a;}
+.log-line.info{border-left-color:var(--purple);}
+.log-ts{font-family:'Press Start 2P',monospace;font-size:5px;color:var(--text-dim);margin-right:6px;}
+
+/* cmd block */
+.pcmd{background:#1a1f3e;border-radius:6px;padding:10px 12px;font-size:9px;color:#a0b0ff;line-height:2;word-break:break-all;font-family:'Share Tech Mono',monospace;}
+.pcmd .cmd-prompt{color:#5c48e8;}
+.pcmd .cmd-comment{color:#484a78;display:block;}
 </style>
 </head>
 <body>
@@ -171,16 +239,28 @@ body{background:var(--bg);font-family:'Share Tech Mono',monospace;overflow:hidde
 
 <div id="panel">
   <div class="panel-hdr">
-    <span class="panel-icon" id="p-icon">🔬</span>
-    <div class="panel-name" id="p-name">RESEARCH LAB</div>
-    <div class="panel-sub" id="p-sub">ICP & market intelligence</div>
+    <div class="panel-hdr-accent" id="p-accent"></div>
+    <div class="panel-hdr-inner">
+      <div class="panel-hdr-row">
+        <span class="panel-icon" id="p-icon">🔬</span>
+        <span class="panel-id-badge" id="p-tag">R01</span>
+        <span class="panel-status-pill ok" id="p-spill"><span class="panel-status-dot ok" id="p-sdot"></span><span id="p-slbl">ACTIVE</span></span>
+      </div>
+      <div class="panel-name" id="p-name">RESEARCH LAB</div>
+      <div class="panel-desc" id="p-desc"></div>
+    </div>
     <div class="panel-close" onclick="closePanel()">✕</div>
   </div>
-  <div class="panel-body">
-    <div class="psec"><div class="psec-title">WHAT IT DOES</div><div class="psec-text" id="p-desc"></div></div>
-    <div class="psec"><div class="psec-title">LIVE STATS</div><div id="p-stats"></div></div>
-    <div class="psec"><div class="psec-title">RUN COMMAND</div><div class="pcmd" id="p-cmd"></div></div>
+  <div class="panel-tabs">
+    <div class="ptab active" onclick="switchTab(0)" id="tab0">TODAY</div>
+    <div class="ptab" onclick="switchTab(1)" id="tab1">PROGRESS</div>
+    <div class="ptab" onclick="switchTab(2)" id="tab2">PLAN</div>
+    <div class="ptab" onclick="switchTab(3)" id="tab3">TERMINAL</div>
   </div>
+  <div class="panel-body active" id="tbody0"></div>
+  <div class="panel-body" id="tbody1"></div>
+  <div class="panel-body" id="tbody2"></div>
+  <div class="panel-body" id="tbody3"></div>
 </div>
 
 <script>
@@ -632,20 +712,516 @@ function buildRoomCard(id){
   return div;
 }
 
+// ── AGENT REPORTS ─────────────────────────────────────────────────────────────
+const REPORTS = {
+  r1:{
+    kpis:[{l:'ICP Profiles Built',v:'14',cls:''},{l:'Trigger Signals',v:'5',cls:'good'},{l:'Competitor Angles',v:'3',cls:''},{l:'Avoid Angles',v:'2',cls:'warn'}],
+    today:[
+      {t:'active',label:'Building ICP brief — Cognify AI',sub:'Researching Apollo data, LinkedIn job postings, and G2 reviews to identify top buyer personas',time:'NOW'},
+      {t:'done',label:'Competitor teardown — Outreach.io',sub:'Identified 3 saturated subject line angles and 2 market gaps to exploit',time:'09:14'},
+      {t:'done',label:'Trigger signal mapping updated',sub:'Added "Series B announcement" and "new VP of Sales hire" as Tier-1 buying triggers',time:'08:30'},
+      {t:'pending',label:'ICP brief — MyPlace Storage',sub:'Queued after Cognify AI brief is finalized',time:'~14:00'},
+    ],
+    progress:[
+      {t:'done',label:'Week 1: Foundation',sub:'Built ICP framework, trigger signal library, and competitor monitoring setup across 3 markets'},
+      {t:'done',label:'Week 2: Cognify AI full brief',sub:'Delivered 28-field ICP profile, identified champion persona (VP Operations), confirmed ICP fit score 8.2/10'},
+      {t:'done',label:'Week 3: Sentry integration',sub:'Mapped ICP for SaaS security buyers, identified 3 untapped angles around compliance triggers'},
+      {t:'active',label:'Week 4: Expanding trigger library',sub:'Adding real-time Apollo + LinkedIn monitoring for funding events, leadership changes, and tool stack signals'},
+    ],
+    plan:[
+      {icon:'🎯',label:'Launch real-time trigger alerts',sub:'Auto-flag accounts when hiring VP Sales, raising funding, or switching CRM tools',badge:'today'},
+      {icon:'🔗',label:'Connect to Lead Factory',sub:'Push verified ICP profiles directly to Clay workflow without manual export step',badge:'today'},
+      {icon:'📊',label:'Competitive intelligence expansion',sub:'Add G2 review scraping for 6 new competitors — Salesloft, Apollo, Instantly',badge:'blocked'},
+      {icon:'🌍',label:'EMEA market ICP',sub:'Build separate ICP brief for UK/DE expansion — different buyer roles and compliance triggers',badge:'planned'},
+    ],
+    log:[
+      {c:'info',ts:'10:42',msg:'ICP query: Apollo returned 1,240 leads matching Cognify AI criteria'},
+      {c:'ok',ts:'10:18',msg:'Trigger signal "Series B funding" added to Tier-1 library'},
+      {c:'ok',ts:'09:14',msg:'Competitor teardown complete — Outreach.io angles exported to Archives'},
+      {c:'info',ts:'08:30',msg:'Market scan: 3 new G2 reviews flagged for angle analysis'},
+    ],
+    cmd:'python 1-research-lab/research.py build "Cognify AI"',
+    cmdComment:'# Builds full ICP brief + trigger signals for a client'
+  },
+  r2:{
+    kpis:[{l:'Raw Leads',v:'1,240',cls:''},{l:'Verified Emails',v:'722',cls:'good'},{l:'Email Valid Rate',v:'94.2%',cls:'good'},{l:'Bounce Rate',v:'0.8%',cls:'good'}],
+    today:[
+      {t:'active',label:'Running email waterfall — Cognify AI batch',sub:'Step 2/4: Hunter.io → Apollo → FindyMail → Dropcontact. 312 leads processed, 410 remaining',time:'NOW'},
+      {t:'done',label:'Lead scoring complete — Sentry batch',sub:'722 leads scored. Tier 1: 84 leads. Tier 2: 311 leads. Tier 3: 327 low-priority',time:'09:55'},
+      {t:'done',label:'Duplicate check + suppression list sync',sub:'Removed 47 contacts already in Comms Lab sequences. Zero double-touches.',time:'08:45'},
+      {t:'pending',label:'Export to Copy Room',sub:'Final verified batch pushed to sequence writer after waterfall completes',time:'~13:30'},
+    ],
+    progress:[
+      {t:'done',label:'Week 1: Clay workflow setup',sub:'Built 4-step email waterfall. Connected Hunter, Apollo, FindyMail, Dropcontact. 94.2% verification rate achieved.'},
+      {t:'done',label:'Week 2: Scoring model launch',sub:'Deployed trigger-based lead scoring. Top signal: VP Sales hire in past 30 days → Tier 1 auto-flag'},
+      {t:'done',label:'Week 3: 44K leads processed',sub:'Processed and scored full lead database across 4 clients. Archives now holds complete enriched history.'},
+      {t:'active',label:'Week 4: Auto-routing to sequences',sub:'Building direct pipe from verified leads into Copy Room sequence builder — zero manual steps'},
+    ],
+    plan:[
+      {icon:'⚡',label:'Auto-route Tier 1 leads to Copy Room',sub:'Skip manual export — verified Tier 1 leads flow directly into sequence generation',badge:'today'},
+      {icon:'🔄',label:'Weekly re-enrichment job',sub:'Re-run waterfall on all Tier 1 leads every 7 days to catch email changes and catch bounces early',badge:'today'},
+      {icon:'📈',label:'Bounce prediction model',sub:'Flag leads with >15% bounce probability before they enter sequences',badge:'planned'},
+      {icon:'🌐',label:'EMEA data sources',sub:'Add Apollo EMEA filters + Cognism integration for UK/DE lead enrichment',badge:'planned'},
+    ],
+    log:[
+      {c:'info',ts:'10:44',msg:'Waterfall step 2: Hunter.io returned 289/410 emails'},
+      {c:'ok',ts:'09:55',msg:'Sentry batch scored: 84 Tier-1, 311 Tier-2 leads exported'},
+      {c:'ok',ts:'08:45',msg:'Suppression sync: 47 duplicates removed before sequence entry'},
+      {c:'warn',ts:'08:12',msg:'FindyMail API rate limit hit — auto-switched to Dropcontact fallback'},
+    ],
+    cmd:'python 2-lead-factory/clay_workflow.py run',
+    cmdComment:'# Runs full waterfall + scoring on latest Apollo pull'
+  },
+  r4:{
+    kpis:[{l:'Sequences Written',v:'38',cls:''},{l:'Violations Caught',v:'0',cls:'good'},{l:'Avg D1 Words',v:'74',cls:'good'},{l:'A/B Tests Live',v:'12',cls:''}],
+    today:[
+      {t:'active',label:'Writing D1/D3/D7 — Cognify AI campaign 2',sub:'Angle: "Your team hired a VP Sales — we help them hit quota in week 1." Validator running in parallel.',time:'NOW'},
+      {t:'done',label:'Rewrite D1 — PulseHR (reply rate warning)',sub:'Old angle: generic pain. New angle: hiring freeze trigger. Sent to War Room for re-scoring.',time:'10:20'},
+      {t:'done',label:'A/B test split registered — Sentry campaign',sub:'Version A: compliance angle. Version B: breach cost angle. Randomized 50/50.',time:'09:00'},
+      {t:'pending',label:'LinkedIn message variations — Cognify AI',sub:'Adapts email sequence angles for LinkedIn DM character limits',time:'~15:00'},
+    ],
+    progress:[
+      {t:'done',label:'Week 1: Playbook encoding',sub:'Encoded all Berman/Nowoslavsky rules into validator. 23 banned phrases. Subject line rules. Word count per day.'},
+      {t:'done',label:'Week 2: First sequences live',sub:'Wrote and deployed 12 sequences. Zero validator violations on first submission for 9 of 12.'},
+      {t:'done',label:'Week 3: A/B testing framework',sub:'Launched A/B split system. 12 tests running. Early signal: compliance angles outperforming pain angles 2:1.'},
+      {t:'active',label:'Week 4: Rewrite loop from War Room',sub:'Receiving performance feedback from War Room. Rewriting low-performing sequences same-day.'},
+    ],
+    plan:[
+      {icon:'🔁',label:'Auto-rewrite trigger from War Room',sub:'When RPR drops below 2%, War Room sends rewrite request here automatically',badge:'today'},
+      {icon:'🧠',label:'Top hook library',sub:'Pull top 10 performing subject lines from Archives and use as seed prompts for new sequences',badge:'today'},
+      {icon:'📱',label:'SMS sequence variant',sub:'Short-form SMS versions of D1 for clients who want multi-channel outreach',badge:'planned'},
+      {icon:'🌍',label:'EMEA tone adaptation',sub:'Adjust formality and CTA phrasing for UK/DE cultural norms',badge:'planned'},
+    ],
+    log:[
+      {c:'info',ts:'10:45',msg:'Generating: D1 for Cognify AI campaign 2, VP Sales trigger angle'},
+      {c:'ok',ts:'10:20',msg:'PulseHR D1 rewrite complete — hiring freeze angle passed validator'},
+      {c:'ok',ts:'09:00',msg:'A/B test registered: Sentry v2 compliance vs. breach cost angles'},
+      {c:'info',ts:'08:30',msg:'Validator: 0 violations on MyPlace D3 sequence'},
+    ],
+    cmd:'python 4-copy-room/copy_generator.py generate "Cognify AI"',
+    cmdComment:'# Writes full D1/D3/D7 sequence + runs validator'
+  },
+  r5:{
+    kpis:[{l:'In Sequence',v:'95',cls:''},{l:'Acceptance Rate',v:'26.3%',cls:'good'},{l:'DMs Active',v:'5',cls:''},{l:'Senders',v:'3',cls:''}],
+    today:[
+      {t:'active',label:'HeyReach campaign — Cognify AI wave 2',sub:'Enrolling 45 new connections. Warmup pace: 15/day per sender. Guard list checked — 0 overlap.',time:'NOW'},
+      {t:'done',label:'Reply sync to Comms Lab',sub:'12 LinkedIn DM replies classified and routed. 3 marked interested, passed to Deal Intelligence.',time:'10:10'},
+      {t:'done',label:'Sender health check',sub:'All 3 senders at 74-82 warmup score. No flags. Inbox rotation active.',time:'09:00'},
+      {t:'pending',label:'Profile visit campaign — MyPlace',sub:'Profile-view sequence before connection request — creates familiarity signal',time:'~14:30'},
+    ],
+    progress:[
+      {t:'done',label:'Week 1: HeyReach setup',sub:'Connected 3 sender profiles. Built guard list of 1,847 existing connections. Warmup started.'},
+      {t:'done',label:'Week 2: First wave enrolled',sub:'50 leads enrolled, 26.3% acceptance rate. Outperforming 18% industry benchmark.'},
+      {t:'done',label:'Week 3: DM follow-up activated',sub:'Automated DM sends after connection accepted. 5 active conversations in progress.'},
+      {t:'active',label:'Week 4: Scaling to 95 active',sub:'Expanding to full 95-lead sequence while monitoring acceptance rate and LinkedIn safety thresholds.'},
+    ],
+    plan:[
+      {icon:'👁️',label:'Profile visit pre-sequence',sub:'Visit profiles 3 days before sending connection request — warm up the relationship first',badge:'today'},
+      {icon:'🔗',label:'Sync guard list with Comms Lab',sub:'Any lead that replied to email gets auto-added to LinkedIn guard list to prevent double-touch',badge:'today'},
+      {icon:'📊',label:'Sender A/B test',sub:'Test 2 different profile bios to see which sender persona generates higher acceptance',badge:'planned'},
+      {icon:'🌍',label:'EMEA sender profiles',sub:'Spin up UK-based sender profile for EMEA outreach credibility',badge:'planned'},
+    ],
+    log:[
+      {c:'info',ts:'10:46',msg:'HeyReach: enrolling batch 2 — 45 leads queued for Cognify AI'},
+      {c:'ok',ts:'10:10',msg:'12 DM replies synced to Comms Lab for classification'},
+      {c:'ok',ts:'09:00',msg:'Sender health: all 3 profiles green, warmup 74-82'},
+      {c:'info',ts:'08:15',msg:'Guard list updated: 1,847 connections excluded from new wave'},
+    ],
+    cmd:'python 5-linkedin-room/heyreach_campaigns.py launch "Cognify AI"',
+    cmdComment:'# Enrolls new leads into LinkedIn sequence via HeyReach'
+  },
+  r6:{
+    kpis:[{l:'Replies Received',v:'47',cls:''},{l:'Interested',v:'8',cls:'good'},{l:'Drafts Queued',v:'12',cls:''},{l:'Auto-Sent',v:'0',cls:'good'}],
+    today:[
+      {t:'active',label:'Classifying 47 inbound replies — Claude AI',sub:'Intent model running: interested / not now / referral / unsubscribe. 8 warm leads found so far.',time:'NOW'},
+      {t:'done',label:'Drafted 12 follow-up responses',sub:'All warm leads drafted with personalized context from original sequence angle. Queued for human review.',time:'10:30'},
+      {t:'done',label:'3 interested leads routed to Deal Intelligence',sub:'Archform, Trellis, GrowFast — passed with full context, lead score, and recommended next step.',time:'09:45'},
+      {t:'pending',label:'Unsubscribe processing batch',sub:'9 unsubscribes to remove from all active sequences and update suppression list',time:'~13:00'},
+    ],
+    progress:[
+      {t:'done',label:'Week 1: Reply inbox connected',sub:'Instantly + HeyReach inboxes unified. Claude classifier deployed with 6 intent categories.'},
+      {t:'done',label:'Week 2: Slack routing live',sub:'Warm leads now ping #warm-leads Slack channel in <5 minutes of reply. Zero missed opportunities.'},
+      {t:'done',label:'Week 3: Draft queue system',sub:'Automated drafts generated for all interested replies. 94% draft acceptance rate by human reviewers.'},
+      {t:'active',label:'Week 4: Deal handoff integration',sub:'Warm leads now automatically pre-populate Deal Intelligence with context, score, and next-step recommendation.'},
+    ],
+    plan:[
+      {icon:'🤖',label:'Auto-send approved drafts',sub:'After human approves, send automatically without requiring return to Gmail/Instantly UI',badge:'today'},
+      {icon:'📋',label:'Referral tracking workflow',sub:'When reply says "talk to X instead" — auto-find and enrich the referred contact',badge:'today'},
+      {icon:'📊',label:'Reply pattern analytics',sub:'Which sequence days and angles generate the most positive replies — feed back to Copy Room',badge:'planned'},
+      {icon:'⏰',label:'Time-of-day optimization',sub:'Track when warm replies come in — optimize future send times to match',badge:'planned'},
+    ],
+    log:[
+      {c:'info',ts:'10:47',msg:'Classifying: 47 replies loaded, Claude intent model running'},
+      {c:'ok',ts:'10:30',msg:'12 follow-up drafts generated and queued for review'},
+      {c:'ok',ts:'09:45',msg:'3 warm leads handed to Deal Intelligence with full context'},
+      {c:'warn',ts:'09:12',msg:'1 reply from existing client — flagged, removed from sequence'},
+    ],
+    cmd:'python 6-comms-lab/reply_handler.py process',
+    cmdComment:'# Classifies replies + generates drafts + routes warm leads'
+  },
+  r7:{
+    kpis:[{l:'Campaigns Scored',v:'4',cls:''},{l:'Healthy',v:'2',cls:'good'},{l:'Warning',v:'1',cls:'warn'},{l:'Critical',v:'0',cls:'good'}],
+    today:[
+      {t:'warn',label:'⚠ PulseHR — Reply rate 1.8% (below 3% threshold)',sub:'Score: 55/100 WARNING. Root cause: angle too generic. Pivot queued: rewrite D1 with hiring freeze trigger. Copy Room notified.',time:'NOW'},
+      {t:'done',label:'Cognify AI weekly score — 7.2/10 HEALTHY',sub:'Open: 54%, Reply: 6.1%, Bounce: 0.4%. Recommend: continue, expand to 50 more leads next week.',time:'10:00'},
+      {t:'done',label:'Sentry weekly score — 5.8/10 CAUTION',sub:'Reply rate dipping. Recommended: test compliance angle in D3 instead of D5. A/B registered.',time:'09:30'},
+      {t:'pending',label:'MyPlace monthly report',sub:'Full 30-day PDF report with all metrics, pivots made, and next month plan',time:'~16:00'},
+    ],
+    progress:[
+      {t:'done',label:'Week 1: Scoring thresholds set',sub:'Open <35% = warning. Reply <3% = warning. Bounce >2% = pause. Unsubscribe >1% = pause.'},
+      {t:'done',label:'Week 2: First full score cycle',sub:'All 4 campaigns scored. Cognify AI top performer. PulseHR flagged early — angle adjusted, avoided failure.'},
+      {t:'done',label:'Week 3: Pivot tracking',sub:'Logged all pivots made. Showing: hiring-trigger angle outperforms pain-point angle 2.4x across all clients.'},
+      {t:'active',label:'Week 4: Auto-rewrite pipeline',sub:'Integrating with Copy Room so low-score detection triggers automatic rewrite request — zero manual steps.'},
+    ],
+    plan:[
+      {icon:'🚨',label:'PulseHR rescue — rewrite D1',sub:'Copy Room is rewriting now. Re-score in 48h after new batch goes live. Target: push score to 7+',badge:'today'},
+      {icon:'📊',label:'Sentry A/B result analysis',sub:'Check if compliance angle lifted reply rate after 5-day run. Feed winner back to Copy Room as new template.',badge:'today'},
+      {icon:'🤖',label:'Auto-pause triggers',sub:'When bounce >2% detected, auto-pause campaign and alert Slack before any more damage',badge:'planned'},
+      {icon:'📈',label:'Cross-client insight report',sub:'Which angles, subject lines, and send days perform best across ALL clients — shared intelligence',badge:'planned'},
+    ],
+    log:[
+      {c:'warn',ts:'10:48',msg:'PulseHR score: 55/100 WARNING — reply rate 1.8% below threshold'},
+      {c:'ok',ts:'10:00',msg:'Cognify AI score: 72/100 HEALTHY — no action required'},
+      {c:'info',ts:'09:30',msg:'Sentry: D3 angle test registered with Copy Room'},
+      {c:'ok',ts:'08:00',msg:'Daily score cycle complete: 2 healthy, 1 warning, 0 critical'},
+    ],
+    cmd:'python 7-war-room/performance_monitor.py run',
+    cmdComment:'# Scores all campaigns and generates pivot recommendations'
+  },
+  r8:{
+    kpis:[{l:'Total Leads',v:'44K',cls:''},{l:'Hook Library',v:'127',cls:'good'},{l:'Sequences Stored',v:'38',cls:''},{l:'Top Hook RPR',v:'7.2%',cls:'good'}],
+    today:[
+      {t:'active',label:'Indexing new sequence batch from Copy Room',sub:'38 sequences processed, tagging by angle type, client, and performance tier for future retrieval',time:'NOW'},
+      {t:'done',label:'Top 10 hooks exported for Copy Room',sub:'Best performing subject lines by RPR surfaced and sent to Copy Room as seed prompts for new sequences',time:'10:05'},
+      {t:'done',label:'Lead deduplication sweep',sub:'Cross-checked all 4 client databases. Found and flagged 234 overlapping contacts for suppression.',time:'09:00'},
+      {t:'pending',label:'Monthly knowledge base summary',sub:'Auto-generated report: what worked, what failed, patterns across all clients this month',time:'~17:00'},
+    ],
+    progress:[
+      {t:'done',label:'Week 1: Database architecture',sub:'Built unified lead store with client tagging, status fields, and enrichment history. 0 duplicates across clients.'},
+      {t:'done',label:'Week 2: Hook library created',sub:'127 subject lines catalogued with open rate, reply rate, and context tags. First retrieval queries working.'},
+      {t:'done',label:'Week 3: Sequence tagging system',sub:'Every sequence tagged by: angle, client, industry, buyer persona, send day. Enables pattern analysis.'},
+      {t:'active',label:'Week 4: RAG search layer',sub:'Building semantic search so Copy Room can query "best hooks for VP Sales + SaaS + hiring trigger" and get ranked results.'},
+    ],
+    plan:[
+      {icon:'🔍',label:'Semantic hook search',sub:'Natural language search across 127 hooks — find the best angles by describing the situation, not exact keywords',badge:'today'},
+      {icon:'📤',label:'Weekly digest to Copy Room',sub:'Auto-push top 5 hooks from last week\'s data every Monday morning before sequence writing starts',badge:'today'},
+      {icon:'🔒',label:'Client data isolation',sub:'Hard walls between client lead databases — no cross-contamination even in shared searches',badge:'planned'},
+      {icon:'📊',label:'Pattern dashboard',sub:'Visual breakdown of which angles win by: industry, company size, buyer role, sequence day',badge:'planned'},
+    ],
+    log:[
+      {c:'info',ts:'10:49',msg:'Indexing: 38 sequences from Copy Room — tagging in progress'},
+      {c:'ok',ts:'10:05',msg:'Top-10 hooks exported: best RPR 7.2% — "You hired a VP Sales" subject'},
+      {c:'ok',ts:'09:00',msg:'Deduplication: 234 overlapping contacts flagged across 4 clients'},
+      {c:'info',ts:'08:00',msg:'Lead count update: 44,127 total enriched records stored'},
+    ],
+    cmd:'python 8-archives-room/archives.py status',
+    cmdComment:'# Shows knowledge base health + retrieves top performing assets'
+  },
+  cmd:{
+    kpis:[{l:'SLA Day',v:'3/21',cls:''},{l:'Clients Active',v:'4',cls:'good'},{l:'Warm Leads',v:'8',cls:'good'},{l:'Warnings',v:'1',cls:'warn'}],
+    today:[
+      {t:'warn',label:'PulseHR warning escalation',sub:'Detected reply rate drop at 08:00. Notified Copy Room for D1 rewrite. Monitoring re-score in 48h.',time:'NOW'},
+      {t:'active',label:'Daily briefing generation',sub:'Compiling cross-room status report. Sending to Slack #daily-brief at 11:00 AM.',time:'NOW'},
+      {t:'done',label:'SLA check — all clients Day 3',sub:'All 4 clients on track. Cognify AI: 54 leads in sequence. Sentry: A/B live. MyPlace: enrichment done. PulseHR: rewrite queued.',time:'09:00'},
+      {t:'done',label:'Routing: 3 warm leads to Deal Intelligence',sub:'Archform, Trellis, GrowFast replied positively. Passed with score, context, and recommended call script.',time:'08:30'},
+    ],
+    progress:[
+      {t:'done',label:'Week 1: System orchestration live',sub:'All 14 rooms connected. Task routing, SLA tracking, and daily briefing pipeline operational.'},
+      {t:'done',label:'Week 2: First full campaign cycle',sub:'End-to-end: ICP → Leads → Copy → Send → Replies → Deals. Full pipeline working for Cognify AI.'},
+      {t:'done',label:'Week 3: Alert system deployed',sub:'Threshold monitoring across all rooms. PulseHR warning caught on Day 14 — before client noticed.'},
+      {t:'active',label:'Week 4: Self-healing pipeline',sub:'Building auto-routing: when War Room flags low score, Copy Room gets rewrite task, no human needed.'},
+    ],
+    plan:[
+      {icon:'⚙️',label:'Self-healing rewrite pipeline',sub:'War Room → Command Agent → Copy Room → rewrite queued — zero manual intervention required',badge:'today'},
+      {icon:'📨',label:'Client-facing weekly report',sub:'Auto-generated PDF for each client: leads sent, replies, warm leads, next week plan',badge:'today'},
+      {icon:'🚨',label:'Critical alert escalation',sub:'If campaign goes critical (bounce >2% or 0 replies in 7 days), page human via Slack immediately',badge:'planned'},
+      {icon:'🌍',label:'EMEA orchestration track',sub:'Separate SLA track for UK/DE campaigns with timezone-adjusted send windows',badge:'planned'},
+    ],
+    log:[
+      {c:'warn',ts:'10:50',msg:'Escalation: PulseHR reply rate warning — Copy Room rewrite triggered'},
+      {c:'info',ts:'10:00',msg:'Daily briefing compiling: 14/14 rooms reporting'},
+      {c:'ok',ts:'09:00',msg:'SLA check: 4/4 clients on track — Day 3/21'},
+      {c:'ok',ts:'08:30',msg:'3 warm leads routed to Deal Intelligence with full context'},
+    ],
+    cmd:'python super_agent.py status',
+    cmdComment:'# Full system status + daily orchestration report'
+  },
+  r3:{
+    kpis:[{l:'Avg Warmup Score',v:'74.2',cls:'warn'},{l:'Active Inboxes',v:'9',cls:''},{l:'Bounce Rate',v:'0.8%',cls:'good'},{l:'Flagged',v:'1',cls:'warn'}],
+    today:[
+      {t:'warn',label:'⚠ Inbox 3 (pulse@outreach.co) — score dropped to 52',sub:'Warmup drop detected: 82 → 52 in 48h. Pause sequence sends from this inbox. Re-warm for 7 days.',time:'NOW'},
+      {t:'done',label:'Deliverability audit — all 9 inboxes',sub:'8 inboxes healthy (74-91 score). 1 flagged. SPF, DKIM, DMARC all valid. MX routing correct.',time:'09:30'},
+      {t:'done',label:'Bounce rate check — all campaigns',sub:'Current: 0.8% across all sends. Below 2% danger threshold. Continue at current pace.',time:'08:45'},
+      {t:'pending',label:'Inbox 3 re-warm protocol',sub:'Reduce send volume from flagged inbox to 5/day for 7 days. Monitor score daily.',time:'~11:00'},
+    ],
+    progress:[
+      {t:'done',label:'Week 1: Inbox infrastructure',sub:'9 inboxes configured. SPF/DKIM/DMARC verified. Warmup started across all. Instantly warmup enabled.'},
+      {t:'done',label:'Week 2: Baseline scores established',sub:'All inboxes reached 65+ warmup score. First real campaign sends began at 20/day per inbox.'},
+      {t:'done',label:'Week 3: Volume ramp successful',sub:'Ramped to 50/day per inbox. Bounce rate held at 0.8%. One inbox showed early drop — caught before damage.'},
+      {t:'active',label:'Week 4: Inbox 3 rescue protocol',sub:'Re-warming flagged inbox while redistributing its volume to other healthy inboxes. No campaign pause needed.'},
+    ],
+    plan:[
+      {icon:'🔄',label:'Redistribute Inbox 3 volume',sub:'Move 30 sends/day from flagged inbox to Inboxes 5 and 7 while re-warming. No campaign slowdown.',badge:'today'},
+      {icon:'📊',label:'Daily score dashboard',sub:'Auto-log all 9 inbox scores daily. Alert if any inbox drops more than 10 points in 24h.',badge:'today'},
+      {icon:'🌐',label:'Add 2 new inboxes',sub:'Scale to 11 inboxes for EMEA expansion. UK-based domains for better deliverability to .co.uk addresses.',badge:'planned'},
+      {icon:'🔒',label:'Domain reputation monitoring',sub:'Add MX Toolbox + Google Postmaster tracking for domain-level reputation alongside inbox warmup scores.',badge:'planned'},
+    ],
+    log:[
+      {c:'warn',ts:'10:51',msg:'Inbox 3 score: 52 — pause protocol activated, volume redistributed'},
+      {c:'ok',ts:'09:30',msg:'Audit complete: 8/9 inboxes healthy, all DNS records valid'},
+      {c:'ok',ts:'08:45',msg:'Bounce rate: 0.8% — within safe range, no action needed'},
+      {c:'info',ts:'08:00',msg:'Daily warmup check: avg score 74.2 across active inboxes'},
+    ],
+    cmd:'python 3-infra-room/infra_setup.py audit',
+    cmdComment:'# Full inbox deliverability audit + warmup scores'
+  },
+  r10:{
+    kpis:[{l:'Questions',v:'28',cls:''},{l:'Sections',v:'6',cls:''},{l:'Briefs Built',v:'4',cls:'good'},{l:'Avg Completion',v:'91%',cls:'good'}],
+    today:[
+      {t:'active',label:'Awaiting new client brief upload',sub:'Questionnaire ready. Accepts .docx, PDF, or interactive session. Next onboarding: RankZero (scheduled 14:00)',time:'NOW'},
+      {t:'done',label:'MyPlace brief validated and finalized',sub:'All 28 questions answered. ICP profile extracted and sent to Research Lab. Gaps: 0.',time:'10:15'},
+      {t:'done',label:'Cognify AI brief — gap analysis',sub:'Q17 (avg deal size) and Q24 (current tools) were missing. Flagged and re-requested from client.',time:'09:00'},
+      {t:'pending',label:'RankZero onboarding session',sub:'14:00 interactive session. 28 questions across ICP, pain points, objections, competitors, and goals.',time:'14:00'},
+    ],
+    progress:[
+      {t:'done',label:'Week 1: Questionnaire built',sub:'28 questions across 6 sections: Company, ICP, Pain Points, Objections, Competitors, Goals. .docx export ready.'},
+      {t:'done',label:'Week 2: Structured output extraction',sub:'Claude reads raw answers and outputs structured JSON profile: ICP, pains, triggers, avoid angles.'},
+      {t:'done',label:'Week 3: Gap detection live',sub:'Auto-flags incomplete or vague answers and generates follow-up questions for the client.'},
+      {t:'active',label:'Week 4: Direct pipe to Research Lab',sub:'Completed briefs automatically push ICP profile to Research Lab — Research Lab starts immediately.'},
+    ],
+    plan:[
+      {icon:'🔗',label:'Auto-push to Research Lab',sub:'Finalized brief automatically triggers Research Lab ICP build — no manual handoff step',badge:'today'},
+      {icon:'📊',label:'Client portal for questionnaire',sub:'Simple web form so clients fill the questionnaire themselves without exporting a .docx',badge:'planned'},
+      {icon:'🔄',label:'Brief update workflow',sub:'When client info changes (new product, new ICP) — trigger a partial re-brief on changed sections only',badge:'planned'},
+      {icon:'🌍',label:'EMEA brief variant',sub:'Separate question set for UK/DE clients with GDPR, compliance, and regional buyer culture questions',badge:'planned'},
+    ],
+    log:[
+      {c:'ok',ts:'10:15',msg:'MyPlace brief: 28/28 questions complete — pushed to Research Lab'},
+      {c:'warn',ts:'09:00',msg:'Cognify AI brief: Q17, Q24 incomplete — follow-up sent to client'},
+      {c:'info',ts:'08:30',msg:'RankZero onboarding confirmed for 14:00 today'},
+      {c:'ok',ts:'08:00',msg:'Brief archive: 4 complete profiles stored in Archives'},
+    ],
+    cmd:'python 10-intake-room/intake_agent.py interactive',
+    cmdComment:'# Starts interactive 28-question onboarding session'
+  },
+  r11:{
+    kpis:[{l:'Rooms Online',v:'14/14',cls:'good'},{l:'Critical Alerts',v:'0',cls:'good'},{l:'Warnings',v:'1',cls:'warn'},{l:'API Health',v:'100%',cls:'good'}],
+    today:[
+      {t:'active',label:'Continuous system health monitoring',sub:'Watching all 14 rooms, 4 API connections, 9 inboxes. Uptime: 100%. Last check: 30 seconds ago.',time:'NOW'},
+      {t:'done',label:'PulseHR warning detected and escalated',sub:'Reply rate drop caught at 08:00. Escalated to Command Agent in <2 minutes. Rewrite already queued.',time:'08:02'},
+      {t:'done',label:'Morning API health check',sub:'Claude API: ✓ Apollo API: ✓ HeyReach: ✓ Instantly: ✓ Hunter.io: ✓ All 5 integrations live.',time:'07:55'},
+      {t:'done',label:'Daily health report generated',sub:'All metrics compiled. 14 rooms active, 0 critical, 1 warning. Report pushed to Slack #system-health.',time:'08:00'},
+    ],
+    progress:[
+      {t:'done',label:'Week 1: Monitoring setup',sub:'Connected to all 14 rooms. Health checks every 5 minutes. Slack alerts configured for warning and critical events.'},
+      {t:'done',label:'Week 2: Alert precision tuning',sub:'Reduced false positives by 80%. Now only alerts on sustained drops (>15 min) not momentary spikes.'},
+      {t:'done',label:'Week 3: Claude prose summaries',sub:'Daily report now includes natural language summary of system status — not just raw metrics.'},
+      {t:'active',label:'Week 4: Predictive alerting',sub:'Building pattern detection — catch degrading trends before they hit thresholds. Early warning system.'},
+    ],
+    plan:[
+      {icon:'📡',label:'Predictive trend detection',sub:'Alert when metrics are trending toward threshold — not just when they cross it. 48h early warning.',badge:'today'},
+      {icon:'📊',label:'Weekly uptime report',sub:'7-day rolling uptime by room, API, and campaign. Sent to client as part of weekly report.',badge:'today'},
+      {icon:'🔔',label:'PagerDuty integration',sub:'For true critical events (all inboxes paused, API down), page oncall human immediately',badge:'planned'},
+      {icon:'📱',label:'Mobile push alerts',sub:'Critical and warning alerts pushed to phone for out-of-hours coverage',badge:'planned'},
+    ],
+    log:[
+      {c:'ok',ts:'10:52',msg:'Health check: 14/14 rooms online, all APIs responding'},
+      {c:'warn',ts:'08:02',msg:'PulseHR: reply rate 1.8% — warning escalated to Command Agent'},
+      {c:'ok',ts:'07:55',msg:'API health: Claude, Apollo, HeyReach, Instantly, Hunter all live'},
+      {c:'ok',ts:'07:00',msg:'Overnight: 0 critical events, 0 API outages, 0 inbox pauses'},
+    ],
+    cmd:'python 11-monitor-room/monitor_agent.py',
+    cmdComment:'# Full system health report across all 14 rooms'
+  },
+  r12:{
+    kpis:[{l:'Competitors Tracked',v:'3',cls:''},{l:'Saturated Angles',v:'3',cls:'warn'},{l:'Market Gaps Found',v:'3',cls:'good'},{l:'Scan Frequency',v:'Weekly',cls:''}],
+    today:[
+      {t:'active',label:'Weekly competitor scan — Cognify AI',sub:'Scanning G2 reviews, LinkedIn posts, and job boards for Outreach.io, Salesloft, Apollo. Checking for new angle saturation.',time:'NOW'},
+      {t:'done',label:'3 new saturated angles identified',sub:'"ROI calculator" offers, "book a 15-min call" CTAs, and "we help you 3x pipeline" openers flagged as overused. Sent to Copy Room.',time:'10:00'},
+      {t:'done',label:'Market gap: async video outreach',sub:'Competitors not using personalized video thumbnails in cold email. Gap identified. Flagged to Copy Room as untapped angle.',time:'09:15'},
+      {t:'pending',label:'Sentry competitor deep-dive',sub:'Security software market scan — CrowdStrike, SentinelOne job postings and G2 reviews',time:'~15:00'},
+    ],
+    progress:[
+      {t:'done',label:'Week 1: Competitor monitoring setup',sub:'Tracking 3 main competitors per client. G2 scrape, LinkedIn profile monitoring, and job posting alerts.'},
+      {t:'done',label:'Week 2: First gap report',sub:'Found 3 market gaps across 4 clients. Async video and compliance-first angles pushed to Copy Room.'},
+      {t:'done',label:'Week 3: Saturation database',sub:'127 saturated angles catalogued and stored in Archives. Copy Room validator now checks against this list.'},
+      {t:'active',label:'Week 4: Real-time alert system',sub:'When a competitor starts using a previously unique angle — auto-alert Copy Room to evolve messaging.'},
+    ],
+    plan:[
+      {icon:'🔔',label:'Real-time saturation alerts',sub:'When competitor starts using our angle → alert Copy Room to differentiate before it becomes saturated',badge:'today'},
+      {icon:'📊',label:'Gap opportunity scoring',sub:'Score each identified gap by: difficulty to execute, market size, how long before competitors catch on',badge:'today'},
+      {icon:'🌐',label:'Expand to 6 competitors per client',sub:'Add Orum, Gong, Salesloft, ZoomInfo to tracking list — wider coverage = earlier gap detection',badge:'planned'},
+      {icon:'📧',label:'Monitor competitor cold emails',sub:'Subscribe to competitor newsletters and track their subject line and angle evolution',badge:'planned'},
+    ],
+    log:[
+      {c:'info',ts:'10:53',msg:'G2 scan: 47 new reviews for Outreach.io, analyzing angle patterns'},
+      {c:'ok',ts:'10:00',msg:'3 saturated angles flagged and exported to Archives + Copy Room'},
+      {c:'ok',ts:'09:15',msg:'Gap identified: async video thumbnails — passed to Copy Room as new angle'},
+      {c:'info',ts:'08:30',msg:'LinkedIn: Salesloft posted 3 new SDR job ads — signal: scaling outbound'},
+    ],
+    cmd:'python 12-competitor-room/competitor_intel.py scan "Cognify AI"',
+    cmdComment:'# Weekly competitor scan + market gap identification'
+  },
+  r13:{
+    kpis:[{l:'Stakeholders Mapped',v:'7',cls:''},{l:'Account Fit Score',v:'8/10',cls:'good'},{l:'Fit Label',v:'STRONG',cls:'good'},{l:'Start With',v:'Champion',cls:''}],
+    today:[
+      {t:'active',label:'Mapping buying committee — Trellis account',sub:'Finding all stakeholders: Champion (VP Ops), Economic Buyer (CFO), Technical Buyer (CTO), Blocker (Legal). LinkedIn + Apollo data.',time:'NOW'},
+      {t:'done',label:'Archform account mapped — 7 stakeholders',sub:'Fit: STRONG 8/10. Champion: Sarah K. (VP Revenue Ops). Start sequence with Champion, CC Economic Buyer on D7.',time:'10:25'},
+      {t:'done',label:'Hook lines written for Archform committee',sub:'7 personalized hook lines — one per stakeholder. Sent to Copy Room for D1 personalization layer.',time:'09:45'},
+      {t:'pending',label:'GrowFast account mapping',sub:'New warm lead from Comms Lab — need full committee map before sending proposal',time:'~14:30'},
+    ],
+    progress:[
+      {t:'done',label:'Week 1: Committee framework built',sub:'Defined 5 stakeholder roles: Champion, Economic Buyer, Technical, Influencer, Blocker. Scoring criteria set.'},
+      {t:'done',label:'Week 2: First account maps',sub:'Mapped 4 accounts. Found that missing Champion identification was causing 40% of deals to stall at proposal.'},
+      {t:'done',label:'Week 3: Hook line personalization',sub:'Now generates unique hook line per stakeholder based on LinkedIn activity, role, and company news.'},
+      {t:'active',label:'Week 4: Integration with Deal Intelligence',sub:'Committee maps now auto-populate Deal Intelligence CRM fields — no manual data entry.'},
+    ],
+    plan:[
+      {icon:'🔗',label:'Auto-push maps to Deal Intelligence',sub:'Completed committee map populates CRM deal record automatically — champion, economic buyer, sequence order',badge:'today'},
+      {icon:'🧠',label:'Blocker detection model',sub:'Identify potential blockers early (Legal, InfoSec, Procurement) and build specific objection sequences',badge:'today'},
+      {icon:'📊',label:'Multi-thread sequencing',sub:'Coordinate simultaneous outreach to Champion + Economic Buyer with different angle sequences',badge:'planned'},
+      {icon:'🌍',label:'EMEA org chart patterns',sub:'UK/DE companies have flatter hierarchies — adapt committee roles and sequence order for EMEA accounts',badge:'planned'},
+    ],
+    log:[
+      {c:'info',ts:'10:54',msg:'Mapping Trellis committee: found VP Ops (Champion), CFO (Econ Buyer)'},
+      {c:'ok',ts:'10:25',msg:'Archform: 7 stakeholders mapped, fit score 8/10 STRONG'},
+      {c:'ok',ts:'09:45',msg:'7 hook lines written for Archform committee — sent to Copy Room'},
+      {c:'info',ts:'08:30',msg:'GrowFast mapping queued after warm lead confirmation from Comms Lab'},
+    ],
+    cmd:'python 13-account-room/account_mapper.py map "Cognify AI" "Trellis" "trellis.io"',
+    cmdComment:'# Maps full buying committee + generates personalized hook lines'
+  },
+  r14:{
+    kpis:[{l:'Active Deals',v:'8',cls:''},{l:'Pipeline Value',v:'$42K',cls:'good'},{l:'Avg Deal Score',v:'74/100',cls:'good'},{l:'CRM Sync',v:'Live',cls:'good'}],
+    today:[
+      {t:'active',label:'Scoring 8 active deals with AI',sub:'Running 0-100 deal score on each based on: reply sentiment, stakeholder access, timeline signal, and company fit.',time:'NOW'},
+      {t:'done',label:'Archform — score 88/100 STRONG',sub:'Recommendation: send proposal today. Economic Buyer CC\'d. Legal review expected — prepare compliance one-pager.',time:'10:35'},
+      {t:'done',label:'HubSpot sync — all 8 deals updated',sub:'Deal stage, score, and next action synced to HubSpot. Owner assigned. Follow-up tasks created.',time:'09:50'},
+      {t:'pending',label:'GrowFast — new deal intake',sub:'Warm reply from Comms Lab. Need: committee map (Committee Mapper working), deal scored, CRM entry created.',time:'~15:00'},
+    ],
+    progress:[
+      {t:'done',label:'Week 1: Deal pipeline built',sub:'HubSpot connected. 8 deals created from warm leads. Scoring model v1 deployed.'},
+      {t:'done',label:'Week 2: AI scoring calibrated',sub:'Compared AI scores to human reviewer scores. 91% alignment. Model approved. Zero manual scoring now.'},
+      {t:'done',label:'Week 3: Next-action generation',sub:'Each deal now gets a specific recommended next action: "send proposal", "book call", "address objection", "re-engage in 14 days".'},
+      {t:'active',label:'Week 4: $42K pipeline milestone',sub:'Pipeline crossed $42K. Archform proposal sent. Trellis in final review. 2 more deals expected to close this week.'},
+    ],
+    plan:[
+      {icon:'📄',label:'Auto-generate Archform proposal',sub:'Pull deal context, pricing, case study, and committee data to auto-draft proposal PDF',badge:'today'},
+      {icon:'📊',label:'Deal velocity tracking',sub:'Track days-per-stage for each deal — identify which deals are stalling and trigger re-engagement',badge:'today'},
+      {icon:'🤝',label:'Closed-won trigger to all rooms',sub:'When deal closes: stop all sequences, archive in knowledge base, trigger success pattern analysis',badge:'planned'},
+      {icon:'💰',label:'Revenue forecasting',sub:'90-day pipeline forecast based on deal scores, velocity, and historical close rates',badge:'planned'},
+    ],
+    log:[
+      {c:'ok',ts:'10:55',msg:'Archform score: 88/100 — proposal recommendation generated'},
+      {c:'ok',ts:'09:50',msg:'HubSpot: 8 deals synced, stages and owners updated'},
+      {c:'info',ts:'09:00',msg:'Pipeline total: $42,000 across 8 active deals'},
+      {c:'info',ts:'08:30',msg:'GrowFast warm lead received — deal intake queued after committee map'},
+    ],
+    cmd:'python 14-deal-room/deal_intelligence.py sync "Cognify AI"',
+    cmdComment:'# Scores all active deals + syncs to HubSpot with next actions'
+  },
+};
+
 // ── INFO PANEL ────────────────────────────────────────────────────────────────
-let selId=null;
+let selId=null, activeTab=0;
+
+function switchTab(n){
+  activeTab=n;
+  [0,1,2,3].forEach(i=>{
+    document.getElementById('tab'+i).classList.toggle('active',i===n);
+    document.getElementById('tbody'+i).classList.toggle('active',i===n);
+  });
+}
+
 function openPanel(id){
   if(selId) document.getElementById('room-'+selId)?.classList.remove('selected');
   selId=id; document.getElementById('room-'+id).classList.add('selected');
-  const a=AGENTS[id];
+  const a=AGENTS[id]; const r=REPORTS[id];
+  const isWarn=a.status==='warn';
+
+  // header
+  document.getElementById('p-accent').style.background=`linear-gradient(90deg,${a.top},${a.top}44)`;
   document.getElementById('p-icon').textContent=a.icon;
+  document.getElementById('p-tag').textContent=a.tag;
   document.getElementById('p-name').textContent=a.name.toUpperCase();
-  document.getElementById('p-sub').textContent=a.tag+' · '+(a.status==='warn'?'⚠ WARNING':'ACTIVE');
   document.getElementById('p-desc').textContent=a.desc;
-  document.getElementById('p-stats').innerHTML=a.stats.map(s=>`<div class="pstat"><span class="pstat-l">${s.l}</span><span class="pstat-v">${s.v}</span></div>`).join('');
-  document.getElementById('p-cmd').innerHTML=`<span>$ </span>${a.cmd}`;
+  const pill=document.getElementById('p-spill');
+  const sdot=document.getElementById('p-sdot');
+  const slbl=document.getElementById('p-slbl');
+  pill.className='panel-status-pill '+(isWarn?'warn':'ok');
+  sdot.className='panel-status-dot '+(isWarn?'warn':'ok');
+  slbl.textContent=isWarn?'⚠ WARNING':'ACTIVE';
+
+  if(!r){ document.getElementById('panel').classList.add('open'); return; }
+
+  // TAB 0 — TODAY
+  document.getElementById('tbody0').innerHTML=`
+    <div class="psec">
+      <div class="psec-title" style="color:${a.top}">LIVE METRICS</div>
+      <div class="kpi-row">${r.kpis.map(k=>`<div class="kpi-card ${k.cls}"><div class="kpi-val">${k.v}</div><div class="kpi-lbl">${k.l}</div></div>`).join('')}</div>
+    </div>
+    <div class="psec">
+      <div class="psec-title" style="color:${a.top}">TODAY'S ACTIVITY</div>
+      <div class="timeline">${r.today.map(t=>`
+        <div class="tl-item">
+          <div class="tl-dot ${t.t}"></div>
+          <div class="tl-right">
+            <div class="tl-label">${t.label}</div>
+            <div class="tl-sub">${t.sub}</div>
+            <div class="tl-time">${t.time}</div>
+          </div>
+        </div>`).join('')}
+      </div>
+    </div>
+    <div class="psec">
+      <div class="psec-title" style="color:${a.top}">LIVE LOG</div>
+      <div class="log-feed">${r.log.map(l=>`<div class="log-line ${l.c}"><span class="log-ts">${l.ts}</span>${l.msg}</div>`).join('')}</div>
+    </div>`;
+
+  // TAB 1 — PROGRESS
+  document.getElementById('tbody1').innerHTML=`
+    <div class="psec">
+      <div class="psec-title" style="color:${a.top}">PAST PROGRESS</div>
+      <div class="timeline">${r.progress.map(t=>`
+        <div class="tl-item">
+          <div class="tl-dot ${t.t}"></div>
+          <div class="tl-right">
+            <div class="tl-label">${t.label}</div>
+            <div class="tl-sub">${t.sub}</div>
+          </div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+
+  // TAB 2 — PLAN
+  const badgeMap={today:'NOW',today:'TODAY',planned:'PLANNED',blocked:'BLOCKED'};
+  document.getElementById('tbody2').innerHTML=`
+    <div class="psec">
+      <div class="psec-title" style="color:${a.top}">NEXT ACTIONS & PLANS</div>
+      <div class="action-list">${r.plan.map(p=>`
+        <div class="action-item ${p.badge==='blocked'?'urgent':p.badge==='done'?'done':''}">
+          <div class="action-icon">${p.icon}</div>
+          <div class="action-text"><strong>${p.label}</strong>${p.sub}</div>
+          <div class="action-badge ${p.badge}">${p.badge.toUpperCase()}</div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+
+  // TAB 3 — TERMINAL
+  document.getElementById('tbody3').innerHTML=`
+    <div class="psec">
+      <div class="psec-title" style="color:${a.top}">RUN COMMAND</div>
+      <div class="pcmd"><span class="cmd-comment">${r.cmdComment}</span><span class="cmd-prompt">$ </span>${r.cmd}</div>
+    </div>
+    <div class="psec">
+      <div class="psec-title" style="color:${a.top}">WHAT IT DOES</div>
+      <div class="psec-text">${a.desc}</div>
+    </div>`;
+
+  switchTab(0);
   document.getElementById('panel').classList.add('open');
 }
+
 function closePanel(){
   if(selId) document.getElementById('room-'+selId)?.classList.remove('selected');
   selId=null; document.getElementById('panel').classList.remove('open');
